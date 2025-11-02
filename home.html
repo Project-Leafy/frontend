@@ -1,0 +1,54 @@
+# 1. 로그인 페이지 (사용자가 정의한 '홈')
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leafy - 로그인</title>
+    <style>
+        body {
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            font-family: sans-serif;
+        }
+
+        .login-box {
+            text-align: center;
+        }
+
+        .kakao-btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #FEE500;
+            color: #191919;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-box">
+        <h1>Leafy</h1>
+        <p>반려식물과 함께하는 일상</p>
+        <a href="http://localhost:8080/login/kakao" class="kakao-btn">
+            카카오로 로그인하기
+        </a>
+    </div>
+
+    <script>
+        // (선택 사항) 만약 이미 토큰을 가지고 있다면, 로그인 페이지 대신 메인 페이지로 보낸다.
+        (function () {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                window.location.replace('/app/main.html');
+            }
+        })();
+    </script>
+</body>
+
+</html>

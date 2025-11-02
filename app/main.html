@@ -1,0 +1,81 @@
+# 2. 로그인 후 메인 페이지 (사용자가 정의한 '메인')
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leafy 메인</title>
+
+    <!-- ✨ [중요] 1. 인증 가드를 <head> 최상단에서 실행 -->
+    <script src="/assets/js/auth.js"></script>
+
+    <!-- 2. API 스크립트 로드 -->
+    <script src="/assets/js/api.js"></script>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        #content {
+            padding: 20px;
+            background-color: #eee;
+            border-radius: 8px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Leafy 메인 페이지</h1>
+    <p>로그인에 성공했습니다. 이 페이지는 보호되어 있습니다.</p>
+
+    <button id="apiTestBtn">API 테스트 (/home)</button>
+    <button id="logoutBtn" style="background-color: #ffcccc;">로그아웃</button>
+
+    <hr>
+    <h3>API 응답:</h3>
+    <pre id="content">여기에 API 응답이 표시됩니다.</pre>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentEl = document.getElementById('content');
+
+            // 1. API 테스트 버튼
+            document.getElementById('apiTestBtn').addEventListener('click', async () => {
+                try {
+                    // api.js의 fetchApi 함수 사용
+                    const response = await fetchApi('/home', { method: 'GET' });
+
+                    if (!response.ok) {
+                        throw new Error('API 호출 실패: ' + response.statusText);
+                    }
+
+                    const data = await response.text();
+                    contentEl.textContent = data;
+
+                } catch (error) {
+                    // 401/403 에러는 api.js가 이미 처리했으므로, 그 외 에러만 처리
+                    if (error.message !== 'Authentication failed') {
+                        console.error('API 테스트 에러:', error);
+                        contentEl.textContent = '에러 발생: ' + error.message;
+                    }
+                }
+            });
+
+            // 2. 로그아웃 버튼
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                logout(); // auth.js에 정의된 공용 함수 호출
+            });
+        });
+    </script>
+</body>
+
+</html>
