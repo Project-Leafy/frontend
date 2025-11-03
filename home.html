@@ -6,39 +6,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leafy - 로그인</title>
-    <style>
-        body {
-            display: grid;
-            place-items: center;
-            min-height: 100vh;
-            font-family: sans-serif;
-        }
+    <link rel="stylesheet" href="/assets/css/style.css">
 
-        .login-box {
-            text-align: center;
-        }
-
-        .kakao-btn {
-            display: inline-block;
-            padding: 12px 20px;
-            background-color: #FEE500;
-            color: #191919;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-    </style>
 </head>
 
 <body>
-    <div class="login-box">
-        <h1>Leafy</h1>
-        <p>반려식물과 함께하는 일상</p>
-        <a href="http://localhost:8080/login/kakao" class="kakao-btn">
-            카카오로 로그인하기
-        </a>
+    <div id="app-container">
+        <div id="login-screen" class="screen active">
+            <div class="login-content">
+                <div class="logo-circle">
+                    <svg data-lucide="sprout"></svg>
+                </div>
+                <h1 class="login-title">Leafy</h1>
+                <p class="login-subtitle">
+                    반려식물과 함께하는 건강한 일상,<br>
+                    Leafy가 함께합니다.
+                </p>
+                <a href="http://localhost:8080/login/kakao" class="kakao-login-btn">
+                    <span class="kakao-icon">
+                        <svg data-lucide="message-circle"></svg>
+                    </span>
+                    카카오로 시작하기
+                </a>
+                <p class="legal-text">
+                    로그인 시 <a href="#" style="color: var(--text-grey); text-decoration: underline;">이용약관</a> 및
+                    <a href="#" style="color: var(--text-grey); text-decoration: underline;">개인정보처리방침</a>에 동의하게 됩니다.
+                </p>
+            </div>
+        </div>
     </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 
     <script>
         // (선택 사항) 만약 이미 토큰을 가지고 있다면, 로그인 페이지 대신 메인 페이지로 보낸다.
