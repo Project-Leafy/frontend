@@ -1,13 +1,12 @@
-# 1. 로그인 페이지 (사용자가 정의한 '홈')
 <!DOCTYPE html>
 <html lang="ko">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Leafy - 로그인</title>
     <link rel="stylesheet" href="/assets/css/style.css">
-
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
@@ -36,7 +35,6 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         lucide.createIcons();
     </script>
@@ -46,7 +44,7 @@
         (function () {
             const token = localStorage.getItem('accessToken');
             if (token) {
-                window.location.replace('/app/main.html');
+                window.location.replace('/app/main/main.html'); // Corrected redirection path
             }
         })();
     </script>

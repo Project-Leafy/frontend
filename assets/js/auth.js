@@ -10,7 +10,7 @@
         if (!token) {
             alert('로그인이 필요합니다.');
             // (public) 로그인 페이지로 강제 이동
-            window.location.replace('/home.html');
+            window.location.replace('/index.html');
         }
     }
 })();
@@ -19,5 +19,5 @@
 function logout() {
     localStorage.removeItem('accessToken');
     alert('로그아웃되었습니다.');
-    window.location.replace('/home.html');
+    window.location.replace('/index.html');
 }
