@@ -1,6 +1,23 @@
 import { fetchApi } from '../../assets/js/core_api.js';
 
 /**
+ * [추가] 백엔드 API로부터 특정 '내 식물'의 상세 정보를 가져옵니다.
+ * (main.html의 getMyPlants()와 동일하게 fetchApi를 사용한다고 가정)
+ * @param {number} myPlantId - '내 식물'의 ID
+ * @returns {Promise<any>} 내 식물 상세 정보 (plant.id 원본 JSON 포함)
+ */
+export async function getMyPlantDetail(myPlantId) {
+    const response = await fetchApi(`/api/v1/my-plants/${myPlantId}`, {
+        method: 'GET',
+    });
+
+    if (!response.ok) {
+        throw new Error('내 식물 상세 정보를 가져오는데 실패했습니다.');
+    }
+    return response.json();
+}
+
+/**
  * 식물 식별 API(POST /api/v1/plants/identify)를 호출합니다.
  * FormData 객체를 인자로 받아 fetch 요청을 보냅니다.
  * Authorization 헤더에 localStorage에서 가져온 JWT 토큰을 포함시킵니다.

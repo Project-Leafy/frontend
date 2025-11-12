@@ -127,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 identificationResult = JSON.parse(resultString);
                 console.log('파싱된 데이터:', identificationResult);
                 
-                // ⭐️ API 응답은 snake_case로 반환됨
                 let imageUrl = identificationResult.image_url;
                 let commonName = identificationResult.common_name;
                 let scientificName = identificationResult.scientific_name;
@@ -171,10 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log('학명 설정됨:', finalScientificName);
                 }
 
+                // [수정 후 ✅]
                 // 3) 신뢰도 할당
                 if (probability) {
-                    if (progressTextEl) progressTextEl.textContent = `${probability}%`;
-                    if (progressBarFgEl) progressBarFgEl.style.width = `${probability}%`;
+                    // ⭐️ 100을 곱하고 반올림하여 정수 퍼센트로 만듦
+                    const percentage = Math.round(probability * 100); 
+                    
+                    if (progressTextEl) progressTextEl.textContent = `${percentage}%`;
+                    if (progressBarFgEl) progressBarFgEl.style.width = `${percentage}%`;
                 } else {
                     if (progressTextEl) progressTextEl.textContent = '알수없음';
                     if (progressBarFgEl) progressBarFgEl.style.width = '0%';
@@ -186,7 +189,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     commonName,
                     scientificName,
                     speciesId,
-                    probability: probability || null // probability가 없으면 null로 저장
+                    probability: probability || null, // probability가 없으면 null로 저장
+                    identificationData: identificationResult.identification_data
                 };
 
             } catch (parseError) {
@@ -219,7 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 species_id: identificationResult.speciesId,
                 nickname: nickname,
                 adoption_date: adoptionDate,
-                image_url: identificationResult.imageUrl
+                image_url: identificationResult.imageUrl,
+                identification_data: identificationResult.identificationData                
             };
             
             console.log('=== 최종 등록 데이터 ===');
