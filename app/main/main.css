@@ -128,3 +128,10 @@ body {
 .register-plant-btn:hover {
     background-color: #3D6549;
 }
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 360px) {
+    .plant-list {
+        grid-template-columns: 1fr; /* 한 줄에 하나씩 표시 */
+    }
+}

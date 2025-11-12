@@ -1,6 +1,31 @@
 import { fetchApi } from '../../assets/js/core_api.js';
 
 /**
+ * 식물 식별 API(POST /api/v1/plants/identify)를 호출합니다.
+ * FormData 객체를 인자로 받아 fetch 요청을 보냅니다.
+ * Authorization 헤더에 localStorage에서 가져온 JWT 토큰을 포함시킵니다.
+ * multipart/form-data 요청 시에는 Content-Type 헤더를 직접 설정하지 않습니다.
+ * * @param {FormData} formData - 'image' 키를 포함하는 FormData 객체
+ * @returns {Promise<any>} 식별 결과 데이터 Promise
+ */
+export async function identifyPlant(formData) {
+    const token = localStorage.getItem('accessToken');
+    const response = await fetch('http://localhost:8080/api/v1/plants/identify', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+            // Content-Type은 브라우저가 자동으로 설정하므로 생략합니다.
+        },
+        body: formData
+    });
+
+    if (!response.ok) {
+        throw new Error('식물 식별에 실패했습니다.');
+    }
+    return response.json();
+}
+
+/**
 * 백엔드 API로부터 현재 로그인한 사용자의 '내 식물' 목록을 가져옵니다.
 * @returns {Promise<Array>} 내 식물 목록 데이터 Promise
 */
@@ -33,7 +58,6 @@ export async function getPlants() {
     return response.json();
 }
 
-// 예: 특정 식물의 상세 정보를 가져오는 함수
 /**
  * 특정 식물의 상세 정보를 가져옵니다.
  * @param {number} plantId - 식물 ID
@@ -48,5 +72,30 @@ export async function getPlantById(plantId) {
         throw new Error('식물 상세 정보를 가져오는데 실패했습니다.');
     }
 
+    return response.json();
+}
+
+/**
+ * [추가됨] 최종 식물 등록 API(POST /api/v1/my-plants)를 호출합니다.
+ * @param {object} plantData - { speciesId, nickname, adoptionDate, imageUrl }
+ * @returns {Promise<any>} 등록된 식물 정보 데이터 Promise
+ */
+export async function registerMyPlant(plantData) {
+    const token = localStorage.getItem('accessToken');
+    
+    // ⭐️⭐️⭐️ 이 부분을 수정합니다: 백엔드 서버의 포트(8080)를 명시하여 절대 경로로 요청 ⭐️⭐️⭐️
+    const response = await fetch('http://localhost:8080/api/v1/my-plants', {
+    
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(plantData)
+    });
+
+    if (!response.ok) {
+        throw new Error('최종 식물 등록에 실패했습니다.');
+    }
     return response.json();
 }
