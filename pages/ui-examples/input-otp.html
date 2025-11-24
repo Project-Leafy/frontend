@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Input OTP</title>
+  <link rel="stylesheet" href="../../css/ui/input-otp.css" />
+</head>
+
+<body>
+
+<div class="input-otp-root">
+
+  <div class="input-otp" role="group">
+
+    <div class="input-otp-group">
+      <div class="input-otp-slot" data-index="0"></div>
+      <div class="input-otp-slot" data-index="1"></div>
+      <div class="input-otp-slot" data-index="2"></div>
+
+      <div class="input-otp-separator">
+        <svg width="18" height="18" viewBox="0 0 24 24">
+          <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </div>
+
+      <div class="input-otp-slot" data-index="3"></div>
+      <div class="input-otp-slot" data-index="4"></div>
+      <div class="input-otp-slot" data-index="5"></div>
+    </div>
+
+    <!-- 실제 입력 기능을 담당하는 숨겨진 input -->
+    <input type="text" class="input-otp-hidden" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+  </div>
+
+</div>
+
+<script src="../../js/ui/input-otp.js"></script>
+
+</body>
+</html>

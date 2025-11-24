@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Leafy UI - Card Example</title>
+  <link rel="stylesheet" href="../../css/ui/card.css" />
+</head>
+<body style="background:#FAFAF8; font-family:Pretendard, sans-serif; display:flex; justify-content:center; padding:3rem;">
+
+  <div id="card-container"></div>
+
+  <script type="module">
+    import { createCard } from "../../js/ui/card.js";
+
+    const content = document.createElement("p");
+    content.textContent = "이 영역에는 식물의 최근 성장 상태나 일지가 표시됩니다.";
+
+    const footer = document.createElement("button");
+    footer.textContent = "자세히 보기";
+    footer.className = "card-btn";
+
+    const card = createCard({
+      title: "초록이 성장 리포트",
+      description: "최근 2주간의 성장 데이터 요약",
+      content,
+      footer
+    });
+
+    document.getElementById("card-container").appendChild(card);
+  </script>
+</body>
+</html>

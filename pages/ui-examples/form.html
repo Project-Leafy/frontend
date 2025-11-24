@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Form Example</title>
+  <link rel="stylesheet" href="../../css/ui/form.css" />
+</head>
+
+<body>
+
+<div class="form-wrapper">
+
+  <!-- Form Item -->
+  <div class="form-item" data-id="username-field">
+
+    <label class="form-label" for="username-input">
+      Username
+    </label>
+
+    <input 
+      id="username-input"
+      type="text"
+      class="form-control"
+      aria-describedby="username-desc username-msg"
+    />
+
+    <p id="username-desc" class="form-description">
+      Enter your unique username. (3~16 chars)
+    </p>
+
+    <p id="username-msg" class="form-message hidden"></p>
+
+  </div>
+
+  <!-- Another Form Item -->
+  <div class="form-item" data-id="email-field">
+
+    <label class="form-label" for="email-input">
+      Email
+    </label>
+
+    <input 
+      id="email-input"
+      type="email"
+      class="form-control"
+      aria-describedby="email-desc email-msg"
+    />
+
+    <p id="email-desc" class="form-description">
+      We will never share your email.
+    </p>
+
+    <p id="email-msg" class="form-message hidden"></p>
+
+  </div>
+
+  <button id="submit-btn" class="submit-btn">Submit</button>
+
+</div>
+
+<script src="../../js/ui/form.js"></script>
+</body>
+</html>

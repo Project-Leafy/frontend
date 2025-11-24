@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Badge UI Example</title>
+  <link rel="stylesheet" href="../../css/ui/badge.css">
+  <style>
+    body {
+      font-family: Pretendard, sans-serif;
+      background: #FAFAF8;
+      padding: 40px;
+    }
+    .demo-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Badge UI Example</h1>
+
+  <div class="demo-row">
+    <span class="badge" data-variant="default">기본 배지</span>
+    <span class="badge" data-variant="secondary">보조 배지</span>
+    <span class="badge" data-variant="destructive">경고 배지</span>
+    <span class="badge" data-variant="outline">외곽선 배지</span>
+  </div>
+
+  <div class="demo-row" style="margin-top: 24px;">
+    <span class="badge" data-variant="default">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M8 12l2 2 4-4" />
+      </svg>
+      완료
+    </span>
+
+    <span class="badge" data-variant="destructive">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+      실패
+    </span>
+  </div>
+
+  <script src="../../js/ui/badge.js"></script>
+</body>
+</html>

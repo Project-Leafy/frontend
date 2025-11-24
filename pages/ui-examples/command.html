@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Command Palette Example</title>
+  <link rel="stylesheet" href="../../css/ui/command.css" />
+</head>
+
+<body>
+
+<button id="openCommand" class="cmd-open-btn">⌘K / 검색</button>
+
+<!-- Command Dialog -->
+<div class="cmd-dialog" data-open="false">
+  
+  <div class="cmd-overlay"></div>
+
+  <div class="cmd-container">
+
+    <div class="cmd-input-wrapper">
+      <svg class="cmd-search-icon" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15a7.5 7.5 0 0 1 0 15Z"/>
+      </svg>
+      <input type="text" id="cmdInput" placeholder="Search…" />
+    </div>
+
+    <div class="cmd-list" id="cmdList">
+      <div class="cmd-group">
+        <div class="cmd-group-heading">기본 명령어</div>
+
+        <div class="cmd-item" data-key="home">
+          Home 이동
+          <span class="cmd-shortcut">H</span>
+        </div>
+
+        <div class="cmd-item" data-key="profile">
+          내 프로필 열기
+          <span class="cmd-shortcut">P</span>
+        </div>
+
+      </div>
+
+      <div class="cmd-group">
+        <div class="cmd-group-heading">식물 관리</div>
+
+        <div class="cmd-item" data-key="add">
+          새 식물 추가
+          <span class="cmd-shortcut">A</span>
+        </div>
+
+        <div class="cmd-item" data-key="journal">
+          일지 작성
+          <span class="cmd-shortcut">J</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cmd-empty">검색 결과 없음</div>
+  </div>
+
+</div>
+
+<script src="../../js/ui/command.js"></script>
+</body>
+</html>

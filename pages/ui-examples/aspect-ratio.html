@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Aspect Ratio Example</title>
+  <link rel="stylesheet" href="../../css/ui/aspect-ratio.css">
+  <style>
+    body {
+      font-family: Pretendard, sans-serif;
+      background: #FAFAF8;
+      padding: 20px;
+    }
+    .demo-section {
+      margin-bottom: 40px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Aspect Ratio UI Example</h1>
+
+  <div class="demo-section">
+    <h3>16:9 이미지</h3>
+    <div class="aspect-ratio" data-ratio="16/9">
+      <img src="https://images.unsplash.com/photo-1624421719748-179e1a8e956d?auto=format&fit=crop&w=800&q=80" alt="16:9 이미지" />
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>정사각형 이미지 (1:1)</h3>
+    <div class="aspect-ratio" data-ratio="1/1">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" alt="정사각형 이미지" />
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h3>3:4 이미지</h3>
+    <div class="aspect-ratio" data-ratio="3/4">
+      <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=800&q=80" alt="3:4 이미지" />
+    </div>
+  </div>
+
+  <script src="../../js/ui/aspect-ratio.js"></script>
+</body>
+</html>

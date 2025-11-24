@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Leafy UI - Alert</title>
+  <link rel="stylesheet" href="../../css/ui/alert.css" />
+</head>
+<body>
+  <main class="alert-demo">
+    <h1>Alert Example</h1>
+
+    <div class="alert default">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 110-16 8 8 0 010 16z" />
+      </svg>
+      <div class="alert-body">
+        <div class="alert-title">알림 메시지</div>
+        <div class="alert-description">
+          기본 알림 형태로, 사용자에게 중요한 정보를 제공합니다.
+        </div>
+      </div>
+    </div>
+
+    <div class="alert destructive">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 9v2m0 4h.01M12 5a7 7 0 100 14 7 7 0 000-14z" />
+      </svg>
+      <div class="alert-body">
+        <div class="alert-title">삭제 경고</div>
+        <div class="alert-description">
+          이 작업은 되돌릴 수 없습니다. 주의해서 진행하세요.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../../js/ui/alert.js"></script>
+</body>
+</html>

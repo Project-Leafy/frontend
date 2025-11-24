@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resizable Panels Example</title>
+  <link rel="stylesheet" href="../../css/ui/resizable.css" />
+</head>
+
+<body>
+  <main class="page">
+
+    <h1 class="title">Resizable Panels Demo</h1>
+
+    <!-- Panel Group -->
+    <div id="panel-group" class="panel-group" data-direction="horizontal">
+
+      <!-- Left Panel -->
+      <div class="panel" data-panel-id="left">
+        <div class="panel-content">Left Panel</div>
+      </div>
+
+      <!-- Handle -->
+      <div class="panel-handle" data-with-handle="true">
+        <div class="handle-inner">
+          <!-- GripVerticalIcon (Lucide) -->
+          <svg class="grip-icon" viewBox="0 0 24 24">
+            <circle cx="9" cy="5" r="1.5"></circle>
+            <circle cx="15" cy="5" r="1.5"></circle>
+            <circle cx="9" cy="12" r="1.5"></circle>
+            <circle cx="15" cy="12" r="1.5"></circle>
+            <circle cx="9" cy="19" r="1.5"></circle>
+            <circle cx="15" cy="19" r="1.5"></circle>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Right Panel -->
+      <div class="panel" data-panel-id="right">
+        <div class="panel-content">Right Panel</div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="../../js/ui/resizable.js"></script>
+</body>
+</html>

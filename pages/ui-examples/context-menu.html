@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Context Menu Example</title>
+
+  <!-- ONLY component CSS -->
+  <link rel="stylesheet" href="../../css/ui/context-menu.css" />
+</head>
+
+<body>
+
+<div id="context-menu-trigger" class="context-menu-trigger-box">
+  우클릭해서 Context Menu 테스트
+</div>
+
+<!-- Context Menu Root -->
+<div id="context-menu" class="cm-root hidden">
+
+  <!-- Items -->
+  <div class="cm-item">Profile</div>
+  <div class="cm-item">Billing</div>
+  <div class="cm-item">Team</div>
+  <div class="cm-item">
+    Subscription
+    <span class="cm-shortcut">⌘S</span>
+  </div>
+
+  <div class="cm-separator"></div>
+
+  <!-- Submenu -->
+  <div class="cm-sub">
+    <div class="cm-sub-trigger">
+      Settings
+      <span class="cm-sub-arrow">▶</span>
+    </div>
+
+    <div class="cm-sub-content">
+      <div class="cm-item">Account</div>
+      <div class="cm-item">Appearance</div>
+
+      <div class="cm-sub">
+        <div class="cm-sub-trigger">
+          Command
+          <span class="cm-sub-arrow">▶</span>
+        </div>
+
+        <div class="cm-sub-content">
+          <div class="cm-item">Restart</div>
+          <div class="cm-item">Rebuild</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="cm-separator"></div>
+
+  <!-- Checkbox -->
+  <div class="cm-checkbox-item" data-checked="false">
+    <span class="cm-checkbox-indicator">✓</span>
+    Show Sidebar
+  </div>
+
+  <div class="cm-separator"></div>
+
+  <!-- Radio Group -->
+  <div class="cm-label">Theme</div>
+
+  <div class="cm-radio-item" data-value="light">
+    <span class="cm-radio-indicator"></span>
+    Light
+  </div>
+  <div class="cm-radio-item" data-value="dark">
+    <span class="cm-radio-indicator"></span>
+    Dark
+  </div>
+  <div class="cm-radio-item" data-value="system">
+    <span class="cm-radio-indicator"></span>
+    System
+  </div>
+
+  <div class="cm-separator"></div>
+
+  <!-- Destructive -->
+  <div class="cm-item cm-destructive">Delete</div>
+
+</div>
+
+<!-- Component JS -->
+<script src="../../js/ui/context-menu.js"></script>
+</body>
+</html>

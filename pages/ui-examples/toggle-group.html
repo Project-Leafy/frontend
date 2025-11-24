@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Toggle Group Example</title>
+  <link rel="stylesheet" href="../../css/ui/toggle-group.css" />
+</head>
+
+<body style="padding: 40px; font-family: Arial;">
+
+  <h2>Toggle Group (React → HTML/CSS/JS 변환)</h2>
+
+  <!-- SINGLE -->
+  <div
+    class="toggle-group"
+    data-slot="toggle-group"
+    data-variant="default"
+    data-size="default"
+    data-type="single"
+  >
+    <button class="toggle-group-item" data-state="off">Left</button>
+    <button class="toggle-group-item" data-state="on">Center</button>
+    <button class="toggle-group-item" data-state="off">Right</button>
+  </div>
+
+  <br><br>
+
+  <!-- MULTIPLE -->
+  <div
+    class="toggle-group"
+    data-slot="toggle-group"
+    data-variant="outline"
+    data-size="default"
+    data-type="multiple"
+  >
+    <button class="toggle-group-item" data-state="off">Bold</button>
+    <button class="toggle-group-item" data-state="on">Italic</button>
+    <button class="toggle-group-item" data-state="off">Underline</button>
+  </div>
+
+  <script src="../../js/ui/toggle-group.js"></script>
+</body>
+</html>

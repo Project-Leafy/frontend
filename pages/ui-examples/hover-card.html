@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hover Card Example</title>
+  <link rel="stylesheet" href="../../css/ui/hover-card.css" />
+</head>
+
+<body>
+  <main class="demo-page">
+    <h1 class="demo-title">Hover Card</h1>
+
+    <p class="demo-text">
+      아래 아이디 위에 마우스를 올리면 Hover Card가 나타납니다.
+    </p>
+
+    <!-- HoverCard Root -->
+    <div class="hover-card-root">
+      <!-- Trigger -->
+      <span class="hover-card-trigger">
+        @leafy_user
+      </span>
+
+      <!-- Content -->
+      <div class="hover-card-content">
+        <div class="hover-card-header">
+          <img
+            class="hover-card-avatar"
+            src="https://via.placeholder.com/40x40.png?text=🌱"
+            alt="User avatar"
+          />
+          <div class="hover-card-user">
+            <p class="hover-card-name">Leafy User</p>
+            <p class="hover-card-meta">Plant lover · 12 plants</p>
+          </div>
+        </div>
+
+        <p class="hover-card-description">
+          반려식물 관리 앱 Leafy를 사용 중입니다.  
+          식물 성장 일지를 기록하고 건강 상태를 체크해보세요 🌿
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script src="../../js/ui/hover-card.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="../../css/ui/select.css" />
+</head>
+<body>
+
+<div class="select">
+  <button id="select-trigger" class="select-trigger" data-open="false">
+    <span id="select-value">Select…</span>
+    <svg class="select-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+
+  <div id="select-content" class="select-content hidden" data-state="closed">
+    <div class="select-scroll-up"><svg viewBox="0 0 24 24"><path d="M7 14l5-5 5 5"/></svg></div>
+
+    <div class="select-viewport">
+      <div class="select-item" data-value="apple">
+        <span>Apple</span>
+        <svg class="select-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+      </div>
+
+      <div class="select-item" data-value="banana">
+        <span>Banana</span>
+        <svg class="select-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+      </div>
+
+      <div class="select-item" data-value="orange">
+        <span>Orange</span>
+        <svg class="select-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+      </div>
+    </div>
+
+    <div class="select-scroll-down"><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></div>
+  </div>
+</div>
+
+<script src="../../js/ui/select.js"></script>
+</body>
+</html>

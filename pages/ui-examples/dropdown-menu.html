@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dropdown Menu Example</title>
+  <link rel="stylesheet" href="../../css/ui/dropdown-menu.css" />
+</head>
+
+<body>
+
+<button id="dropdown-trigger" class="dropdown-trigger">
+  Open Menu
+</button>
+
+<!-- Root -->
+<div id="dropdown-root" class="dropdown-root">
+  <div id="dropdown-content" class="dropdown-content hidden" data-side="bottom">
+
+    <!-- Item -->
+    <div class="dropdown-item">Profile</div>
+    <div class="dropdown-item">Settings</div>
+
+    <div class="dropdown-separator"></div>
+
+    <!-- Checkbox Item -->
+    <div id="checkbox-item" class="dropdown-checkbox-item" data-checked="false">
+      <span class="checkbox-indicator"></span>
+      Enable Notifications
+    </div>
+
+    <div class="dropdown-separator"></div>
+
+    <!-- Label -->
+    <div class="dropdown-label">Theme</div>
+
+    <!-- Radio Items -->
+    <div id="radio-light" class="dropdown-radio-item" data-checked="true">
+      <span class="radio-indicator"></span>
+      Light
+    </div>
+
+    <div id="radio-dark" class="dropdown-radio-item" data-checked="false">
+      <span class="radio-indicator"></span>
+      Dark
+    </div>
+
+    <div class="dropdown-separator"></div>
+
+    <!-- === SubMenu Wrapper (Radix 구조 1:1) === -->
+    <div class="dropdown-sub">
+      <div id="submenu-trigger" class="dropdown-sub-trigger">
+        More Options
+        <span class="sub-arrow">›</span>
+      </div>
+
+      <div id="submenu-content" class="dropdown-sub-content hidden">
+        <div class="dropdown-item">Sub Item One</div>
+        <div class="dropdown-item">Sub Item Two</div>
+      </div>
+    </div>
+
+    <div class="dropdown-separator"></div>
+
+    <div class="dropdown-item destructive">Logout</div>
+
+  </div>
+</div>
+
+<script src="../../js/ui/dropdown-menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tabs Example</title>
+
+  <link rel="stylesheet" href="../../css/ui/tabs.css" />
+</head>
+<body style="padding: 40px; font-family: Arial;">
+
+  <h2>Tabs UI (React → HTML 변환)</h2>
+
+  <div data-slot="tabs" class="tabs">
+
+    <!-- Tabs List -->
+    <div data-slot="tabs-list" class="tabs-list">
+      <button data-slot="tabs-trigger" class="tabs-trigger" data-value="account">Account</button>
+      <button data-slot="tabs-trigger" class="tabs-trigger" data-value="password">Password</button>
+      <button data-slot="tabs-trigger" class="tabs-trigger" data-value="notifications">Notifications</button>
+    </div>
+
+    <!-- Tabs Content -->
+    <div data-slot="tabs-content" class="tabs-content" data-value="account">
+      <p>Account Settings Content</p>
+    </div>
+
+    <div data-slot="tabs-content" class="tabs-content" data-value="password" style="display:none;">
+      <p>Password Change Content</p>
+    </div>
+
+    <div data-slot="tabs-content" class="tabs-content" data-value="notifications" style="display:none;">
+      <p>Notifications Settings Content</p>
+    </div>
+
+  </div>
+
+  <script src="../../js/ui/tabs.js"></script>
+</body>
+</html>

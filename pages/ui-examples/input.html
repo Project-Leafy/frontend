@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Input Example</title>
+  <link rel="stylesheet" href="../../css/ui/input.css" />
+</head>
+
+<body>
+
+  <main class="demo-page">
+
+    <h1 class="demo-title">Input Component</h1>
+
+    <!-- input-root -->
+    <div class="input-root">
+      <label class="input-label">기본 Input</label>
+      <input type="text" class="ui-input" placeholder="Type here..." />
+    </div>
+
+    <div class="input-root">
+      <label class="input-label">파일 Input</label>
+      <input type="file" class="ui-input" />
+    </div>
+
+    <div class="input-root">
+      <label class="input-label">에러 Input</label>
+      <input type="text" class="ui-input" aria-invalid="true" placeholder="Error state" />
+    </div>
+
+    <div class="input-root">
+      <label class="input-label">Disabled</label>
+      <input type="text" class="ui-input" disabled placeholder="Disabled" />
+    </div>
+
+  </main>
+
+  <script src="../../js/ui/input.js"></script>
+</body>
+</html>

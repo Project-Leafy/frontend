@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sonner Demo</title>
+
+  <link rel="stylesheet" href="../../css/ui/sonner.css" />
+</head>
+
+<body style="padding: 40px; font-family: Arial;">
+
+  <h2>Sonner Toast Demo</h2>
+
+  <button onclick="sonner.show('기본 메시지')">Default</button>
+  <button onclick="sonner.success('성공 메시지!')">Success</button>
+  <button onclick="sonner.error('에러 발생!')">Error</button>
+  <button onclick="sonner.warning('주의하세요!')">Warning</button>
+  <button onclick="sonner.info('정보 메시지')">Info</button>
+
+  <br /><br />
+
+  <button
+    onclick="sonner.show('액션 포함', {
+      description: 'Undo 버튼 가능',
+      action: { label: 'Undo', onClick() { alert('Undo clicked') } }
+    })"
+  >
+    With Action
+  </button>
+
+  <!-- JS -->
+  <script src="../../js/ui/sonner.js"></script>
+</body>
+</html>

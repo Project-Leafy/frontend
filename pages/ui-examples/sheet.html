@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="../../css/ui/sheet.css" />
+</head>
+<body>
+
+<button class="sheet-trigger" id="open-sheet">Open Sheet</button>
+
+<!-- Sheet Root -->
+<div class="sheet-root" id="sheet-root">
+  <!-- Overlay -->
+  <div class="sheet-overlay"></div>
+
+  <!-- Sheet Content (default: right) -->
+  <div class="sheet-content" data-side="right">
+    <button class="sheet-close" id="close-sheet">
+      ✕
+    </button>
+
+    <div class="sheet-header">
+      <h2 class="sheet-title">Sheet Title</h2>
+      <p class="sheet-description">This is a sheet description text.</p>
+    </div>
+
+    <div class="sheet-footer">
+      <button class="sheet-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/ui/sheet.js"></script>
+</body>
+</html>

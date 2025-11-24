@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Toggle Example</title>
+
+  <link rel="stylesheet" href="../../css/ui/toggle.css" />
+</head>
+
+<body style="padding: 40px; font-family: Arial;">
+
+  <h2>Toggle (React → HTML/CSS/JS 변환)</h2>
+
+  <h3>Default Variant</h3>
+  <button
+    class="toggle"
+    data-slot="toggle"
+    data-variant="default"
+    data-size="default"
+    data-state="off"
+  >
+    Toggle
+  </button>
+
+  <h3>Outline Variant</h3>
+  <button
+    class="toggle"
+    data-slot="toggle"
+    data-variant="outline"
+    data-size="default"
+    data-state="on"
+  >
+    Outline Active
+  </button>
+
+  <h3>Sizes</h3>
+  <button class="toggle" data-slot="toggle" data-size="sm" data-state="off">Small</button>
+  <button class="toggle" data-slot="toggle" data-size="default" data-state="off">Default</button>
+  <button class="toggle" data-slot="toggle" data-size="lg" data-state="off">Large</button>
+
+  <script src="../../js/ui/toggle.js"></script>
+</body>
+</html>

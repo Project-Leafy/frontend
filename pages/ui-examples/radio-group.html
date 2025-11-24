@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Radio Group Example</title>
+  <link rel="stylesheet" href="../../css/ui/radio-group.css">
+</head>
+
+<body>
+  <main class="page">
+    <h1 class="title">Radio Group Demo</h1>
+
+    <div id="radio-group" class="radio-group" data-value="option2">
+
+      <!-- Radio Item 1 -->
+      <label class="radio-row">
+        <div class="radio-item" data-value="option1"></div>
+        <span>Option 1</span>
+      </label>
+
+      <!-- Radio Item 2 -->
+      <label class="radio-row">
+        <div class="radio-item" data-value="option2"></div>
+        <span>Option 2</span>
+      </label>
+
+      <!-- Radio Item 3 -->
+      <label class="radio-row">
+        <div class="radio-item" data-value="option3"></div>
+        <span>Option 3</span>
+      </label>
+
+    </div>
+
+    <p class="current">Current value: <span id="current-value">option2</span></p>
+  </main>
+
+  <script src="../../js/ui/radio-group.js"></script>
+</body>
+</html>

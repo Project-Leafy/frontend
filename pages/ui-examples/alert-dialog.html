@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Leafy UI - AlertDialog</title>
+  <link rel="stylesheet" href="../../css/ui/alert-dialog.css" />
+</head>
+<body>
+  <main class="dialog-demo">
+    <h1>Alert Dialog Example</h1>
+    <button id="alert-trigger" class="btn-primary">삭제하기</button>
+  </main>
+
+  <!-- Alert Dialog -->
+  <div id="alert-dialog" class="alert-overlay hidden">
+    <div class="alert-content" role="alertdialog" aria-modal="true">
+      <header class="alert-header">
+        <h2 class="alert-title">정말 삭제하시겠습니까?</h2>
+        <p class="alert-description">
+          이 작업은 되돌릴 수 없습니다. 계속 진행하시겠습니까?
+        </p>
+      </header>
+
+      <footer class="alert-footer">
+        <button id="alert-cancel" class="btn-outline">취소</button>
+        <button id="alert-confirm" class="btn-primary">삭제</button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="../../js/ui/alert-dialog.js"></script>
+</body>
+</html>

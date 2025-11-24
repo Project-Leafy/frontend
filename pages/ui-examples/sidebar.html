@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sidebar Example</title>
+  <link rel="stylesheet" href="../../css/ui/sidebar.css" />
+</head>
+
+<body>
+
+<!-- 모바일 오버레이 -->
+<div id="sidebar-mobile-overlay" class="sidebar-mobile-overlay hidden"></div>
+
+<!-- 사이드바 전체 wrapper -->
+<div class="sidebar-wrapper" data-state="expanded">
+
+  <!-- Sidebar itself -->
+  <aside id="sidebar" class="sidebar expanded">
+    
+    <div class="sidebar-header">
+      <button id="sidebar-trigger" class="sidebar-trigger">
+        <!-- PanelLeftIcon -->
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M3 6h18M3 12h18M3 18h18"/>
+        </svg>
+      </button>
+      <input class="sidebar-input" placeholder="Search..." />
+    </div>
+
+    <div class="sidebar-content">
+
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">Menu</div>
+
+        <ul class="sidebar-menu">
+
+          <li class="sidebar-menu-item">
+            <button class="sidebar-menu-button" data-active="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
+              <span>Dashboard</span>
+            </button>
+          </li>
+
+          <li class="sidebar-menu-item">
+            <button class="sidebar-menu-button" id="submenu-trigger">
+              <svg class="icon" viewBox="0 0 24 24">
+                <path d="M3 12h18M3 6h18M3 18h18"/>
+              </svg>
+              <span>Components</span>
+            </button>
+
+            <ul id="submenu" class="sidebar-menu-sub hidden">
+              <li class="sidebar-menu-sub-item">
+                <a class="sidebar-menu-sub-button">Buttons</a>
+              </li>
+              <li class="sidebar-menu-sub-item">
+                <a class="sidebar-menu-sub-button">Cards</a>
+              </li>
+              <li class="sidebar-menu-sub-item">
+                <a class="sidebar-menu-sub-button">Tabs</a>
+              </li>
+            </ul>
+          </li>
+
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-group-label">Footer</div>
+    </div>
+
+  </aside>
+
+  <!-- 본문 -->
+  <main class="sidebar-inset">
+    <h1>Sidebar Example</h1>
+  </main>
+</div>
+
+<script src="../../js/ui/sidebar.js"></script>
+</body>
+</html>

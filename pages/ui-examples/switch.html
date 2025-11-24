@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Switch Demo</title>
+
+  <link rel="stylesheet" href="../../css/ui/switch.css" />
+</head>
+
+<body style="font-family: Arial; padding: 40px;">
+
+  <h2>Switch (Radix UI Clone)</h2>
+
+  <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+    <div data-switch class="switch">
+      <div class="switch-thumb"></div>
+    </div>
+    Default (OFF)
+  </label>
+
+  <br><br>
+
+  <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+    <div data-switch data-checked="true" class="switch">
+      <div class="switch-thumb"></div>
+    </div>
+    Default (ON)
+  </label>
+
+  <br><br>
+
+  <label style="display:flex; align-items:center; gap:10px; cursor:not-allowed;">
+    <div data-switch data-disabled="true" class="switch">
+      <div class="switch-thumb"></div>
+    </div>
+    Disabled
+  </label>
+
+  <script src="../../js/ui/switch.js"></script>
+</body>
+</html>

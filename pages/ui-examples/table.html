@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Table Example</title>
+
+  <link rel="stylesheet" href="../../css/ui/table.css" />
+</head>
+
+<body style="padding: 40px; font-family: Arial;">
+
+  <h2>Table UI (React → HTML 변환)</h2>
+
+  <div data-slot="table-container" class="table-container">
+    <table data-slot="table" class="table">
+
+      <!-- Caption -->
+      <caption data-slot="table-caption" class="table-caption">
+        Example table caption
+      </caption>
+
+      <!-- Header -->
+      <thead data-slot="table-header" class="table-header">
+        <tr>
+          <th data-slot="table-head" class="table-head">Name</th>
+          <th data-slot="table-head" class="table-head">Email</th>
+          <th data-slot="table-head" class="table-head">Role</th>
+        </tr>
+      </thead>
+
+      <!-- Body -->
+      <tbody data-slot="table-body" class="table-body">
+
+        <tr data-slot="table-row" class="table-row">
+          <td data-slot="table-cell" class="table-cell">John</td>
+          <td data-slot="table-cell" class="table-cell">john@example.com</td>
+          <td data-slot="table-cell" class="table-cell">Admin</td>
+        </tr>
+
+        <tr data-slot="table-row" class="table-row">
+          <td data-slot="table-cell" class="table-cell">Sarah</td>
+          <td data-slot="table-cell" class="table-cell">sarah@example.com</td>
+          <td data-slot="table-cell" class="table-cell">Editor</td>
+        </tr>
+
+        <tr data-slot="table-row" class="table-row">
+          <td data-slot="table-cell" class="table-cell">Mike</td>
+          <td data-slot="table-cell" class="table-cell">mike@example.com</td>
+          <td data-slot="table-cell" class="table-cell">Viewer</td>
+        </tr>
+
+      </tbody>
+
+      <!-- Footer -->
+      <tfoot data-slot="table-footer" class="table-footer">
+        <tr>
+          <td data-slot="table-cell" class="table-cell" colspan="3">
+            3 results
+          </td>
+        </tr>
+      </tfoot>
+
+    </table>
+  </div>
+
+  <script src="../../js/ui/table.js"></script>
+</body>
+</html>

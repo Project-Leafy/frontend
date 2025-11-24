@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Avatar UI Example</title>
+  <link rel="stylesheet" href="../../css/ui/avatar.css">
+  <style>
+    body {
+      font-family: Pretendard, sans-serif;
+      background: #FAFAF8;
+      padding: 40px;
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Avatar UI Example</h1>
+
+  <div class="demo-row">
+    <div class="avatar" data-size="sm">
+      <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="사용자 이미지" />
+      <div class="avatar-fallback">MJ</div>
+    </div>
+
+    <div class="avatar">
+      <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="사용자 이미지" />
+      <div class="avatar-fallback">JD</div>
+    </div>
+
+    <div class="avatar" data-size="lg">
+      <img src="https://this-url-will-fail.com/image.jpg" alt="사용자 이미지" />
+      <div class="avatar-fallback">??</div>
+    </div>
+
+    <div class="avatar" data-size="xl">
+      <img src="https://randomuser.me/api/portraits/men/90.jpg" alt="사용자 이미지" />
+      <div class="avatar-fallback">JW</div>
+    </div>
+  </div>
+
+  <script src="../../js/ui/avatar.js"></script>
+</body>
+</html>

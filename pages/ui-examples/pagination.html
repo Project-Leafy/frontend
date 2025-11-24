@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pagination Example</title>
+    <link rel="stylesheet" href="../../css/ui/pagination.css" />
+  </head>
+
+  <body>
+    <main class="page">
+      <h1 class="page-title">Pagination (Dynamic)</h1>
+
+      <!-- Pagination Root -->
+      <nav
+        id="pagination-root"
+        role="navigation"
+        aria-label="pagination"
+        class="pagination"
+        data-slot="pagination"
+      >
+        <ul
+          class="pagination-content"
+          data-slot="pagination-content"
+        ></ul>
+      </nav>
+    </main>
+
+    <script src="../../js/ui/pagination.js"></script>
+  </body>
+</html>

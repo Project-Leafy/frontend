@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Navigation Menu</title>
+  <link rel="stylesheet" href="../../css/ui/navigation-menu.css" />
+</head>
+
+<body>
+  <main class="demo-page">
+    <h1 class="demo-title">Navigation Menu</h1>
+
+    <!-- Navigation Menu Root -->
+    <nav class="navigation-menu" data-viewport="true">
+      <!-- List -->
+      <ul class="navigation-menu-list">
+        <!-- ITEM 1 -->
+        <li class="navigation-menu-item">
+          <button class="navigation-menu-trigger" data-index="0">
+            Getting started
+          </button>
+
+          <div class="navigation-menu-content">
+            <a href="#intro" class="navigation-menu-link">
+              <div class="nav-link-title">Introduction</div>
+              <div class="nav-link-desc">
+                Leafy 앱의 개념과 핵심 기능을 소개합니다.
+              </div>
+            </a>
+            <a href="#quickstart" class="navigation-menu-link">
+              <div class="nav-link-title">Quickstart</div>
+              <div class="nav-link-desc">
+                몇 분 안에 첫 번째 반려식물을 등록해 보세요.
+              </div>
+            </a>
+          </div>
+        </li>
+
+        <!-- ITEM 2 -->
+        <li class="navigation-menu-item">
+          <button class="navigation-menu-trigger" data-index="1">
+            Components
+          </button>
+
+          <div class="navigation-menu-content">
+            <a href="#ui" class="navigation-menu-link">
+              <div class="nav-link-title">UI Components</div>
+              <div class="nav-link-desc">
+                버튼, 카드, 다이얼로그 등 재사용 가능한 UI 컴포넌트.
+              </div>
+            </a>
+            <a href="#patterns" class="navigation-menu-link">
+              <div class="nav-link-title">Patterns</div>
+              <div class="nav-link-desc">
+                Leafy 전용 UX 패턴과 레이아웃 가이드.
+              </div>
+            </a>
+          </div>
+        </li>
+
+        <!-- ITEM 3 -->
+        <li class="navigation-menu-item">
+          <button class="navigation-menu-trigger" data-index="2">
+            Documentation
+          </button>
+
+          <div class="navigation-menu-content">
+            <a href="#api" class="navigation-menu-link">
+              <div class="nav-link-title">API Reference</div>
+              <div class="nav-link-desc">
+                Plant.id, 캘린더, 알림 등 외부 API 연동 가이드.
+              </div>
+            </a>
+            <a href="#architecture" class="navigation-menu-link">
+              <div class="nav-link-title">Architecture</div>
+              <div class="nav-link-desc">
+                Leafy 프론트 / 백엔드 시스템 아키텍처 개요.
+              </div>
+            </a>
+          </div>
+        </li>
+      </ul>
+
+      <!-- Indicator -->
+      <div class="navigation-menu-indicator">
+        <div class="navigation-menu-indicator-arrow"></div>
+      </div>
+
+      <!-- Viewport -->
+      <div class="navigation-menu-viewport">
+        <div class="navigation-menu-viewport-inner"></div>
+      </div>
+    </nav>
+  </main>
+
+  <script src="../../js/ui/navigation-menu.js"></script>
+</body>
+</html>

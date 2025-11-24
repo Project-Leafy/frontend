@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Menubar Example</title>
+  <link rel="stylesheet" href="../../css/ui/menubar.css" />
+</head>
+
+<body>
+
+<div class="menubar-root">
+  <!-- FILE menu -->
+  <div class="menubar-menu">
+    <button class="menubar-trigger" data-menu="file">File</button>
+
+    <div class="menubar-content" data-menu-content="file">
+      <div class="menubar-item">New File</div>
+      <div class="menubar-item">Open...</div>
+      <div class="menubar-separator"></div>
+
+      <div class="menubar-sub">
+        <div class="menubar-sub-trigger">Share <span class="arrow">▶</span></div>
+        <div class="menubar-sub-content">
+          <div class="menubar-item">Email</div>
+          <div class="menubar-item">Copy Link</div>
+        </div>
+      </div>
+
+      <div class="menubar-separator"></div>
+      <div class="menubar-item destructive">Delete</div>
+    </div>
+  </div>
+
+  <!-- EDIT menu -->
+  <div class="menubar-menu">
+    <button class="menubar-trigger" data-menu="edit">Edit</button>
+
+    <div class="menubar-content" data-menu-content="edit">
+      <div class="menubar-item">Undo</div>
+      <div class="menubar-item">Redo</div>
+      <div class="menubar-separator"></div>
+      <div class="menubar-item">Preferences</div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../js/ui/menubar.js"></script>
+</body>
+</html>

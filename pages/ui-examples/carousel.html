@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Leafy Carousel</title>
+  <link rel="stylesheet" href="../../css/ui/carousel.css">
+  <style>
+    body {
+      background: #FAFAF8;
+      font-family: "Pretendard", sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #2C3E2F;
+      font-size: 1.4rem;
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #6B7280;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .carousel-wrapper {
+      width: 90%;
+      max-width: 360px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌿 Leafy 식물 갤러리</h1>
+  <p>좌우로 넘겨보세요</p>
+
+  <div class="carousel-wrapper">
+    <div class="carousel" id="plant-carousel">
+      <button class="carousel-btn prev">❮</button>
+
+      <div class="carousel-track">
+        <div class="carousel-item">
+          <img src="https://images.unsplash.com/photo-1616627987243-84e3b4df5057?auto=format&fit=crop&w=800&q=60" alt="식물1">
+          <div class="caption">몬스테라 - 7일차 성장</div>
+        </div>
+        <div class="carousel-item">
+          <img src="https://images.unsplash.com/photo-1620411897106-4184bcdac9de?auto=format&fit=crop&w=800&q=60" alt="식물2">
+          <div class="caption">스투키 - 햇빛 흡수 중</div>
+        </div>
+        <div class="carousel-item">
+          <img src="https://images.unsplash.com/photo-1615474208677-9adbd3bc4b75?auto=format&fit=crop&w=800&q=60" alt="식물3">
+          <div class="caption">산세베리아 - 물주기 완료</div>
+        </div>
+      </div>
+
+      <button class="carousel-btn next">❯</button>
+    </div>
+  </div>
+
+  <script type="module" src="../../js/ui/carousel.js"></script>
+</body>
+</html>
