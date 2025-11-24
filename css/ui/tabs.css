@@ -1,0 +1,65 @@
+/* Tabs wrapper */
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Tabs List */
+.tabs-list {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  background: var(--muted, #f4f4f5);
+  color: var(--muted-foreground, #6b7280);
+  border-radius: 12px;
+  padding: 3px;
+  gap: 0;
+}
+
+/* Tab Trigger */
+.tabs-trigger {
+  flex: 1;
+  height: calc(100% - 1px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tabs-trigger:hover {
+  opacity: 0.8;
+}
+
+.tabs-trigger[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.tabs-trigger[data-state="active"] {
+  background: var(--card, #ffffff);
+  color: var(--foreground, #111827);
+  border-color: var(--input, #e5e7eb);
+}
+
+/* Focus ring */
+.tabs-trigger:focus-visible {
+  outline: 2px solid var(--ring, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* Tabs Content */
+.tabs-content {
+  flex: 1;
+  outline: none;
+}

@@ -1,0 +1,106 @@
+:root {
+  --primary: #4f46e5;
+  --primary-foreground: #ffffff;
+
+  --ring: #3b82f6;
+  --destructive: #dc2626;
+
+  --input-background: #ffffff;
+  --input: #d1d5db;
+
+  --foreground: #111827;
+  --muted-foreground: #6b7280;
+}
+
+/* demo layout */
+.demo-page {
+  padding: 40px;
+  font-family: system-ui, sans-serif;
+}
+.demo-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+.input-root {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 20px;
+}
+.input-label {
+  font-size: 14px;
+  color: #374151;
+}
+
+/* =============================
+   React Input Component (1:1)
+   ============================= */
+
+/* 기본 input 스타일 */
+.ui-input {
+  height: 36px;                   /* h-9 */
+  width: 100%;                    /* w-full */
+  min-width: 0;
+  padding: 4px 12px;              /* px-3 py-1 */
+  font-size: 16px;                /* text-base */
+  border-radius: 6px;             /* rounded-md */
+  background: var(--input-background);
+  border: 1px solid var(--input);
+  color: var(--foreground);
+
+  transition:
+    color .15s,
+    box-shadow .15s,
+    border-color .15s;
+
+  outline: none;
+}
+
+/* placeholder 색 */
+.ui-input::placeholder {
+  color: var(--muted-foreground);
+}
+
+/* 선택 텍스트 스타일 */
+.ui-input::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* File input 스타일 */
+.ui-input[type="file"] {
+  padding: 6px 12px;
+}
+
+.ui-input[type="file"]::file-selector-button {
+  background: transparent;
+  border: none;
+  color: var(--foreground);
+  font-size: 14px;
+  margin-right: 10px;
+  cursor: pointer;
+
+  height: 28px;      /* h-7 */
+}
+
+/* disabled */
+.ui-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* focus-visible */
+.ui-input:focus-visible {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, .5);
+}
+
+/* aria-invalid */
+.ui-input[aria-invalid="true"] {
+  border-color: var(--destructive);
+}
+
+.ui-input[aria-invalid="true"]:focus-visible {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, .3);
+}

@@ -1,0 +1,138 @@
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --muted-foreground: #6b7280;
+  --accent: #f3f4f6;
+  --ring: rgba(59, 130, 246, 0.5);
+  --border: #e5e7eb;
+}
+
+/* 페이지 */
+.page {
+  padding: 40px;
+  font-family: system-ui, sans-serif;
+}
+
+/* Trigger */
+.dialog-trigger {
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: var(--accent);
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+/* ===== Overlay ===== */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+
+  transition: opacity 150ms ease;
+}
+.dialog-overlay[data-state="open"] {
+  opacity: 1;
+}
+.dialog-overlay[data-state="closed"] {
+  opacity: 0;
+}
+
+/* ===== Content ===== */
+.dialog-content {
+  position: fixed;
+  z-index: 50;
+  top: 50%;
+  left: 50%;
+  width: calc(100% - 2rem);
+  max-width: 640px; /* sm:max-w-lg */
+  padding: 24px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+
+  display: grid;
+  gap: 16px;
+
+  transform: translate(-50%, -50%) scale(0.95);
+  opacity: 0;
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.dialog-content[data-state="open"] {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.dialog-content[data-state="closed"] {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.95);
+}
+
+/* Close button */
+.dialog-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+
+  background: transparent;
+  border: none;
+  opacity: 0.7;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: opacity 120ms ease;
+}
+.dialog-close:hover {
+  opacity: 1;
+}
+.dialog-close svg {
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+/* Header */
+.dialog-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+@media (min-width: 640px) {
+  .dialog-header {
+    text-align: left;
+  }
+}
+
+/* Footer */
+.dialog-footer {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+}
+@media (min-width: 640px) {
+  .dialog-footer {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+/* Title */
+.dialog-title {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Description */
+.dialog-description {
+  font-size: 14px;
+  color: var(--muted-foreground);
+}

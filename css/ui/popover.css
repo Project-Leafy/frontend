@@ -1,0 +1,71 @@
+:root {
+  --popover-bg: #ffffff;
+  --popover-fg: #111827;
+  --border: #e5e7eb;
+}
+
+/* Trigger */
+.popover-trigger {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+/* Popover Container */
+.popover-root {
+  position: relative;
+}
+
+/* Popover Content (TSX Tailwind 1:1 반영) */
+.popover-content {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 18rem;    /* w-72 */
+  background: var(--popover-bg);
+  color: var(--popover-fg);
+
+  border: 1px solid var(--border);
+  border-radius: 8px; /* rounded-md */
+
+  padding: 16px; /* p-4 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+  z-index: 50;
+}
+
+/* Hidden */
+.hidden {
+  display: none;
+}
+
+/* TSX animation 느낌 복원 */
+.popover-content.show {
+  animation: fadeZoomIn 0.15s ease-out;
+}
+
+@keyframes fadeZoomIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+.popover-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.popover-description {
+  font-size: 14px;
+  margin-top: 4px;
+  opacity: 0.8;
+}

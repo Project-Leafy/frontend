@@ -1,0 +1,44 @@
+/* === Slider 기본 구조 === */
+.slider {
+  position: relative;
+  display: flex;
+  width: 100%;
+  touch-action: none;
+  user-select: none;
+  align-items: center;
+}
+
+.slider-track {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  background: hsl(var(--muted));
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.slider-range {
+  position: absolute;
+  height: 100%;
+  background: hsl(var(--primary));
+}
+
+.slider-thumb {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: hsl(var(--background));
+  border-radius: 50%;
+  border: 2px solid hsl(var(--primary));
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
+  cursor: grab;
+  transition: box-shadow 0.15s ease;
+}
+
+.slider-thumb:hover {
+  box-shadow: 0 0 0 6px rgba(var(--ring), 0.4);
+}
+
+.slider-thumb:active {
+  cursor: grabbing;
+}

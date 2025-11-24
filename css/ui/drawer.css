@@ -1,0 +1,212 @@
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --muted: #e5e7eb;
+  --muted-foreground: #6b7280;
+  --border: #e5e7eb;
+}
+
+/* 페이지 레이아웃 */
+.page {
+  padding: 40px;
+  font-family: system-ui, sans-serif;
+  background: #f9fafb;
+  min-height: 100vh;
+}
+.page-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+.trigger-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Trigger 버튼 */
+.drawer-trigger {
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* ===== Overlay (DrawerOverlay) ===== */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.drawer-overlay[data-state="open"] {
+  opacity: 1;
+}
+
+.drawer-overlay[data-state="closed"] {
+  opacity: 0;
+}
+
+/* ===== Content (DrawerContent) ===== */
+.drawer-content {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+  border-radius: 0;
+  border: 1px solid var(--border);
+  transition:
+    transform 200ms ease,
+    opacity 200ms ease;
+  opacity: 0;
+}
+
+/* 기본 transform (닫힌 상태에서의 위치) */
+.drawer-content[data-direction="top"] {
+  inset-inline: 0;     /* left/right:0 */
+  top: 0;
+  max-height: 80vh;    /* max-h-[80vh] */
+  border-bottom-width: 1px;
+  border-top-width: 0;
+  border-radius: 0 0 12px 12px; /* rounded-b-lg */
+  transform: translateY(-100%);
+}
+
+.drawer-content[data-direction="bottom"] {
+  inset-inline: 0;
+  bottom: 0;
+  max-height: 80vh;
+  border-top-width: 1px;
+  border-bottom-width: 0;
+  border-radius: 12px 12px 0 0; /* rounded-t-lg */
+  transform: translateY(100%);
+}
+
+.drawer-content[data-direction="left"] {
+  inset-block: 0;      /* top/bottom:0 */
+  left: 0;
+  width: 75%;
+  max-width: 320px;    /* sm:max-w-sm */
+  border-right-width: 1px;
+  border-left-width: 0;
+  transform: translateX(-100%);
+}
+
+.drawer-content[data-direction="right"] {
+  inset-block: 0;
+  right: 0;
+  width: 75%;
+  max-width: 320px;
+  border-left-width: 1px;
+  border-right-width: 0;
+  transform: translateX(100%);
+}
+
+/* 열린 상태 */
+.drawer-content[data-state="open"] {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* 닫힌 상태 */
+.drawer-content[data-state="closed"][data-direction="top"] {
+  transform: translateY(-100%);
+}
+.drawer-content[data-state="closed"][data-direction="bottom"] {
+  transform: translateY(100%);
+}
+.drawer-content[data-state="closed"][data-direction="left"] {
+  transform: translateX(-100%);
+}
+.drawer-content[data-state="closed"][data-direction="right"] {
+  transform: translateX(100%);
+}
+
+/* ===== handle(bar) - bottom drawer 에서만 노출 ===== */
+.drawer-handle {
+  display: none;
+  margin: 16px auto 0;
+  width: 100px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--muted);
+}
+
+.drawer-content[data-direction="bottom"] .drawer-handle {
+  display: block; /* group-data-[vaul-drawer-direction=bottom]/drawer-content:block */
+}
+
+/* ===== Header / Footer / Title / Description ===== */
+
+.drawer-header {
+  display: flex;
+  flex-direction: column; /* flex-col */
+  gap: 6px;               /* gap-1.5 */
+  padding: 16px;          /* p-4 */
+}
+
+.drawer-footer {
+  margin-top: auto;  /* mt-auto */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+}
+
+.drawer-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.drawer-description {
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+/* 버튼들 */
+.drawer-btn {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.drawer-btn.primary {
+  background: #111827;
+  color: white;
+  border-color: #111827;
+}
+
+.drawer-btn.secondary {
+  background: #f9fafb;
+  color: #111827;
+}
+
+/* Close × 버튼 (옵션용) */
+.drawer-close-icon-btn {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.drawer-close-icon-btn:hover {
+  opacity: 1;
+}
+.drawer-close-icon-btn svg {
+  width: 18px;
+  height: 18px;
+}

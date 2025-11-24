@@ -1,0 +1,63 @@
+.form-wrapper {
+  max-width: 420px;
+  padding: 20px;
+  margin: 40px auto;
+  font-family: system-ui, sans-serif;
+}
+
+.form-item {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: hsl(222 47% 11%);
+}
+
+.form-label[data-error="true"] {
+  color: hsl(0 72% 51%);
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid hsl(220 13% 91%);
+  background: white;
+  font-size: 14px;
+}
+
+.form-control:focus {
+  outline: 2px solid hsl(222 100% 75%);
+}
+
+.form-description {
+  font-size: 13px;
+  color: hsl(215 16% 47%);
+}
+
+.form-message {
+  font-size: 13px;
+  color: hsl(0 72% 51%);
+}
+
+.hidden {
+  display: none;
+}
+
+.submit-btn {
+  padding: 10px 14px;
+  background: hsl(224 76% 55%);
+  border-radius: 6px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.submit-btn:hover {
+  background: hsl(224 76% 45%);
+}

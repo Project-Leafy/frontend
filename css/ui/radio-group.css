@@ -1,0 +1,76 @@
+:root {
+  --input-border: #d1d5db;
+  --primary: #4ade80;
+  --ring: rgba(74, 222, 128, 0.4);
+  --destructive: #dc2626;
+}
+
+/* Layout */
+.page {
+  padding: 30px;
+  font-family: system-ui;
+}
+
+.title {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+/* =============== RadioGroup Root =============== */
+/* TSX: "grid gap-3" */
+.radio-group {
+  display: grid;
+  gap: 12px;
+}
+
+/* row with label text */
+.radio-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* =============== Radio Item =============== */
+/*
+TSX:
+border-input text-primary focus-visible:border-ring focus-visible:ring-ring/50 
+aria-invalid:ring-destructive/20 ...
+aspect-square size-4 shrink-0 rounded-full border shadow-xs 
+transition-[color,box-shadow] outline-none focus-visible:ring-[3px]
+disabled:cursor-not-allowed disabled:opacity-50
+*/
+.radio-item {
+  width: 16px;        /* size-4 */
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--input-border);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  background: white;
+  position: relative;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+/* Focus-style */
+.radio-item:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* =============== Indicator =============== */
+/*
+TSX:
+CircleIcon className="fill-primary absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2"
+*/
+.radio-item.selected::after {
+  content: "";
+  width: 8px;        /* size-2 */
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

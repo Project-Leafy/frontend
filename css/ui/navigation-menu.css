@@ -1,0 +1,238 @@
+:root {
+  --bg: #ffffff;
+  --border: #e5e7eb;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --accent: #f3f4f6;
+  --accent-foreground: #111827;
+  --ring: #3b82f6;
+}
+
+/* 데모 레이아웃 */
+.demo-page {
+  min-height: 100vh;
+  padding: 40px;
+  background: #f9fafb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.demo-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+/* ===== Root (NavigationMenu) ===== */
+.navigation-menu {
+  position: relative;                /* relative */
+  display: flex;                     /* flex */
+  max-width: max-content;            /* max-w-max */
+  flex: 1 1 auto;                    /* flex-1 */
+  align-items: center;               /* items-center */
+  justify-content: center;           /* justify-center */
+}
+
+/* ===== List ===== */
+.navigation-menu-list {
+  display: flex;                     /* flex */
+  flex: 1 1 auto;                    /* flex-1 */
+  list-style: none;                  /* list-none */
+  align-items: center;               /* items-center */
+  justify-content: center;           /* justify-center */
+  gap: 4px;                          /* gap-1 */
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== Item ===== */
+.navigation-menu-item {
+  position: relative;                /* relative */
+}
+
+/* ===== Trigger (navigationMenuTriggerStyle) ===== */
+.navigation-menu-trigger {
+  display: inline-flex;              /* inline-flex */
+  align-items: center;               /* items-center */
+  justify-content: center;           /* justify-center */
+  height: 36px;                      /* h-9 */
+  padding: 8px 16px;                 /* px-4 py-2 */
+  border-radius: 6px;                /* rounded-md */
+  background: var(--bg);             /* bg-background */
+  font-size: 14px;                   /* text-sm */
+  font-weight: 500;                  /* font-medium */
+  border: none;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  color: var(--accent-foreground);
+
+  transition:
+    color 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.navigation-menu-trigger:hover,
+.navigation-menu-trigger:focus-visible {
+  background: var(--accent);                     /* hover:bg-accent */
+  color: var(--accent-foreground);               /* hover:text-accent-foreground */
+}
+
+.navigation-menu-trigger[data-open="true"] {
+  background: rgba(229, 231, 235, 0.8);          /* data-[state=open]:bg-accent/50 느낌 */
+  color: var(--accent-foreground);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, .4);  /* focus-visible:ring */
+}
+
+.navigation-menu-trigger:focus-visible {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, .4);
+}
+
+/* ===== Content (각 Item 안의 Panel) ===== */
+.navigation-menu-content {
+  /* 실제 콘텐츠는 viewport로 복사되기 때문에
+     여기서는 단순 데이터 보관용 컨테이너 */
+  display: none;
+}
+
+.nav-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Viewport ===== */
+.navigation-menu-viewport {
+  position: absolute;         /* absolute */
+  top: 100%;                  /* top-full */
+  left: 0;
+  z-index: 50;                /* isolate z-50 */
+  display: flex;              /* flex */
+  justify-content: center;    /* justify-center */
+  margin-top: 6px;            /* mt-1.5 */
+  width: 100%;
+}
+
+.navigation-menu-viewport-inner {
+  position: relative;
+  background: var(--popover);                 /* bg-popover */
+  color: var(--popover-foreground);           /* text-popover-foreground */
+  border-radius: 6px;                         /* rounded-md */
+  border: 1px solid var(--border);            /* border */
+  overflow: hidden;                           /* overflow-hidden */
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .18); /* shadow */
+  padding: 8px;                               /* p-2 */
+  min-width: 260px;
+  max-width: 420px;
+  opacity: 0;
+  transform: scale(0.9);
+  transform-origin: top center;
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+/* 뷰포트가 열렸을 때 */
+.navigation-menu-viewport-inner.is-open {
+  opacity: 1;
+  transform: scale(0.97);
+  pointer-events: auto;
+}
+
+/* 방향에 따른 슬라이드 느낌 */
+.navigation-menu-viewport-inner.slide-from-right {
+  animation: slideFromRight 0.18s ease-out;
+}
+.navigation-menu-viewport-inner.slide-from-left {
+  animation: slideFromLeft 0.18s ease-out;
+}
+@keyframes slideFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(52px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(0.97);
+  }
+}
+@keyframes slideFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-52px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(0.97);
+  }
+}
+
+/* ===== Link (NavigationMenuLink) ===== */
+.navigation-menu-link {
+  display: flex;              /* flex */
+  flex-direction: column;     /* flex-col */
+  gap: 4px;                   /* gap-1 */
+  padding: 8px;               /* p-2 */
+  border-radius: 4px;         /* rounded-sm */
+  font-size: 14px;            /* text-sm */
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.navigation-menu-link:hover,
+.navigation-menu-link:focus-visible {
+  background: var(--accent);            /* hover:bg-accent */
+  color: var(--accent-foreground);      /* hover:text-accent-foreground */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, .4);
+}
+
+/* active 느낌용 (data-active=true 느낌) */
+.navigation-menu-link.is-active {
+  background: rgba(229, 231, 235, 0.8);
+  color: var(--accent-foreground);
+}
+
+.nav-link-title {
+  font-weight: 600;
+}
+.nav-link-desc {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* ===== Indicator ===== */
+.navigation-menu-indicator {
+  position: absolute;
+  top: 100%;
+  height: 6px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+.navigation-menu-indicator-arrow {
+  position: relative;
+  top: 60%;
+  width: 8px;
+  height: 8px;
+  background: var(--border);
+  transform: rotate(45deg);
+  border-radius: 2px 0 0 0; /* rounded-tl-sm 느낌 */
+  box-shadow: 0 4px 10px rgba(15, 23, 42, .25);
+}
+
+.navigation-menu-indicator.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}

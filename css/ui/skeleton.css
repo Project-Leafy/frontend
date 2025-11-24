@@ -1,0 +1,16 @@
+/* Skeleton 기본 스타일 (shadcn 동일) */
+.skeleton {
+  background: hsl(var(--accent));
+  border-radius: 6px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* animate-pulse */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .4;
+  }
+}

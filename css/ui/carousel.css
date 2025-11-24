@@ -1,0 +1,61 @@
+/* 🌿 Leafy Carousel */
+.carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid #E5E5E0;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.4s ease;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-item {
+  flex: 0 0 100%;
+  position: relative;
+  z-index: 1; /* 추가 - 버튼보다 아래에 두기 위해 */
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none; /* 추가 - 이미지는 클릭 방해 안 하도록 */
+}
+
+/* 버튼 */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border: 1px solid #E5E5E0;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  color: #4A7C59;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  z-index: 10; /* ✅ 추가: 이미지보다 위에 오게 */
+}
+
+.carousel-btn:hover {
+  background: #E8F4EC;
+}
+
+.carousel-btn.prev { left: 10px; }
+.carousel-btn.next { right: 10px; }
+
+.carousel-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

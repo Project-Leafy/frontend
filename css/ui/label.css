@@ -1,0 +1,48 @@
+:root {
+  --label-color: #111827;
+}
+
+/* demo layout */
+.demo-page {
+  padding: 40px;
+  font-family: system-ui, sans-serif;
+}
+.demo-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+.label-demo {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ===========================
+   React Label Component 1:1
+   =========================== */
+
+.ui-label {
+  display: flex;               /* flex */
+  align-items: center;         /* items-center */
+  gap: 8px;                    /* gap-2 */
+  font-size: 14px;             /* text-sm */
+  line-height: 1;              /* leading-none */
+  font-weight: 500;            /* font-medium */
+  user-select: none;           /* select-none */
+  color: var(--label-color);
+
+  transition: opacity .15s;
+}
+
+/* group-data-[disabled=true] */
+.group-disabled .ui-label {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* peer-disabled */
+.peer-input:disabled + .ui-label {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

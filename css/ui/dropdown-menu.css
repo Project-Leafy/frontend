@@ -1,0 +1,136 @@
+/* === Trigger Button === */
+.dropdown-trigger {
+  padding: 6px 12px;
+  font-size: 14px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.dropdown-trigger:hover {
+  background: #e5e7eb;
+}
+
+/* === Dropdown Container === */
+.dropdown-content {
+  position: absolute;
+  min-width: 8rem;
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid hsl(220 13% 91%);
+  background: hsl(0 0% 100%);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  z-index: 50;
+}
+
+.hidden {
+  display: none;
+}
+
+/* === Items === */
+.dropdown-item,
+.dropdown-checkbox-item,
+.dropdown-radio-item,
+.dropdown-sub-trigger {
+  font-size: 14px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  position: relative;
+  white-space: nowrap;
+}
+
+.dropdown-item:hover,
+.dropdown-checkbox-item:hover,
+.dropdown-radio-item:hover,
+.dropdown-sub-trigger:hover {
+  background: hsl(220 13% 95%);
+}
+
+/* === destructive === */
+.destructive {
+  color: hsl(0 72% 51%);
+}
+
+.destructive:hover {
+  background: rgba(255, 0, 0, 0.08);
+}
+
+/* === Separator === */
+.dropdown-separator {
+  height: 1px;
+  background: hsl(220 13% 91%);
+  margin: 6px 0;
+}
+
+/* === Label === */
+.dropdown-label {
+  font-size: 13px;
+  padding: 4px 8px;
+  opacity: 0.7;
+}
+
+/* === Checkbox === */
+.checkbox-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid hsl(220 13% 91%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-checkbox-item[data-checked="true"] .checkbox-indicator {
+  background: hsl(220 13% 91%);
+}
+
+.dropdown-checkbox-item[data-checked="true"] .checkbox-indicator::after {
+  content: "✔";
+  font-size: 11px;
+}
+
+/* === Radio === */
+.radio-indicator {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 2px solid hsl(220 13% 50%);
+}
+
+.dropdown-radio-item[data-checked="true"] .radio-indicator {
+  background: hsl(220 13% 50%);
+}
+
+/* === SubMenu (Radix 구조 1:1) === */
+.dropdown-sub {
+  position: relative; /* ★ absolute 기준 anchor */
+}
+
+.dropdown-sub-trigger {
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-sub-trigger .sub-arrow {
+  margin-left: auto;
+}
+
+/* SubMenu Content */
+.dropdown-sub-content {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 6px); /* trigger 오른쪽 정렬 */
+  min-width: 8rem;
+  background: white;
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid hsl(220 13% 91%);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  z-index: 999;
+}
+

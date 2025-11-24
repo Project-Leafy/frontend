@@ -1,0 +1,80 @@
+/* Leafy Accordion Component */
+body {
+  background: #fafaf8;
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  color: #2C3E2F;
+  margin: 0;
+  padding: 0;
+}
+
+.accordion-wrapper {
+  max-width: 480px;
+  margin: 40px auto;
+  background: #fafaf8;
+  padding: 20px;
+}
+
+.accordion-title {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2C3E2F;
+}
+
+.accordion-item {
+  border-bottom: 1px solid #E5E5E0;
+}
+
+.accordion-trigger {
+  width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  color: #2C3E2F;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.accordion-trigger:hover {
+  text-decoration: underline;
+  background-color: #F5F5F3;
+}
+
+.accordion-trigger:focus-visible {
+  box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.4);
+}
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.25s ease;
+  font-size: 0.9rem;
+  color: #6B7280;
+  padding: 0 1rem;
+}
+
+.accordion-content.open {
+  padding: 1rem;
+  background-color: #ffffff;
+}
+
+.chevron {
+  fill: none;
+  stroke: #6B7280;
+  stroke-width: 2;
+  transition: transform 0.25s ease;
+}
+
+.accordion-item.active .chevron {
+  transform: rotate(180deg);
+}

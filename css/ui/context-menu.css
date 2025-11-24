@@ -1,0 +1,187 @@
+/* ========== BASIC RESET (global.css 제거용) ========== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  background: #f8f8f8;
+  padding: 40px;
+}
+
+/* ========== TRIGGER BOX ========== */
+.context-menu-trigger-box {
+  width: 260px;
+  height: 140px;
+  border: 1px dashed #aaa;
+  border-radius: 8px;
+  margin: 120px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  background: white;
+}
+
+/* ========== MENU ROOT ========== */
+.cm-root {
+  position: fixed;
+  z-index: 9999;
+  min-width: 8rem;
+  background: #fff;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 4px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+  animation: cm-fade-in 0.1s ease;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ========== ITEMS ========== */
+.cm-item,
+.cm-checkbox-item,
+.cm-radio-item {
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  background: transparent;
+}
+
+.cm-item:hover,
+.cm-checkbox-item:hover,
+.cm-radio-item:hover {
+  background: #e5e7eb;
+}
+
+.cm-destructive {
+  color: #dc2626;
+}
+
+.cm-destructive:hover {
+  background: rgba(220,38,38,0.15);
+}
+
+/* ========== SEPARATOR ========== */
+.cm-separator {
+  height: 1px;
+  background: #e5e5e5;
+  margin: 4px 2px;
+}
+
+/* ========== SHORTCUT ========== */
+.cm-shortcut {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* =======================================================
+   ========== SUBMENU (HOVER 끊김 완전 방지) ==========
+   ======================================================= */
+
+/* Sub 전체 hover hitbox 확장 */
+.cm-sub {
+  position: relative;
+  padding-right: 20px; /* ★ Hover 범위 확장 */
+}
+
+/* Submenu Trigger */
+.cm-sub-trigger {
+  padding: 6px 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.cm-sub-trigger:hover {
+  background: #e5e7eb;
+}
+
+.cm-sub-arrow {
+  margin-left: auto;
+  opacity: 0.7;
+}
+
+/* Submenu Content (trigger와 겹침 + 완충구역 생성) */
+.cm-sub-content {
+  position: absolute;
+
+  /* ★★★ 핵심 버그 해결: 약간 겹치게 배치해서 hover 끊김 제거 */
+  left: calc(100% - 6px);
+
+  top: 0;
+  min-width: 8rem;
+  padding: 4px;
+  background: #fff;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+  display: none;
+
+  /* ★ 앞뒤 이동 시 hover 유지 */
+  padding-left: 8px; /* buffer zone */
+  pointer-events: auto;
+}
+
+/* 마우스로 자연스럽게 건너가도 submenu 유지 */
+.cm-sub:hover > .cm-sub-content {
+  display: block;
+}
+
+/* =======================================================
+   ========== CHECKBOX ==========
+   ======================================================= */
+
+.cm-checkbox-indicator {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.cm-checkbox-item[data-checked="true"] .cm-checkbox-indicator {
+  opacity: 1;
+}
+
+/* =======================================================
+   ========== RADIO GROUP ==========
+   ======================================================= */
+
+.cm-label {
+  font-size: 12px;
+  padding: 4px 10px;
+  opacity: 0.65;
+}
+
+.cm-radio-indicator {
+  width: 10px;
+  height: 10px;
+  border: 2px solid #333;
+  border-radius: 50%;
+  margin-right: 4px;
+  opacity: 0;
+}
+
+.cm-radio-item[data-selected="true"] .cm-radio-indicator {
+  background: #333;
+  opacity: 1;
+}
+
+/* ========== ANIMATION ========== */
+@keyframes cm-fade-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}

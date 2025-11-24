@@ -1,0 +1,62 @@
+body {
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  background: #fafaf8;
+  color: #2c3e2f;
+  margin: 0;
+  padding: 0;
+}
+
+.alert-demo {
+  max-width: 500px;
+  margin: 80px auto;
+  padding: 0 1rem;
+}
+
+.alert {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  border: 1px solid #e5e5e0;
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  background: #ffffff;
+  color: #2c3e2f;
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.alert svg {
+  width: 20px;
+  height: 20px;
+  color: currentColor;
+  margin-top: 2px;
+}
+
+.alert-title {
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 0.3rem;
+}
+
+.alert-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* Variants */
+.alert.default {
+  background: #ffffff;
+}
+
+.alert.destructive {
+  background: #fff5f5;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.alert.destructive .alert-description {
+  color: #dc2626;
+}

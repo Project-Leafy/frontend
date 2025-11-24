@@ -1,0 +1,99 @@
+:root {
+  --ring: #3b82f6;
+  --destructive: #dc2626;
+  --input: #e5e7eb;
+  --background: #ffffff;
+  --input-background: #ffffff;
+}
+
+/* Root */
+.input-otp-root {
+  padding: 40px;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Group Container */
+.input-otp {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Slots group */
+.input-otp-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ============== SLOT (TSX Tailwind 1:1 변환) ============== */
+.input-otp-slot {
+  height: 36px; /* h-9 */
+  width: 36px;  /* w-9 */
+  border: 1px solid var(--input);
+  border-right: 1px solid var(--input);
+  background: var(--input-background);
+  font-size: 14px;
+  color: #111;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  transition: all 0.15s ease;
+}
+
+.input-otp-slot:first-child {
+  border-radius: 6px 0 0 6px;
+  border-left: 1px solid var(--input);
+}
+
+.input-otp-slot:last-child {
+  border-radius: 0 6px 6px 0;
+}
+
+/* Active state (data-[active=true]) */
+.input-otp-slot.active {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+  z-index: 10;
+}
+
+/* aria-invalid (TSX 그대로) */
+.input-otp-slot[aria-invalid="true"] {
+  border-color: var(--destructive);
+}
+
+.input-otp-slot.active[aria-invalid="true"] {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.3);
+}
+
+/* Caret */
+.otp-caret {
+  position: absolute;
+  width: 2px;
+  height: 18px;
+  background: #111;
+  animation: caretBlink 1s step-end infinite;
+}
+
+@keyframes caretBlink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+/* Separator */
+.input-otp-separator {
+  padding: 0 6px;
+  color: #6b7280;
+}
+
+/* Hidden input */
+.input-otp-hidden {
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+}

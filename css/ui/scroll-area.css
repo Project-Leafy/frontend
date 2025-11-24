@@ -1,0 +1,78 @@
+:root {
+  --border: #d1d5db;
+  --ring: rgba(59, 130, 246, 0.4);
+}
+
+.scroll-area {
+  position: relative;
+  width: 300px;
+  height: 250px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* Viewport */
+.scroll-viewport {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border-radius: inherit;
+  transition: box-shadow 0.15s, color 0.15s;
+  overflow: auto;
+    scrollbar-width: none;
+}
+
+.scroll-viewport::-webkit-scrollbar {
+  display: none; /* Chrome, Edge, Safari */
+}
+
+.scroll-viewport:focus-visible {
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* Scroll Content */
+.scroll-content {
+  padding-right: 10px;
+}
+
+.item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+}
+
+/* ========== Scrollbar ========== */
+
+.scrollbar {
+  position: absolute;
+  touch-action: none;
+  user-select: none;
+  padding: 1px;
+  transition: background 0.2s;
+}
+
+.scrollbar.vertical {
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 10px; /* same as radis-ui width */
+  border-left: 1px solid transparent;
+}
+
+.scrollbar.horizontal {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  border-top: 1px solid transparent;
+  flex-direction: column;
+}
+
+/* thumb */
+.thumb {
+  background: var(--border);
+  border-radius: 9999px;
+  flex: 1;
+  position: relative;
+  width: 100%;
+}

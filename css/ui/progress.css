@@ -1,0 +1,42 @@
+:root {
+  --primary: #4ade80;         /* Tailwind green-400 비슷 */
+  --primary-20: rgba(74, 222, 128, 0.2);
+}
+
+/* 전체 페이지 스타일 (데모용) */
+.page {
+  padding: 30px;
+  font-family: system-ui;
+}
+
+/* ================ Progress Root ================ */
+/* TSX: "bg-primary/20 relative h-2 w-full overflow-hidden rounded-full" */
+.progress-root {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 8px;
+  background: var(--primary-20);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+/* ================ Indicator ================ */
+/* TSX: "bg-primary h-full w-full flex-1 transition-all" */
+.progress-indicator {
+  background: var(--primary);
+  width: 100%;
+  height: 100%;
+  transition: transform 0.25s ease;
+  transform: translateX(-100%); /* 기본: 0% */
+}
+
+/* 버튼 (예시용) */
+.btn {
+  margin-top: 16px;
+  margin-right: 8px;
+  padding: 8px 12px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+}

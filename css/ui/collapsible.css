@@ -1,0 +1,38 @@
+.collapsible {
+  width: 90%;
+  max-width: 420px;
+  margin: 50px auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Pretendard", sans-serif;
+}
+
+.collapsible-trigger {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 16px;
+  border-radius: 10px;
+  background: #4a7c59;
+  color: white;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.collapsible-trigger:hover {
+  background: #3e6a4d;
+}
+
+/* 접힘/펼침 애니메이션 */
+.collapsible-content {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.28s ease;
+  background: #f2f5f0;
+  padding: 0 16px;
+  border-radius: 0 0 10px 10px;
+}
+
+.collapsible[data-open="true"] .collapsible-content {
+  padding: 16px;
+  max-height: 500px; /* 충분히 크게 */
+}

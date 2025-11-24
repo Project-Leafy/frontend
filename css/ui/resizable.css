@@ -1,0 +1,105 @@
+:root {
+  --border: #d1d5db;
+  --ring: rgba(59, 130, 246, 0.4);
+}
+
+/* Layout */
+.page {
+  padding: 30px;
+  font-family: system-ui;
+}
+
+.title {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+/* =============== Panel Group =============== */
+/*
+TSX:
+"flex h-full w-full 
+ data-[panel-group-direction=vertical]:flex-col"
+*/
+.panel-group {
+  display: flex;
+  width: 100%;
+  height: 300px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* Vertical direction */
+.panel-group[data-direction="vertical"] {
+  flex-direction: column;
+}
+
+/* =============== Panel =============== */
+/* Just like Panel from resizable-primitive */
+.panel {
+  flex-grow: 1;
+  min-width: 50px;
+  min-height: 50px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Panel inner */
+.panel-content {
+  width: 100%;
+  height: 100%;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =============== Handle =============== */
+/*
+TSX:
+bg-border relative flex w-px items-center justify-center
+data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full
+after:absolute after:inset-y-0 after:left-1/2 after:w-1
+*/
+.panel-handle {
+  background: var(--border);
+  width: 4px;
+  cursor: col-resize;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel-group[data-direction="vertical"] .panel-handle {
+  width: 100%;
+  height: 4px;
+  cursor: row-resize;
+}
+
+/* Handle grip container */
+.handle-inner {
+  background: var(--border);
+  width: 14px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  display: none; /* only when data-with-handle=true */
+  align-items: center;
+  justify-content: center;
+}
+
+.panel-handle[data-with-handle="true"] .handle-inner {
+  display: flex;
+}
+
+/* GripVerticalIcon */
+.grip-icon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.7;
+}
+
+/* Active handle style */
+.panel-handle.active {
+  background: var(--ring);
+}

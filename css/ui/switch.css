@@ -1,0 +1,50 @@
+.switch {
+  --switch-width: 32px;
+  --switch-height: 18px;
+  --thumb-size: 16px;
+
+  position: relative;
+  width: var(--switch-width);
+  height: var(--switch-height);
+  border-radius: 9999px;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid transparent;
+
+  background: var(--switch-off-bg, rgba(0,0,0,0.15));
+  transition: background 0.25s, border 0.25s;
+}
+
+.switch[data-checked="true"] {
+  background: var(--switch-on-bg, var(--primary, #3b82f6));
+}
+
+.switch:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.4);
+}
+
+/* Thumb */
+.switch-thumb {
+  position: absolute;
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  border-radius: 50%;
+  background: var(--switch-thumb-bg, white);
+  top: 1px;
+  left: 1px;
+
+  transition: transform 0.25s;
+}
+
+.switch[data-checked="true"] .switch-thumb {
+  transform: translateX(calc(var(--switch-width) - var(--thumb-size) - 2px));
+}
+
+/* Disabled */
+.switch[data-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
