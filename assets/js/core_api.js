@@ -46,6 +46,8 @@ export async function fetchApi(path, options = {}) {
         headers['Authorization'] = 'Bearer ' + token;
     }
 
+    console.log('Sending token:', token); // 토큰 확인을 위한 로그 추가
+
     try {
         const response = await fetch(BASE_URL + path, {
             ...options,

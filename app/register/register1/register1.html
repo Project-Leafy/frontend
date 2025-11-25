@@ -16,7 +16,7 @@
     <div id="step-1" class="step-screen active">
         <div class="header">
             <a href="/app/main/main.html" class="icon-button">
-                <i data-lucide="arrow-left"></i>
+                <img src="https://img.icons8.com/?size=100&id=99284&format=png&color=000000" alt="뒤로가기 버튼" class="camera-icon back-btn">
             </a>
             <div>
                 <h1 class="header-title">식물 등록</h1>
@@ -26,7 +26,7 @@
 
         <div class="content-center">
             <div class="icon-circle">
-                <i data-lucide="camera" class="camera-icon"></i>
+                <img src="https://img.icons8.com/?size=100&id=dlNRF98qYou3&format=png&color=000000" alt="식물 아이콘" class="camera-icon">
             </div>
             
             <h2 class="title-text">식물 사진을 촬영해주세요</h2>
@@ -36,21 +36,34 @@
             </p>
 
             <div class="button-group">
-                <a href="../register2/register2.html" id="take-photo-btn" class="button button-primary">
+                <button id="take-photo-btn" class="button button-primary">
                     <i data-lucide="camera" class="button-icon"></i>
                     카메라로 촬영하기
-                </a>
+                </button>
                 <button id="album-btn" class="button button-outline">
                     앨범에서 선택하기
                 </button>
             </div>
+
+            <!-- [수정됨] 1. 숨겨진 파일 입력 필드 추가 -->
+            <!-- 
+                register.js에서 '앨범에서 선택하기' 버튼 클릭 시 
+                이 input을 대신 클릭하도록 처리합니다.
+            -->
+            <input type="file" id="plant-image" accept="image/*" style="display: none;">
+
+            <!-- [수정됨] 2. '식별하기' 버튼 추가 -->
+            <!--
+                이 버튼은 register.js에서 파일이 선택되었을 때 
+                동적으로 표시되도록 처리하는 것이 좋습니다. (초기 숨김)
+            -->
+            <button id="identify-btn" class="button button-primary" style="margin-top: 1rem; display: none;">
+                식별하기
+            </button>
         </div>
     </div>
 
     <!-- JS 파일 -->
-    <script>
-        lucide.createIcons();
-    </script>
-    <script src="../register.js"></script>
+    <script type="module" src="../register.js"></script>
 </body>
 </html>

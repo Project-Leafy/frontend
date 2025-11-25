@@ -78,18 +78,18 @@
                     return;
                 }
 
-                // 3. 백엔드 DTO(MyPlantResponseDto)의 필드명에 맞게 수정
+                // 3. 백엔드 DTO의 필드명(snake_case)에 맞게 수정
                 myPlants.forEach(plant => {
                     const plantCard = document.createElement('a');
 
-                    // 4. 상세 페이지로 이동 시 DTO의 'myPlantId'를 사용
-                    plantCard.href = `/app/plant/detail.html?id=${plant.myPlantId}`;
+                    // 4. 상세 페이지로 이동 시 DTO의 'my_plant_id'를 사용
+                    plantCard.href = `/app/myplant_detail/myplant_detail.html?id=${plant.my_plant_id}`;
                     plantCard.className = 'plant-card';
 
-                    // DTO의 필드명(imageUrl, nickname, plantSpeciesName)을 사용
-                    const imageUrl = plant.imageUrl || 'https://placehold.co/150'; // 다른 placeholder 서비스로 변경
+                    // DTO의 필드명(image_url, nickname, plant_species_name)을 사용
+                    const imageUrl = plant.image_url || 'https://placehold.co/150';
                     const nickname = plant.nickname || '이름 없음';
-                    const speciesName = plant.plantSpeciesName || '종 정보 없음';
+                    const speciesName = plant.plant_species_name || '종 정보 없음';
 
                     plantCard.innerHTML = `
                     <img src="${imageUrl}" alt="${nickname} 이미지">
