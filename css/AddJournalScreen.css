@@ -1,4 +1,4 @@
-.addjournal-wrapper {
+.ajs-wrapper {
   min-height: 100vh;
   background: #FAFAF8;
   padding-bottom: 80px;
@@ -6,36 +6,38 @@
 
 /* HEADER */
 .ajs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: white;
   padding: 16px 24px;
   border-bottom: 1px solid #E5E5E0;
 }
 
 .ajs-title {
-  text-align: center;
   font-size: 20px;
   color: #2C3E2F;
-  margin: 0;
 }
 
 .ajs-back-btn {
   padding: 8px;
-  background: transparent;
   border-radius: 50%;
-  transition: background 0.2s;
+  background: transparent;
   border: none;
+  transition: background 0.2s;
 }
 .ajs-back-btn:hover {
   background: #F5F5F3;
 }
 
-.ajs-header-spacer {
-  width: 40px;
+.ajs-placeholder {
+  width: 32px;
 }
 
-.ajs-plant-nickname {
+.ajs-nickname {
+  padding: 0 24px;
+  margin-top: 4px;
   color: #6B7280;
-  margin-top: 6px;
 }
 
 /* CONTENT */
@@ -44,7 +46,7 @@
 }
 
 .ajs-section {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .ajs-label {
@@ -54,86 +56,83 @@
   font-weight: 500;
 }
 
-.ajs-required {
+.required {
   color: red;
 }
 
-/* Textarea */
-.ajs-textarea {
-  min-height: 130px;
-  border: 1px solid #E5E5E0;
-}
-.ajs-textarea:focus {
-  border-color: #4A7C59 !important;
-  box-shadow: 0 0 0 2px #4A7C59 !important;
-}
-
-/* Error */
-.ajs-error {
-  font-size: 14px;
-  color: red;
-  margin-top: 8px;
-}
-
-/* Tags */
-.ajs-tag-list {
+/* TAGS */
+.ajs-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-/* Images */
+/* IMAGES */
 .ajs-image-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3,1fr);
   gap: 12px;
 }
 
-.ajs-img-wrap {
-  position: relative;
+.ajs-image-item {
   width: 100%;
   padding-bottom: 100%;
-  border-radius: 8px;
+  position: relative;
+  border-radius: 10px;
   overflow: hidden;
 }
 
-.ajs-img-wrap img {
+.ajs-image-item img {
   position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.ajs-img-remove {
+.ajs-image-remove {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  background: rgba(0,0,0,0.55);
-  color: white;
+  top: 6px;
+  right: 6px;
+  background: rgba(0,0,0,0.5);
   border-radius: 50%;
-  padding: 4px;
   border: none;
+  padding: 4px;
+  cursor: pointer;
 }
 
-/* Add Image Btn */
-.ajs-add-img {
+.ajs-add-image {
   border: 2px dashed #E5E5E0;
-  border-radius: 8px;
-  background: white;
+  border-radius: 10px;
+  padding-bottom: 100%;
+  position: relative;
   cursor: pointer;
   transition: 0.2s;
 }
-.ajs-add-img:hover {
+.ajs-add-image:hover {
   background: #E8F4EC;
   border-color: #4A7C59;
+}
+.ajs-add-image svg {
+  position: absolute;
+  top: 33%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.ajs-add-image span {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #9CA3AF;
+  font-size: 12px;
 }
 
 /* FOOTER */
 .ajs-footer {
   position: fixed;
-  left: 0;
-  right: 0;
   bottom: 0;
+  left: 0; right: 0;
   background: white;
   padding: 16px;
   border-top: 1px solid #E5E5E0;
@@ -141,12 +140,84 @@
 
 .ajs-save-btn {
   width: 100%;
+  padding: 20px 0;
+  border: none;
+  border-radius: 12px;
   background: #4A7C59;
   color: white;
-  padding: 20px 0;
-  border-radius: 12px;
   font-size: 16px;
 }
 .ajs-save-btn:hover {
   background: #3D6549;
+}
+
+/* ========================================================= */
+/*     ⭐⭐ AlertDialog 정식 중앙 모달 override 최종본 ⭐⭐     */
+/* ========================================================= */
+
+#alert-dialog {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+#alert-dialog:not(.hidden) {
+  display: flex;
+}
+
+.alert-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+}
+
+.alert-dialog-content {
+  position: relative;
+  background: white;
+  padding: 24px;
+  width: 85%;
+  max-width: 380px;
+  border-radius: 12px;
+  animation: dialogPop .22s ease-out;
+}
+
+@keyframes dialogPop {
+  from { opacity: 0; transform: translateY(10px) scale(.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.alert-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.alert-desc {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.5;
+}
+
+.alert-dialog-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.alert-cancel,
+.alert-confirm {
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.alert-cancel {
+  background: #f3f3f3;
+}
+.alert-confirm {
+  background: #4A7C59;
+  color: white;
 }
