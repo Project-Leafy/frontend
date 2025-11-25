@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>관리 캘린더</title>
+
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/CalendarScreen.css" />
+</head>
+
+<body>
+
+  <!-- (1) 모바일 화면폭 고정 -->
+  <div class="page-container">
+
+    <!-- (2) Toast container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- (3) 메인 앱 -->
+    <div id="calendarApp">
+
+      <!-- HEADER -->
+      <div class="header">
+        <h1>관리 캘린더</h1>
+        <button id="profileButton" class="icon-btn">
+          <svg width="20" height="20" stroke="#6B7280" fill="none" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="7" r="4"></circle>
+            <path d="M5.5 21a6.5 6.5 0 0 1 13 0"></path>
+          </svg>
+        </button>
+      </div>
+      <p class="subtitle">식물 관리 일정을 확인하세요</p>
+
+      <!-- MONTH BOX -->
+      <div class="month-box">
+        <div class="month-header">
+          <button id="prevMonth" class="icon-btn">
+            <svg width="20" height="20" stroke="#6B7280" fill="none" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+
+          <h2 id="monthTitle"></h2>
+
+          <button id="nextMonth" class="icon-btn">
+            <svg width="20" height="20" stroke="#6B7280" fill="none" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <div class="week-header">
+          <div>일</div><div>월</div><div>화</div><div>수</div>
+          <div>목</div><div>금</div><div>토</div>
+        </div>
+
+        <div id="calendarGrid" class="calendar-grid"></div>
+      </div>
+
+      <!-- UPCOMING -->
+      <div class="upcoming-header">
+        <h3>다가오는 일정</h3>
+        <button id="openAddSchedule" class="add-btn">
+          <svg width="16" height="16" fill="none" stroke="white" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          일정 추가
+        </button>
+      </div>
+
+      <div id="upcomingList" class="upcoming-list"></div>
+
+
+      <!-- (4) 날짜 상세 모달 -->
+      <div id="dayDetailModal" class="modal hidden">
+        <div class="modal-content">
+          <h2 id="dayDetailTitle"></h2>
+          <p class="modal-desc">이 날의 관리 활동 목록입니다</p>
+
+          <div id="dayDetailItems" class="modal-items"></div>
+
+          <div class="modal-buttons">
+            <button class="modal-btn confirm" id="dayDetailClose">확인</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- (5) 일정 추가 모달 -->
+      <div id="addScheduleModal" class="modal hidden">
+        <div class="modal-content">
+          <h2>일정 추가</h2>
+          <p class="modal-desc">새로운 관리 일정을 추가하세요</p>
+
+          <div class="modal-items">
+
+            <div class="form-group">
+              <label>날짜</label>
+              <input type="date" id="scheduleDate" class="input" />
+            </div>
+
+            <div class="form-group">
+              <label>식물</label>
+              <select id="schedulePlant" class="input">
+                <!-- JS에서 동적 추가 -->
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>활동 종류</label>
+              <select id="scheduleType" class="input">
+                <option value="water">물주기</option>
+                <option value="repot">분갈이</option>
+                <option value="fertilize">비료주기</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="modal-buttons">
+            <button class="modal-btn cancel" id="addScheduleCancel">취소</button>
+            <button class="modal-btn confirm" id="addScheduleConfirm">추가하기</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="../js/screens/CalendarScreen.js"></script>
+
+  <script>
+    // 페이지 실행 예시
+    const mockPlants = [
+      { id: "1", nickname: "초록이", name: "몬스테라" },
+      { id: "2", nickname: "공기요정", name: "틸란드시아" },
+      { id: "3", nickname: "뾰족이", name: "산세베리아" }
+    ];
+
+    initCalendarScreen(mockPlants, () => {
+      alert("프로필 화면으로 이동");
+    });
+  </script>
+
+</body>
+</html>
