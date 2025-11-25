@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>성장 기록 추가</title>
+
+  <!-- Global CSS -->
+  <link rel="stylesheet" href="../css/global.css">
+
+  <!-- Page CSS -->
+  <link rel="stylesheet" href="../css/AddJournalScreen.css">
+
+  <!-- UI Component CSS -->
+  <link rel="stylesheet" href="../css/ui/alert-dialog.css">
+  <link rel="stylesheet" href="../css/ui/badge.css">
+  <link rel="stylesheet" href="../css/ui/button.css">
+  <link rel="stylesheet" href="../css/ui/textarea.css">
+</head>
+
+<body>
+
+<div class="addjournal-wrapper">
+
+  <!-- HEADER -->
+  <div class="ajs-header">
+    <button id="ajs-back-btn" class="ajs-back-btn">
+      <!-- ArrowLeft icon -->
+      <svg width="20" height="20" stroke="#6B7280" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6"></path>
+      </svg>
+    </button>
+
+    <h1 class="ajs-title">성장 기록 추가</h1>
+    <div class="ajs-header-spacer"></div>
+
+    <p class="ajs-plant-nickname" id="ajs-nickname"></p>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="ajs-content">
+    
+    <!-- 사진 -->
+    <div class="ajs-section">
+      <label class="ajs-label">사진</label>
+      <div id="ajs-image-grid" class="ajs-image-grid"></div>
+    </div>
+
+    <!-- 메모 -->
+    <div class="ajs-section">
+      <label class="ajs-label">
+        메모 <span class="ajs-required">*</span>
+      </label>
+
+      <textarea
+        id="ajs-memo"
+        class="textarea ajs-textarea"
+        placeholder="오늘의 식물 상태나 특이사항을 기록해보세요..."
+      ></textarea>
+
+      <p id="ajs-memo-error" class="ajs-error hidden">메모를 입력해주세요</p>
+    </div>
+
+    <!-- 태그 -->
+    <div class="ajs-section">
+      <label class="ajs-label">태그</label>
+      <div id="ajs-tag-list" class="ajs-tag-list"></div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="ajs-footer">
+    <button id="ajs-save" class="ajs-save-btn button">
+      저장하기
+    </button>
+  </div>
+
+</div>
+
+<!-- AlertDialog -->
+<div id="ajs-dialog" class="alert-dialog-root hidden">
+  <div class="alert-dialog-overlay"></div>
+  <div class="alert-dialog-content">
+    <div class="alert-dialog-header">
+      <div class="alert-dialog-title">작성을 취소하시겠습니까?</div>
+      <div class="alert-dialog-description">
+        작성 중인 내용이 저장되지 않습니다. 정말로 나가시겠습니까?
+      </div>
+    </div>
+    <div class="alert-dialog-footer">
+      <button id="ajs-dialog-cancel" class="alert-dialog-cancel">계속 작성</button>
+      <button id="ajs-dialog-confirm" class="alert-dialog-action">나가기</button>
+    </div>
+  </div>
+</div>
+
+<!-- Page JS -->
+<script src="../js/screen/AddJournalScreen.js"></script>
+
+<!-- UI Component JS -->
+<script src="../js/ui/alert-dialog.js"></script>
+<script src="../js/ui/badge.js"></script>
+<script src="../js/ui/button.js"></script>
+<script src="../js/ui/textarea.js"></script>
+
+</body>
+</html>
