@@ -1,7 +1,7 @@
 # frontend
 # 🌿 Leafy - Frontend (HTML/CSS/JS)
 
-> 반려식물 성장 관리 및 AI 진단/추천 서비스 'Leafy'의 프론트엔드 레пози토리입니다. (Vanilla JS)
+> 반려식물 성장 관리 및 AI 진단/추천 서비스 'Leafy'의 프론트엔드 레포지토리입니다. (Vanilla JS)
 
 ## 1. 📜 프로젝트 개요
 
