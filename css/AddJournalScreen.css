@@ -1,0 +1,152 @@
+.addjournal-wrapper {
+  min-height: 100vh;
+  background: #FAFAF8;
+  padding-bottom: 80px;
+}
+
+/* HEADER */
+.ajs-header {
+  background: white;
+  padding: 16px 24px;
+  border-bottom: 1px solid #E5E5E0;
+}
+
+.ajs-title {
+  text-align: center;
+  font-size: 20px;
+  color: #2C3E2F;
+  margin: 0;
+}
+
+.ajs-back-btn {
+  padding: 8px;
+  background: transparent;
+  border-radius: 50%;
+  transition: background 0.2s;
+  border: none;
+}
+.ajs-back-btn:hover {
+  background: #F5F5F3;
+}
+
+.ajs-header-spacer {
+  width: 40px;
+}
+
+.ajs-plant-nickname {
+  color: #6B7280;
+  margin-top: 6px;
+}
+
+/* CONTENT */
+.ajs-content {
+  padding: 24px;
+}
+
+.ajs-section {
+  margin-bottom: 24px;
+}
+
+.ajs-label {
+  display: block;
+  margin-bottom: 12px;
+  color: #2C3E2F;
+  font-weight: 500;
+}
+
+.ajs-required {
+  color: red;
+}
+
+/* Textarea */
+.ajs-textarea {
+  min-height: 130px;
+  border: 1px solid #E5E5E0;
+}
+.ajs-textarea:focus {
+  border-color: #4A7C59 !important;
+  box-shadow: 0 0 0 2px #4A7C59 !important;
+}
+
+/* Error */
+.ajs-error {
+  font-size: 14px;
+  color: red;
+  margin-top: 8px;
+}
+
+/* Tags */
+.ajs-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Images */
+.ajs-image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.ajs-img-wrap {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ajs-img-wrap img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ajs-img-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.55);
+  color: white;
+  border-radius: 50%;
+  padding: 4px;
+  border: none;
+}
+
+/* Add Image Btn */
+.ajs-add-img {
+  border: 2px dashed #E5E5E0;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.ajs-add-img:hover {
+  background: #E8F4EC;
+  border-color: #4A7C59;
+}
+
+/* FOOTER */
+.ajs-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  padding: 16px;
+  border-top: 1px solid #E5E5E0;
+}
+
+.ajs-save-btn {
+  width: 100%;
+  background: #4A7C59;
+  color: white;
+  padding: 20px 0;
+  border-radius: 12px;
+  font-size: 16px;
+}
+.ajs-save-btn:hover {
+  background: #3D6549;
+}
