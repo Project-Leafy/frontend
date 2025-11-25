@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>성장 기록 추가</title>
+
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/AddJournalScreen.css" />
+</head>
+
+<body>
+
+  <!-- 모바일 비율 고정 컨테이너 -->
+  <div class="page-container">
+
+    <div id="app">
+
+      <!-- 헤더 -->
+      <div class="header">
+        <button id="backButton" class="icon-btn">
+          <svg width="20" height="20" stroke="#6B7280" fill="none" stroke-width="2" 
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <h1>성장 기록 추가</h1>
+        <div class="w-10"></div>
+      </div>
+
+      <!-- 식물 이름 -->
+      <p class="plant-name" id="plantNickname"></p>
+
+      <!-- 본문 컨텐츠 -->
+      <div class="content">
+
+        <!-- 사진 -->
+        <div>
+          <label class="section-title">사진</label>
+          <div id="imageGrid" class="image-grid"></div>
+        </div>
+
+        <!-- 메모 -->
+        <div>
+          <label class="section-title">
+            메모 <span class="required">*</span>
+          </label>
+
+          <textarea
+            id="memoInput"
+            class="memo-input"
+            placeholder="오늘의 식물 상태나 특이사항을 기록해보세요..."
+          ></textarea>
+
+          <p id="memoError" class="error-text"></p>
+        </div>
+
+        <!-- 태그 -->
+        <div>
+          <label class="section-title">태그</label>
+          <div id="tagContainer" class="tag-container"></div>
+        </div>
+      </div>
+
+      <!-- 하단 고정 버튼 -->
+      <div class="bottom-bar">
+        <button id="saveButton" class="save-btn">저장하기</button>
+      </div>
+
+      <!-- 뒤로가기 모달 -->
+      <div id="backModal" class="modal hidden">
+        <div class="modal-content">
+          <h2>작성을 취소하시겠습니까?</h2>
+          <p>작성 중인 내용이 저장되지 않습니다. 정말로 나가시겠습니까?</p>
+
+          <div class="modal-buttons">
+            <button id="modalCancel" class="modal-btn cancel">계속 작성</button>
+            <button id="modalConfirm" class="modal-btn confirm">나가기</button>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- #app -->
+
+  </div> <!-- .page-container -->
+
+  
+  <script src="../js/screens/AddJournalScreen.js"></script>
+
+  <!-- 페이지 초기화 (예시) 
+       실제로는 앱 라우팅에서 호출해줘야함 -->
+  <script>
+    // 예시용 가짜 데이터 (원래는 라우터나 App에서 주입)
+    const dummyPlant = {
+      id: "1",
+      nickname: "몬스테라"
+    };
+
+    // initAddJournalScreen 호출
+    initAddJournalScreen(
+      dummyPlant,
+      () => alert("뒤로가기 이벤트 (onBack) 호출됨"),
+      (journal) => console.log("저장됨:", journal)
+    );
+  </script>
+
+</body>
+</html>
