@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>프로필</title>
+
+  <!-- 전역 스타일 -->
+  <link rel="stylesheet" href="../css/global.css" />
+  <!-- 전용 스타일 -->
+  <link rel="stylesheet" href="../css/ProfileScreen.css" />
+
+  <!-- lucide 아이콘 -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- 상단 헤더 -->
+    <div class="profile-header">
+      <button id="backBtn" class="icon-btn">
+        <i data-lucide="arrow-left"></i>
+      </button>
+
+      <div class="profile-info">
+        <div class="profile-photo">
+          <img id="profileImage" alt="프로필" />
+        </div>
+        <h2 id="profileName"></h2>
+        <p id="daysTogether" class="sub"></p>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <!-- 카드 3개 -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><i data-lucide="sprout"></i></div>
+          <p id="plantCount" class="stat-num"></p>
+          <p class="stat-label">식물</p>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon"><i data-lucide="camera"></i></div>
+          <p id="journalCount" class="stat-num"></p>
+          <p class="stat-label">기록</p>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon"><i data-lucide="calendar"></i></div>
+          <p id="daysCount" class="stat-num"></p>
+          <p class="stat-label">일</p>
+        </div>
+      </div>
+
+      <!-- 내 식물 목록 -->
+      <div class="plant-list-box">
+        <h3>내 식물들</h3>
+        <div id="plantList"></div>
+      </div>
+
+      <!-- 설정 박스 -->
+      <div class="settings-box">
+        <button class="setting-btn">알림 설정</button>
+        <button class="setting-btn">계정 설정</button>
+        <button class="setting-btn no-border">앱 정보</button>
+      </div>
+
+      <button id="logoutBtn" class="logout-btn">로그아웃</button>
+    </div>
+  </div>
+
+  <script src="../js/screens/ProfileScreen.js"></script>
+</body>
+</html>
