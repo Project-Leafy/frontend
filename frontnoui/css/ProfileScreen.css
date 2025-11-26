@@ -1,0 +1,172 @@
+.app-container {
+  max-width: 430px;
+  margin: 0 auto;
+  background: #FAFAF8;
+  min-height: 100vh;
+}
+
+/* 헤더 */
+.profile-header {
+  background: linear-gradient(to bottom, #4A7C59, #3D6549);
+  padding: 16px 24px 48px;
+  color: white;
+  position: relative;
+}
+.icon-btn {
+  background: transparent;
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.icon-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 24px;
+}
+.profile-photo {
+  background: white;
+  padding: 3px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+}
+.profile-photo img {
+  width: 94px;
+  height: 94px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.profile-info h2 {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+.sub {
+  color: rgba(255,255,255,0.75);
+}
+
+/* 본문 */
+.page-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 통계 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 14px;
+}
+.stat-card {
+  background: white;
+  text-align: center;
+  padding: 18px 0;
+  border-radius: 14px;
+  border: 1px solid #E5E5E0;
+}
+.stat-icon {
+  width: 46px;
+  height: 46px;
+  background: #E8F4EC;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.stat-icon svg {
+  color: #4A7C59;
+}
+.stat-num {
+  font-size: 26px;
+  color: #2C3E2F;
+}
+.stat-label {
+  font-size: 12px;
+  color: #6B7280;
+}
+
+/* 식물 리스트 */
+.plant-list-box {
+  background: white;
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid #E5E5E0;
+}
+.plant-list-box h3 {
+  font-size: 18px;
+  color: #2C3E2F;
+  margin-bottom: 18px;
+}
+.plant-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+  padding: 10px;
+  transition: 0.15s;
+  cursor: pointer;
+}
+.plant-item:hover {
+  background: #F5F5F3;
+}
+.plant-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.plant-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.plant-item .main {
+  color: #2C3E2F;
+}
+.plant-item .sub {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+/* 설정 */
+.settings-box {
+  background: white;
+  border-radius: 18px;
+  border: 1px solid #E5E5E0;
+  overflow: hidden;
+}
+.setting-btn {
+  width: 100%;
+  padding: 18px 22px;
+  text-align: left;
+  border-bottom: 1px solid #E5E5E0;
+  background: transparent;
+  cursor: pointer;
+  transition: 0.15s;
+}
+.setting-btn:hover {
+  background: #F5F5F3;
+}
+.setting-btn.no-border {
+  border-bottom: none;
+}
+
+/* 로그아웃 */
+.logout-btn {
+  width: 100%;
+  padding: 16px;
+  color: #EF4444;
+  font-size: 15px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.logout-btn:hover {
+  text-decoration: underline;
+}
