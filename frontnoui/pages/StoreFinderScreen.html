@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>주변 화원</title>
+
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/StoreFinderScreen.css" />
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <div class="header">
+      <button id="backBtn" class="icon-btn">
+        <i data-lucide="arrow-left"></i>
+      </button>
+      <div class="header-center">
+        <h1>주변 화원</h1>
+        <p>내 위치 주변의 화원을 찾아보세요</p>
+      </div>
+    </div>
+
+    <!-- 지도 영역 -->
+    <div class="map-box">
+      <div class="map-placeholder">
+        <i data-lucide="map-pin" class="map-icon"></i>
+        <p>지도 영역</p>
+        <span>Kakao Map API</span>
+      </div>
+      <div id="pins"></div>
+    </div>
+
+    <!-- 매장 목록 -->
+    <div class="content">
+      <div class="list-header">
+        <h2>가까운 순</h2>
+        <p id="storeCount"></p>
+      </div>
+
+      <div id="storeList"></div>
+    </div>
+  </div>
+
+  <script src="../js/screens/StoreFinderScreen.js"></script>
+</body>
+</html>
