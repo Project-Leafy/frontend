@@ -1,0 +1,240 @@
+body {
+  background: #FAFAF8;
+}
+
+.app-container {
+  max-width: 520px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+/* header */
+.header {
+  background: white;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E5E5E0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-title {
+  font-size: 22px;
+  color: #2C3E2F;
+  font-weight: 600;
+}
+.icon-btn {
+  padding: 8px;
+  border-radius: 50%;
+  transition: background .2s;
+}
+.icon-btn:hover {
+  background: #F5F5F3;
+}
+.restart-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #4A7C59;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.restart-btn:hover {
+  color: #3D6549;
+}
+
+.subtitle {
+  color: #6B7280;
+  padding: 12px 20px 0;
+}
+
+/* summary box */
+.summary-card {
+  background: linear-gradient(to right, #E8F4EC, #D1E7DD);
+  margin: 18px 20px;
+  padding: 20px;
+  border-radius: 18px;
+}
+.summary-card h2 {
+  color: #2C3E2F;
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+.summary-card p {
+  color: #4A7C59;
+}
+
+/* list */
+.list {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* recommendation card */
+.recommend-card {
+  background: white;
+  border: 1px solid #E5E5E0;
+  border-radius: 20px;
+  overflow: hidden;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  transition: box-shadow .25s;
+}
+.recommend-card:hover {
+  box-shadow: 0 4px 10px rgba(0,0,0,.1);
+}
+.recommend-img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+.recommend-body {
+  padding: 18px;
+}
+.recommend-title {
+  color: #2C3E2F;
+  font-size: 20px;
+  margin-bottom: 2px;
+}
+.recommend-sub {
+  color: #9CA3AF;
+  margin-bottom: 12px;
+}
+.rec-desc {
+  color: #6B7280;
+  margin-bottom: 16px;
+}
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 8px;
+}
+.feature-box {
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  color: #6B7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.feature-light { background:#FEF3C7; }
+.feature-water { background:#DBEAFE; }
+.feature-hard  { background:#E8F4EC; }
+
+/* find store button */
+.find-store-btn {
+  width: calc(100% - 40px);
+  margin: 26px 20px 0;
+  padding: 18px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  background: #4A7C59;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  transition: background .25s;
+}
+.find-store-btn:hover {
+  background: #3D6549;
+}
+
+/* detail popup */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+.hidden {
+  display: none;
+}
+.detail-card {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 18px;
+  overflow-y: auto;
+  max-height: 92vh;
+  position: relative;
+  padding-bottom: 24px;
+}
+.detail-img {
+  width: 100%;
+  aspect-ratio: 16/10;
+  object-fit: cover;
+}
+.close-detail {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: white;
+  border-radius: 50%;
+  width: 40px;     /* ← 버튼 가로 고정 */
+  height: 40px;    /* ← 버튼 세로 고정 (정사각형) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;      /* ← lucide padding 제거 */
+  border: 1px solid #E5E5E0; /* tsx 디자인 반영 */
+  transition: background .2s;
+}
+
+.close-detail:hover {
+  background: #F5F5F3;   /* hover 시에만 자연스러운 변경 */
+}
+
+.detail-card h2 {
+  font-size: 22px;
+  margin: 16px 20px 0;
+  color: #2C3E2F;
+}
+.scientific {
+  margin: 2px 20px 10px;
+  font-size: 14px;
+  color: #9CA3AF;
+}
+.detail-desc {
+  margin: 0 20px 14px;
+  color: #6B7280;
+}
+
+/* info grid */
+.detail-info-grid {
+  margin: 0 20px 18px;
+  display: grid;
+  gap: 8px;
+}
+.detail-info-grid div {
+  padding: 12px;
+  background: white;
+  border: 1px solid #E5E5E0;
+  border-radius: 10px;
+  color: #2C3E2F;
+}
+.detail-info-grid div:last-child {
+  background:#E8F4EC;
+}
+
+/* bottom boxes */
+.feature-row {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 8px;
+  margin: 0 20px;
+}
+.feature-row .feature-box {
+  font-size: 12px;
+}
