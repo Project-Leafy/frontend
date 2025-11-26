@@ -1,0 +1,86 @@
+/* 로그인 전체 컨테이너 */
+.login-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #E8F4EC, #FAFAF8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+}
+
+/* 로고 영역 */
+.login-logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 48px;
+}
+
+.login-logo-circle {
+  background: #4A7C59;
+  padding: 24px;
+  border-radius: 50%;
+  margin-bottom: 24px;
+}
+
+.login-logo-icon {
+  width: 64px;
+  height: 64px;
+  color: white;
+}
+
+/* 제목 & 설명 */
+.login-title {
+  font-size: 28px;
+  color: #2C3E2F;
+  margin-bottom: 8px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.login-subtitle {
+  color: #6B7280;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* 버튼 영역 */
+.login-button-wrap {
+  width: 100%;
+  max-width: 420px;
+}
+
+.kakao-login-btn {
+  width: 100%;
+  background: #FEE500;
+  color: #3C1E1E;
+  border: none;
+  padding: 20px;
+  border-radius: 14px;
+  font-size: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background .15s;
+}
+
+.kakao-login-btn:hover {
+  background: #FDD835;
+}
+
+.kakao-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+/* 약관 텍스트 */
+.terms-text {
+  font-size: 11px;
+  text-align: center;
+  color: #9CA3AF;
+  margin-top: 12px;
+  line-height: 1.4;
+}
