@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>맞춤 식물 추천</title>
+
+  <!-- 전역 스타일 -->
+  <link rel="stylesheet" href="../css/global.css" />
+
+  <!-- 이 화면 전용 스타일 -->
+  <link rel="stylesheet" href="../css/RecommendationScreen.css" />
+
+  <!-- lucide 아이콘 -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 헤더 영역 -->
+    <div class="header">
+      <div>
+        <h1 class="header-title">맞춤 식물 추천</h1>
+        <p class="subtitle">간단한 질문으로 나에게 맞는 식물을 찾아보세요</p>
+      </div>
+
+      <button id="profileBtn" class="icon-btn">
+        <i data-lucide="user"></i>
+      </button>
+    </div>
+
+    <!-- 내용 영역 -->
+    <div class="content">
+      <div id="surveyContainer" class="survey-section"></div>
+    </div>
+
+    <!-- 하단 고정 버튼 -->
+    <div class="bottom-bar">
+      <button id="submitBtn" class="submit-btn disabled" disabled>
+        추천 받기
+        <i data-lucide="arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="../js/screens/RecommendationScreen.js"></script>
+
+  <!-- 페이지 이동 연결 (필요 시 수정) -->
+  <script>
+    window.navigateProfile = () => location.href = "./ProfileScreen.html";
+    window.navigateResults = () => location.href = "./RecommendationResultsScreen.html";
+  </script>
+</body>
+</html>
