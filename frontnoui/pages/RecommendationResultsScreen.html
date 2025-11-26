@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>추천 결과</title>
+
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/RecommendationResultsScreen.css" />
+
+  <!-- lucide icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 헤더 -->
+    <div class="header">
+      <button id="backBtn" class="icon-btn">
+        <i data-lucide="arrow-left"></i>
+      </button>
+      <h1 class="header-title">추천 결과</h1>
+      <button id="restartBtn" class="restart-btn">
+        <i data-lucide="rotate-ccw"></i> 다시하기
+      </button>
+    </div>
+    <p class="subtitle">당신을 위한 맞춤 식물을 찾았어요!</p>
+
+    <!-- 소개 상자 -->
+    <section class="summary-card">
+      <h2>분석 완료!</h2>
+      <p>햇빛이 적은 환경에서도 잘 자라고 물을 자주 주지 않아도 되는 식물을 추천해드릴게요.</p>
+    </section>
+
+    <!-- 추천 목록 -->
+    <div id="recommendationList" class="list"></div>
+
+    <button id="findStoreBtn" class="find-store-btn">
+      <i data-lucide="map-pin"></i> 주변 화원 찾기
+    </button>
+  </div>
+
+  <!-- 상세 팝업 -->
+  <div id="detailOverlay" class="overlay hidden">
+    <div class="detail-card">
+      <img id="detailImage" class="detail-img" />
+      <button id="closeDetailBtn" class="close-detail">
+        <i data-lucide="x"></i>
+      </button>
+
+      <h2 id="detailName"></h2>
+      <p id="detailScientific" class="scientific"></p>
+      <p id="detailDescription" class="detail-desc"></p>
+
+      <div class="detail-info-grid" id="detailInfoGrid"></div>
+      <div class="feature-row">
+        <div class="feature-box feature-light"><i data-lucide="sun"></i> <span id="detailLight"></span></div>
+        <div class="feature-box feature-water"><i data-lucide="droplets"></i> <span id="detailWater"></span></div>
+        <div class="feature-box feature-diff"><i data-lucide="leaf"></i> <span id="detailDifficulty"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/screens/RecommendationResultsScreen.js"></script>
+</body>
+</html>
