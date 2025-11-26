@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>식물 성장 일지 - 로그인</title>
+
+  <!-- 전역 스타일 -->
+  <link rel="stylesheet" href="../css/global.css" />
+
+  <!-- 로그인 화면 전용 스타일 -->
+  <link rel="stylesheet" href="../css/LoginScreen.css" />
+
+  <!-- Lucide 아이콘 CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- 로그인 화면 스크립트 -->
+  <script defer src="../js/screens/LoginScreen.js"></script>
+</head>
+
+<body>
+  <main class="login-container">
+
+    <div class="login-logo-wrap">
+      <div class="login-logo-circle">
+        <i data-lucide="sprout" class="login-logo-icon"></i>
+      </div>
+      <h1 class="login-title">식물 성장 일지</h1>
+      <p class="login-subtitle">
+        반려식물과 함께하는<br />특별한 성장 기록
+      </p>
+    </div>
+
+    <div class="login-button-wrap">
+      <button id="kakao-login-btn" class="kakao-login-btn">
+        <svg class="kakao-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 3c-4.97 0-9 3.582-9 8 0 1.988.78 3.82 2.064 5.266-.156.638-.517 1.814-1.064 2.734 1.517-.234 3.14-.726 4.372-1.372A9.927 9.927 0 0012 19c4.97 0 9-3.582 9-8s-4.03-8-9-8z"/>
+        </svg>
+        카카오 로그인
+      </button>
+
+      <p class="terms-text">
+        로그인하시면 서비스 이용약관 및 개인정보처리방침에<br />
+        동의하는 것으로 간주됩니다.
+      </p>
+    </div>
+
+  </main>
+
+  <script>
+    lucide.createIcons(); /* 🔥 아이콘 초기화 */
+  </script>
+</body>
+</html>
