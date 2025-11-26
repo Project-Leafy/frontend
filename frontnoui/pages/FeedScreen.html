@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/FeedScreen.css" />
+
+  <!-- Lucide for icons (TSX와 100% 동일) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script defer src="../js/screens/FeedScreen.js"></script>
+  <title>FeedScreen</title>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- Header -->
+    <header class="header">
+      <h1 class="title">모아보기</h1>
+      <button id="profileBtn" class="profile-btn">
+        <i data-lucide="user"></i>
+      </button>
+    </header>
+
+    <p class="subtitle">모든 식물의 성장 기록을 한눈에</p>
+
+    <!-- Feed list -->
+    <div id="journalList" class="journal-list"></div>
+
+  </div>
+</body>
+</html>
