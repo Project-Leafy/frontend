@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plant Info</title>
+
+  <!-- 🔹 전역 스타일 (반드시 가장 먼저) -->
+  <link rel="stylesheet" href="../css/global.css" />
+
+  <!-- 🔹 이 화면 전용 스타일 -->
+  <link rel="stylesheet" href="../css/PlantInfoScreen.css" />
+
+  <!-- 🔹 lucide 아이콘 -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- 헤더 -->
+    <div class="header">
+      <button id="backBtn" class="icon-btn">
+        <i data-lucide="arrow-left"></i>
+      </button>
+      <div class="header-text">
+        <h1 id="plantCommonName"></h1>
+        <p id="plantSpecies"></p>
+      </div>
+    </div>
+
+    <!-- 메인 내용 -->
+    <div class="main-content">
+      <!-- 식물 소개 -->
+      <section class="intro-box">
+        <h2>식물 소개</h2>
+        <p id="plantDescription"></p>
+      </section>
+
+      <h3 class="section-title">관리 방법</h3>
+
+      <!-- 관리 카드들 들어갈 자리 -->
+      <div id="careList"></div>
+
+      <!-- 주의사항 -->
+      <section class="tips-box">
+        <h4>💡 주의사항</h4>
+        <ul>
+          <li>반려동물이 잎을 먹으면 독성이 있을 수 있으니 주의하세요.</li>
+          <li>먼지가 쌓이면 광합성이 어려우니 가끔 잎을 닦아주세요.</li>
+          <li>갑자기 환경을 바꾸면 스트레스를 받을 수 있습니다.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <!-- 알림 설정 Dialog -->
+  <div id="dialogOverlay" class="dialog-overlay hidden">
+    <div class="dialog">
+      <h2>물주기 알림 설정</h2>
+      <p id="dialogText"></p>
+
+      <label for="frequencySelect">알림 주기</label>
+      <select id="frequencySelect">
+        <option value="3">3일마다</option>
+        <option value="5">5일마다</option>
+        <option value="7">7일마다 (1주일)</option>
+        <option value="10">10일마다</option>
+        <option value="14">14일마다 (2주)</option>
+        <option value="21">21일마다 (3주)</option>
+        <option value="30">30일마다 (1개월)</option>
+      </select>
+
+      <div class="dialog-actions">
+        <button id="cancelDialog">취소</button>
+        <button id="confirmDialog" class="confirm-btn">설정하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔹 module 말고 일반 스크립트로 (file://에서도 덜 까다롭게) -->
+  <script src="../js/screens/PlantInfoScreen.js"></script>
+
+  <!-- 🔥 lucide 아이콘 자동 랜더링 (필수) -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
