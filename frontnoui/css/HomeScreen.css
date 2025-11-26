@@ -1,0 +1,204 @@
+body {
+  margin: 0;
+  background: #fafaf8;
+  display: flex;
+  justify-content: center;
+}
+
+#app {
+  width: 100%;
+  max-width: 430px;
+  background: #fafaf8;
+  min-height: 100vh;
+}
+
+/* Header */
+.hs-header {
+  background: #fff;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e5e5e0;
+}
+.hs-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+/* Header Icon Buttons */
+.hs-icon {
+  width: 42px;
+  height: 42px;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  -webkit-tap-highlight-color: transparent; /* 모바일 클릭 하이라이트 제거 */
+}
+.hs-icon:hover {
+  background: #f5f5f3;
+}
+.hs-icon:focus {
+  outline: none;
+}
+
+/* Delete Floating Button */
+.hs-delete-btn {
+  width: 36px;
+  height: 36px;       /* ← width/height 동일로 원형 유지 */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,0,0,0.9);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+.hs-delete-btn:hover {
+  background: rgba(255,0,0,1);
+}
+.hs-delete-btn i {
+  width: 18px;
+  height: 18px;
+  color: white;
+  pointer-events: none;
+}
+
+.subtitle {
+  margin: 0;
+  color: #6b7280;
+}
+
+/* Container */
+.hs-container {
+  padding: 24px;
+}
+
+/* Add Plant */
+.hs-add-btn {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  background: #4a7c59;
+  color: white;
+  padding: 18px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  transition: 0.2s;
+}
+.hs-add-btn:hover {
+  background: #3d6549;
+}
+
+/* Plant Card */
+.hs-card {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #e5e5e0;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 18px;
+  transition: 0.25s;
+}
+.hs-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+}
+.hs-img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+.hs-card-body {
+  padding: 16px;
+}
+.hs-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.nickname {
+  font-size: 18px;
+  color: #2c3e2f;
+}
+.type {
+  background: #f5f5f3;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  color: #6b7280;
+}
+.info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Delete Floating Button */
+.hs-delete-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(255, 0, 0, .88);
+  border-radius: 50%;
+  padding: 7px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.hs-delete-btn:hover {
+  background: rgba(255, 0, 0, 1);
+}
+
+/* AlertDialog */
+.hs-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+.hs-dialog {
+  width: 86%;
+  max-width: 380px;
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+}
+.hs-dialog-buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+}
+.hs-cancel,
+.hs-confirm {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+  border: none;
+}
+.hs-cancel {
+  background: #f5f5f3;
+}
+.hs-confirm {
+  background: #e03134;
+  color: white;
+}
+.hs-confirm:hover {
+  background: #c8282b;
+}
