@@ -1,0 +1,149 @@
+/* 전체 앱 컨테이너: 다른 화면과 동일 비율 */
+.app-container {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #FAFAF8;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 헤더: 상단 고정 느낌, 높이/패딩 통일 */
+.header {
+  background: #FFFFFF;
+  padding: 16px 24px 12px;
+  border-bottom: 1px solid #E5E5E0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.header-title {
+  font-size: 20px;
+  color: #2C3E2F;
+  margin: 0 0 4px 0;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6B7280;
+}
+
+/* 아이콘 버튼: 무조건 정사각형 원 (타원 방지) */
+.icon-btn {
+  background: transparent;
+  border-radius: 999px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+.icon-btn:hover {
+  background: #F5F5F3;
+}
+
+/* 내용 영역: 헤더 아래, 버튼 위 스크롤 영역 */
+.content {
+  flex: 1;
+  padding: 16px 24px 0;
+  overflow-y: auto;
+}
+
+/* 설문 섹션 */
+.survey-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-bottom: 16px;
+}
+
+/* 질문 블록 카드 */
+.block {
+  background: #FFFFFF;
+  border: 1px solid #E5E5E0;
+  border-radius: 20px;
+  padding: 18px 16px 16px;
+}
+
+.block-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.block-icon {
+  border-radius: 999px;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.block-title {
+  font-size: 16px;
+  color: #2C3E2F;
+}
+
+/* 선택지 라벨 */
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.option:hover {
+  background: #F5F5F3;
+}
+
+.option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+}
+
+/* 하단 고정 버튼 영역: 다른 화면들과 동일 구조 */
+.bottom-bar {
+  background: #FFFFFF;
+  border-top: 1px solid #E5E5E0;
+  padding: 12px 16px 20px;
+}
+
+.submit-btn {
+  width: 100%;
+  background: #4A7C59;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 16px;
+  color: #FFFFFF;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.submit-btn i {
+  width: 20px;
+  height: 20px;
+}
+
+.submit-btn.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.submit-btn:not(.disabled):hover {
+  background: #3D6549;
+}
