@@ -1,0 +1,213 @@
+.screen {
+  min-height: 100vh;
+  background: #FAFAF8;
+  padding-bottom: 24px;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+/* 상단 이미지 */
+.plant-image-section {
+  position: relative;
+  aspect-ratio: 3/2;
+  overflow: hidden;
+}
+
+.plant-image-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shadow-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+}
+
+/* 상단 버튼 */
+.icon-btn {
+  border: none;
+  background: rgba(255,255,255,0.88);
+  padding: 8px;
+  border-radius: 50%;
+  transition: background .15s;
+}
+
+.icon-btn:hover {
+  background: white;
+}
+
+.abs-left {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+}
+
+.abs-right {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+
+.icon-btn i {
+  width: 20px;
+  height: 20px;
+  color: #2C3E2F;
+}
+
+/* 제목 */
+.plant-title {
+  position: absolute;
+  bottom: 20px;
+  left: 18px;
+  right: 18px;
+  color: white;
+}
+
+.plant-title h1 {
+  font-size: 30px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+/* 컨테이너 */
+.info-container {
+  padding: 24px;
+}
+
+/* 요약 카드 */
+.info-card {
+  background: white;
+  border: 1px solid #E5E5E0;
+  border-radius: 20px;
+  padding: 22px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.label {
+  font-size: 13px;
+  color: #6B7280;
+  margin-bottom: 4px;
+}
+
+.value {
+  font-size: 22px;
+  color: #2C3E2F;
+  font-weight: 600;
+}
+
+/* 일지 헤더 */
+.journal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.journal-header h2 {
+  font-size: 22px;
+  color: #2C3E2F;
+  font-weight: 600;
+}
+
+/* 기록 추가 */
+.action-btn {
+  background: #4A7C59;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  transition: background .15s;
+}
+
+.action-btn:hover {
+  background: #3D6549;
+}
+
+.action-btn i {
+  margin-right: 4px;
+}
+
+/* 일지 카드 */
+.journal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.journal-card {
+  background: white;
+  border: 1px solid #E5E5E0;
+  border-radius: 22px;
+  overflow: hidden;
+  transition: box-shadow .15s;
+  text-align: left;
+}
+
+.journal-card:hover {
+  box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+}
+
+.journal-content {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+}
+
+.journal-thumb {
+  width: 78px;
+  height: 78px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.journal-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.journal-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.journal-date {
+  font-size: 13px;
+  color: #4A7C59;
+  margin-bottom: 4px;
+}
+
+.journal-img-count {
+  font-size: 11px;
+  color: #9CA3AF;
+}
+
+.journal-text {
+  font-size: 14px;
+  color: #2C3E2F;
+  margin: 6px 0;
+}
+
+.journal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  background: #E8F4EC;
+  border: none;
+  padding: 3px 6px;
+  border-radius: 8px;
+  font-size: 11px;
+  color: #4A7C59;
+}
