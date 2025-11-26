@@ -1,0 +1,217 @@
+/* 화면 프레임 */
+.app-container {
+  max-width: 430px;
+  margin: 0 auto;
+  background: #FAFAF8;
+  min-height: 100vh;
+  padding-bottom: 20px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+/* 헤더 */
+.header {
+  background: white;
+  padding: 16px 24px;
+  border-bottom: 1px solid #E5E5E0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.icon-btn {
+  padding: 8px;
+  border-radius: 50%;
+  transition: 0.15s;
+}
+.icon-btn:hover {
+  background: #F5F5F3;
+}
+.header-text h1 {
+  font-size: 20px;
+  color: #2C3E2F;
+}
+.header-text p {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+/* 본문 */
+.main-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 소개 박스 */
+.intro-box {
+  background: linear-gradient(to bottom right, #E8F4EC, #D1E7DD);
+  padding: 22px;
+  border-radius: 18px;
+}
+.intro-box h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #2C3E2F;
+}
+.intro-box p {
+  color: #4A7C59;
+  line-height: 1.5;
+}
+
+/* 관리방법 */
+.section-title {
+  font-size: 18px;
+  color: #2C3E2F;
+}
+.care-card {
+  background: white;
+  border: 1px solid #E5E5E0;
+  padding: 18px;
+  border-radius: 18px;
+  display: flex;
+  gap: 16px;
+}
+.care-icon {
+  padding: 14px;
+  border-radius: 50%;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.care-card h4 {
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: #2C3E2F;
+}
+.care-card p {
+  font-size: 14px;
+  color: #6B7280;
+  line-height: 1.45;
+}
+.notification-btn {
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #4A7C59;
+  margin-bottom: 4px;
+}
+.notification-btn:hover {
+  color: #3D6549;
+}
+
+/* Tips 박스 */
+.tips-box {
+  background: rgba(254, 243, 199, 0.3);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  padding: 20px;
+  border-radius: 18px;
+}
+.tips-box h4 {
+  color: #2C3E2F;
+  margin-bottom: 10px;
+}
+.tips-box li {
+  font-size: 14px;
+  color: #6B7280;
+  line-height: 1.45;
+  display: flex;
+  gap: 6px;
+}
+
+/* Dialog */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hidden {
+  display: none;
+}
+.dialog {
+  background: white;
+  padding: 20px;
+  border-radius: 18px;
+  width: 85%;
+  max-width: 360px;
+}
+.dialog-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.confirm-btn {
+  background: #4A7C59;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 10px;
+}
+.confirm-btn:hover {
+  background: #3D6549;
+}
+/* 📌 아이콘 원형 유지 */
+.care-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* 📌 알림 설정 버튼 */
+.care-notification-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #4A7C59;
+  background: transparent;
+  border: 1px solid #4A7C59;
+  padding: 6px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.care-notification-btn:hover {
+  background: #E8F4EC;
+}
+
+/* 🔔 아이콘 색 고정 */
+.care-notification-btn svg {
+  color: #4A7C59;
+  width: 16px;
+  height: 16px;
+}
+/* 알림 설정 버튼 */
+.notify-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #4A7C59;
+  cursor: pointer;
+  transition: 0.25s;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.notify-btn:hover {
+  color: #3D6549;
+  background: #00000005;
+}
+
+.notify-icon {
+  width: 18px;
+  height: 18px;
+}
