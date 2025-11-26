@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>내 식물</title>
+
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/HomeScreen.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script src="../js/screens/HomeScreen.js"></script>
+  <script>
+    // 테스트용 (보이게 하려고)
+    const plants = [
+      {
+        id: "p1",
+        nickname: "초록이",
+        name: "몬스테라",
+        adoptionDate: "2025-01-10",
+        lastWatered: "2025-11-22",
+        imageUrl: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6"
+      }
+    ];
+
+    HomeScreen({
+      plants,
+      onPlantClick: (plant) => console.log("식물 클릭:", plant),
+      onAddPlant: () => console.log("등록하기"),
+      onProfileClick: () => console.log("프로필"),
+      onNotificationsClick: () => console.log("알림"),
+      onDeletePlant: (id) => console.log("삭제된 ID:", id)
+    });
+  </script>
+</body>
+</html>
