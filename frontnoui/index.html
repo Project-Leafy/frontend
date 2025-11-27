@@ -2,17 +2,54 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>Leafy App</title>
-  <link rel="stylesheet" href="css/globals.css" />
-  <link rel="stylesheet" href="css/ui-navbar.css" />
-</head>
-<body>
-  <div id="app">
-    <main id="screen"></main>
-    <footer id="bottom-nav"></footer>
-  </div>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leafy</title>
 
-  <script src="js/ui/navbar.js"></script>
-  <script src="js/main.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Global CSS (공통 스타일 필요시) -->
+  <link rel="stylesheet" href="./css/global.css" />
+
+  <!-- 개별 화면 CSS -->
+  <link rel="stylesheet" href="./css/LoginScreen.css" />
+  <link rel="stylesheet" href="./css/HomeScreen.css" />
+  <link rel="stylesheet" href="./css/FeedScreen.css" />
+  <link rel="stylesheet" href="./css/RecommendationScreen.css" />
+  <link rel="stylesheet" href="./css/RecommendationResultsScreen.css" />
+  <link rel="stylesheet" href="./css/CalendarScreen.css" />
+  <link rel="stylesheet" href="./css/ProfileScreen.css" />
+  <link rel="stylesheet" href="./css/PlantDetailScreen.css" />
+  <link rel="stylesheet" href="./css/AddJournalScreen.css" />
+  <link rel="stylesheet" href="./css/JournalDetailScreen.css" />
+  <link rel="stylesheet" href="./css/PlantRegistrationFlow.css" />
+  <link rel="stylesheet" href="./css/DiagnosisFlow.css" />
+  <link rel="stylesheet" href="./css/PlantInfoScreen.css" />
+  <link rel="stylesheet" href="./css/NotificationsScreen.css" />
+  <link rel="stylesheet" href="./css/StoreFinderScreen.css" />
+</head>
+<body style="background:#FAFAF8; margin:0;">
+  <!-- 📌 SPA 렌더링 영역 -->
+  <div id="app"></div>
+
+  <!-- 스크린 JS -->
+  <script src="./js/screens/LoginScreen.js"></script>
+  <script src="./js/screens/HomeScreen.js"></script>
+  <script src="./js/screens/FeedScreen.js"></script>
+  <script src="./js/screens/RecommendationScreen.js"></script>
+  <script src="./js/screens/RecommendationResultsScreen.js"></script>
+  <script src="./js/screens/CalendarScreen.js"></script>
+  <script src="./js/screens/ProfileScreen.js"></script>
+  <script src="./js/screens/PlantDetailScreen.js"></script>
+  <script src="./js/screens/AddJournalScreen.js"></script>
+  <script src="./js/screens/JournalDetailScreen.js"></script>
+  <script src="./js/screens/PlantRegistrationFlow.js"></script>
+  <script src="./js/screens/DiagnosisFlow.js"></script>
+  <script src="./js/screens/PlantInfoScreen.js"></script>
+  <script src="./js/screens/NotificationsScreen.js"></script>
+  <script src="./js/screens/StoreFinderScreen.js"></script>
+
+  <!-- App.tsx 역할 -->
+  <script src="./js/main.js"></script>
 </body>
 </html>
