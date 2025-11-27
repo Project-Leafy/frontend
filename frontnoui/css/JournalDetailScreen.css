@@ -1,0 +1,137 @@
+body {
+  margin: 0;
+  background: #fafaf8;
+  display: flex;
+  justify-content: center;
+}
+
+#app {
+  width: 100%;
+  max-width: 430px;
+  background: #fafaf8;
+  min-height: 100vh;
+}
+
+/* Header */
+.jd-header {
+  background: white;
+  border-bottom: 1px solid #E5E5E0;
+  padding: 16px 24px;
+}
+.jd-header-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.jd-icon-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  cursor: pointer;
+  transition: 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.jd-icon-btn:hover {
+  background: #f5f5f3;
+}
+.jd-red-btn:hover {
+  background: #ffe8e8 !important;
+}
+
+.jd-header-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+.jd-header-info .nickname {
+  color: #4A7C59;
+}
+.jd-header-info .date {
+  color: #9CA3AF;
+}
+
+/* Body */
+.jd-container {
+  padding: 24px;
+}
+.jd-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  object-fit: cover;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.jd-diagnosis {
+  background: #FEF3C7;
+  border: 1px solid rgba(245, 158, 11, .25);
+  border-radius: 18px;
+  padding: 20px;
+}
+.jd-diagnosis h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  color: #2C3E2F;
+}
+
+.jd-content {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid #E5E5E0;
+}
+.jd-memo {
+  font-size: 15px;
+  color: #2C3E2F;
+  white-space: pre-wrap;
+  line-height: 1.55;
+}
+
+/* AlertDialog */
+.jd-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+.jd-dialog {
+  width: 86%;
+  max-width: 390px;
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+}
+.jd-dialog-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+.jd-cancel,
+.jd-confirm {
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  flex: 1;
+  border: none;
+  transition: .2s;
+}
+.jd-cancel {
+  background: #f5f5f3;
+}
+.jd-confirm {
+  background: #e03134;
+  color: white;
+}
+.jd-confirm:hover {
+  background: #c8282b;
+}
