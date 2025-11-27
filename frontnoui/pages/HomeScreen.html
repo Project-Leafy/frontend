@@ -5,35 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 식물</title>
 
+  <!-- Global & Home CSS -->
   <link rel="stylesheet" href="../css/global.css" />
   <link rel="stylesheet" href="../css/HomeScreen.css" />
+
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
-  <div id="app"></div>
+  <div id="app">
 
+    <!-- ======= HEADER ======= -->
+    <div class="hs-header">
+      <div class="hs-header-top">
+        <h2 style="font-size: 20px; font-weight: 600; margin: 0;">내 식물</h2>
+        <div>
+          <button id="notifications-btn" class="hs-icon">
+            <i data-lucide="bell"></i>
+          </button>
+          <button id="profile-btn" class="hs-icon">
+            <i data-lucide="user"></i>
+          </button>
+        </div>
+      </div>
+      <p id="plant-count" class="subtitle"></p>
+    </div>
+
+    <!-- ======= BODY ======= -->
+    <div class="hs-container">
+
+      <!-- 식물 등록 버튼 -->
+      <button id="add-plant-btn" class="hs-add-btn">
+        <i data-lucide="plus-circle" style="margin-right: 6px;"></i>
+        식물 등록하기
+      </button>
+
+      <!-- 식물 리스트 -->
+      <div id="plant-list"></div>
+    </div>
+
+  </div>
+
+  <!-- 화면 JS -->
   <script src="../js/screens/HomeScreen.js"></script>
-  <script>
-    // 테스트용 (보이게 하려고)
-    const plants = [
-      {
-        id: "p1",
-        nickname: "초록이",
-        name: "몬스테라",
-        adoptionDate: "2025-01-10",
-        lastWatered: "2025-11-22",
-        imageUrl: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6"
-      }
-    ];
-
-    HomeScreen({
-      plants,
-      onPlantClick: (plant) => console.log("식물 클릭:", plant),
-      onAddPlant: () => console.log("등록하기"),
-      onProfileClick: () => console.log("프로필"),
-      onNotificationsClick: () => console.log("알림"),
-      onDeletePlant: (id) => console.log("삭제된 ID:", id)
-    });
-  </script>
 </body>
 </html>

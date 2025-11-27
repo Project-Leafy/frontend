@@ -1,4 +1,6 @@
-function HomeScreen({
+console.log("[HomeScreen loaded]");
+
+window.renderHomeScreen = async function ({
   plants,
   onPlantClick,
   onAddPlant,
@@ -7,123 +9,67 @@ function HomeScreen({
   onDeletePlant,
 }) {
   const app = document.getElementById("app");
+  const res = await fetch("./pages/HomeScreen.html");
+  app.innerHTML = await res.text();
 
-  let deletingPlant = null;
+  if (window.lucide) window.lucide.createIcons();
 
-  renderScreen();
+  document.getElementById("profile-btn").onclick = onProfileClick;
+  document.getElementById("notifications-btn").onclick = onNotificationsClick;
+  document.getElementById("add-plant-btn").onclick = onAddPlant;
 
-  function renderScreen() {
-    app.innerHTML = `
-      <div class="hs-header">
-        <div class="hs-header-top">
-          <h1 style="margin:0;font-size:22px;color:#2C3E2F">내 식물</h1>
-          <div style="display:flex;gap:8px">
-            <button id="hs-noti" class="hs-icon"><i data-lucide="bell"></i></button>
-            <button id="hs-profile" class="hs-icon"><i data-lucide="user"></i></button>
-          </div>
-        </div>
-        <p class="subtitle">${plants.length}개의 식물과 함께 성장하고 있어요</p>
+  const plantCount = document.getElementById("plant-count");
+  plantCount.textContent = `${plants.length}개의 식물과 함께 성장하고 있어요`;
+
+  const list = document.getElementById("plant-list");
+  list.innerHTML = "";
+
+  plants.forEach((p) => {
+  const card = document.createElement("div");
+  card.className = "hs-card";
+
+  // 날짜 계산
+  const today = new Date();
+  const adoption = p.adoptionDate ? new Date(p.adoptionDate) : null;
+  const lastWater = p.lastWatered ? new Date(p.lastWatered) : null;
+
+  let daysTogetherText = "";
+  if (adoption) {
+    const diff = Math.floor((today - adoption) / (1000 * 60 * 60 * 24));
+    daysTogetherText = `함께한 지 ${diff}일`;
+  }
+
+  let lastWaterText = "";
+  if (lastWater) {
+    const diff = Math.floor((today - lastWater) / (1000 * 60 * 60 * 24));
+    lastWaterText = diff === 0 ? "오늘 물주기" : `마지막 물주기: ${diff}일 전`;
+  }
+
+  card.innerHTML = `
+    <img class="hs-img" src="${p.imageUrl}" />
+    <button class="hs-delete-btn"><i data-lucide="trash-2"></i></button>
+    <div class="hs-card-body">
+      <div class="hs-topline">
+        <div class="nickname">${p.nickname}</div>
+        <div class="type">${p.name}</div>
       </div>
-
-      <div class="hs-container">
-        <button id="hs-add" class="hs-add-btn">
-          <i data-lucide="plus" style="margin-right:6px"></i>식물 등록하기
-        </button>
-        <div id="hs-list"></div>
+      <div class="info">
+        <span>${daysTogetherText}</span>
+        <span>${lastWaterText}</span>
       </div>
-    `;
-    lucide.createIcons();
+    </div>
+  `;
 
-    document.getElementById("hs-add").onclick = onAddPlant;
-    document.getElementById("hs-noti").onclick = onNotificationsClick;
-    document.getElementById("hs-profile").onclick = onProfileClick;
+  card.onclick = () => onPlantClick(p);
 
-    renderPlants();
-  }
+  const delBtn = card.querySelector(".hs-delete-btn");
+  delBtn.onclick = (e) => {
+    e.stopPropagation();
+    onDeletePlant(p.id);
+  };
 
-  function renderPlants() {
-    const list = document.getElementById("hs-list");
+  list.appendChild(card);
+});
 
-    if (plants.length === 0) {
-      list.innerHTML = `<div style="text-align:center;color:#6b7280;padding:60px 0">아직 등록된 식물이 없어요<br/><span style="font-size:14px;color:#9CA3AF">첫 번째 반려식물을 등록해보세요!</span></div>`;
-      return;
-    }
-
-    list.innerHTML = plants
-      .map(
-        (p) => `
-        <div class="hs-card" data-id="${p.id}">
-          <img src="${p.imageUrl}" class="hs-img" />
-          <button class="hs-delete-btn" data-del="${p.id}">
-            <i data-lucide="trash-2" style="width:16px"></i>
-          </button>
-          <div class="hs-card-body">
-            <div class="hs-topline">
-              <span class="nickname">${p.nickname}</span>
-              <span class="type">${p.name}</span>
-            </div>
-            <div class="info">
-              <span>함께한 지 ${daysSince(p.adoptionDate)}일</span>
-              ${p.lastWatered ? `<span>${daysSince(p.lastWatered)}일 전</span>` : ""}
-            </div>
-          </div>
-        </div>
-      `
-      )
-      .join("");
-
-    lucide.createIcons();
-
-    document.querySelectorAll(".hs-card").forEach((el) => {
-      el.addEventListener("click", () => {
-        const id = el.dataset.id;
-        const plant = plants.find((x) => x.id === id);
-        onPlantClick(plant);
-      });
-    });
-
-    document.querySelectorAll("[data-del]").forEach((el) => {
-      el.addEventListener("click", (e) => {
-        e.stopPropagation();
-        deletingPlant = plants.find((p) => p.id === el.dataset.del);
-        showDeleteDialog();
-      });
-    });
-  }
-
-  function showDeleteDialog() {
-    const dialog = document.createElement("div");
-    dialog.className = "hs-dialog-backdrop";
-    dialog.innerHTML = `
-      <div class="hs-dialog">
-        <h2 style="font-size:18px;color:#2C3E2F;margin:0 0 8px">식물을 삭제하시겠습니까?</h2>
-        <p style="color:#6B7280;font-size:14px;margin:0">
-          '${deletingPlant.nickname}'의 모든 성장 기록이 함께 삭제됩니다.
-        </p>
-        <div class="hs-dialog-buttons">
-          <button class="hs-cancel">취소</button>
-          <button class="hs-confirm">삭제</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(dialog);
-
-    dialog.addEventListener("click", (e) => {
-      if (e.target === dialog) closeDialog();
-    });
-    dialog.querySelector(".hs-cancel").onclick = closeDialog;
-
-    dialog.querySelector(".hs-confirm").onclick = () => {
-      onDeletePlant(deletingPlant.id);
-      closeDialog();
-    };
-  }
-
-  function closeDialog() {
-    document.querySelector(".hs-dialog-backdrop")?.remove();
-  }
-}
-
-function daysSince(date) {
-  return Math.floor((new Date() - new Date(date)) / 86400000);
-}
+if (window.lucide) window.lucide.createIcons();
+};
