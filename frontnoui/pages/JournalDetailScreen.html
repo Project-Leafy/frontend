@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>성장 기록</title>
+  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/JournalDetailScreen.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script src="../js/screens/JournalDetailScreen.js"></script>
+  <script>
+    // 테스트용 데이터
+    const journal = {
+      id: "j1",
+      plantNickname: "초록이",
+      date: "2025-11-22",
+      memo: "물이 부족해서 잎이 축 처져있었다.\n오늘은 충분히 물을 줬음!",
+      tags: ["성장", "물주기"],
+      images: [
+        "https://images.unsplash.com/photo-1598935884347-b1c3e39a01d7",
+      ]
+    };
+
+    JournalDetailScreen({
+      journal,
+      onBack: () => console.log("뒤로가기"),
+      onDelete: (id) => console.log("삭제된 ID:", id),
+    });
+  </script>
+</body>
+</html>
