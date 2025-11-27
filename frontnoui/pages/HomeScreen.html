@@ -46,6 +46,20 @@
     </div>
 
   </div>
+  <!-- 삭제 확인 Dialog -->
+<div id="deleteDialog" class="hs-dialog-backdrop hidden">
+  <div class="hs-dialog">
+    <h2 style="font-size:18px; font-weight:600; margin:0 0 8px 0;">식물을 삭제할까요?</h2>
+    <p style="margin:0; color:#6b7280; font-size:14px;">
+      삭제하면 해당 식물과 모든 기록이 사라집니다.
+    </p>
+
+    <div class="hs-dialog-buttons">
+      <button id="dialogCancel" class="hs-cancel">취소</button>
+      <button id="dialogConfirm" class="hs-confirm">삭제</button>
+    </div>
+  </div>
+</div>
 
   <!-- 화면 JS -->
   <script src="../js/screens/HomeScreen.js"></script>
