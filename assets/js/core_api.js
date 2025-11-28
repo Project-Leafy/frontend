@@ -41,6 +41,12 @@ export async function fetchApi(path, options = {}) {
         ...options.headers, // 기존 헤더 덮어쓰기
     };
 
+    // ✨ [핵심 수정] 전송할 데이터가 파일(FormData)인 경우,
+    // Content-Type 헤더를 아예 삭제해야 브라우저가 자동으로 'multipart/form-data'와 'boundary'를 설정합니다.
+    if (options.body instanceof FormData) {
+        delete headers['Content-Type'];
+    }
+    
     // 토큰이 있으면 Authorization 헤더 추가
     if (token) {
         headers['Authorization'] = 'Bearer ' + token;
