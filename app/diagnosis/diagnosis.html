@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Leafy - 식물 진단</title>
+    
+    <!-- 1. 보안 가드 (경로: assets/js/auth.js) -->
+    <script src="../../assets/js/auth.js"></script>
+
+    <!-- 2. 스타일 시트 -->
+    <link rel="stylesheet" href="../main/main.css"> <!-- 공통 스타일 -->
+    <link rel="stylesheet" href="diagnosis.css">    <!-- 진단 전용 스타일 -->
+    
+    <!-- 아이콘 라이브러리 -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div id="app-container">
+        <!-- 헤더 -->
+        <header id="main-header">
+            <h1>AI 식물 건강 진단</h1>
+        </header>
+
+        <main id="main-content">
+            <div class="diagnosis-container">
+                
+                <!-- [Step 1] 식물 선택 -->
+                <div class="form-group">
+                    <label for="plant-select">아픈 식물을 선택해주세요</label>
+                    <select id="plant-select" class="plant-select">
+                        <option value="">식물 불러오는 중...</option>
+                        <!-- JS로 내 식물 목록이 로딩됩니다 -->
+                    </select>
+                </div>
+
+                <!-- [Step 2] 사진 업로드 -->
+                <div class="form-group">
+                    <label>증상이 보이는 사진을 올려주세요</label>
+                    <div class="image-upload-box" id="upload-box">
+                        <!-- 업로드 전 안내 문구 -->
+                        <div class="upload-placeholder" id="placeholder">
+                            <i data-lucide="camera" width="48" height="48"></i>
+                            <span>터치하여 사진 촬영/선택</span>
+                        </div>
+                        <!-- 이미지 미리보기 (처음엔 숨김) -->
+                        <img id="preview-img" alt="미리보기">
+                        <!-- 실제 파일 입력창 (숨김) -->
+                        <input type="file" id="image-input" class="upload-input" accept="image/*">
+                    </div>
+                </div>
+
+                <!-- [Step 3] 진단 버튼 -->
+                <button id="diagnose-btn" class="submit-btn" disabled>
+                    어디가 아픈가요? (진단 시작)
+                </button>
+
+                <!-- [Step 4] 진단 결과 영역 (결과 나오면 표시) -->
+                <div id="result-card" class="result-card">
+                    <div class="result-header">
+                        <div>
+                            <div class="disease-title">AI 진단 결과</div>
+                            <div class="disease-name" id="res-disease">분석 중...</div>
+                        </div>
+                        <div class="probability-badge" id="res-prob">0%</div>
+                    </div>
+                    <div class="treatment-section">
+                        <h4><i data-lucide="clipboard-list" width="20"></i> 처방전</h4>
+                        <div class="treatment-content" id="res-treatment">
+                            치료법 내용이 여기에 표시됩니다.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- 하단 네비게이션 -->
+        <nav id="bottom-nav">
+            <a href="../main/main.html" class="nav-item">
+                <i data-lucide="home"></i>
+                <span>홈</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="layout-grid"></i>
+                <span>모아보기</span>
+            </a>
+            <!-- 현재 페이지 active 클래스 적용 -->
+            <a href="../diagnosis/diagnosis.html" class="nav-item active">
+                <i data-lucide="stethoscope"></i>
+                <span>진단하기</span>
+            </a>
+            <a href="../recommend/recommend.html" class="nav-item">
+                <i data-lucide="lightbulb"></i>
+                <span>추천</span>
+            </a>
+            <a href="../calendar/calendar.html" class="nav-item">
+                <i data-lucide="calendar"></i>
+                <span>캘린더</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- 로딩 오버레이 -->
+    <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text">
+            AI가 식물을 꼼꼼히 살펴보고 있어요...<br>잠시만 기다려주세요.
+        </p>
+    </div>
+
+    <!-- 아이콘 렌더링 -->
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <!-- 메인 로직 스크립트 -->
+    <script type="module">
+        // core_api.js import (경로: assets/js/core_api.js)
+        import { fetchApi } from '../../assets/js/core_api.js';
+
+        // DOM 요소 가져오기
+        const plantSelect = document.getElementById('plant-select');
+        const uploadBox = document.getElementById('upload-box');
+        const imageInput = document.getElementById('image-input');
+        const previewImg = document.getElementById('preview-img');
+        const placeholder = document.getElementById('placeholder');
+        const diagnoseBtn = document.getElementById('diagnose-btn');
+        const loading = document.getElementById('loading');
+        const resultCard = document.getElementById('result-card');
+
+        // 1. 초기화: 내 식물 목록 불러오기
+        async function init() {
+            try {
+                // '/api/v1/my-plants' 엔드포인트 호출 (페이징 없이 전체 필요 시 사이즈 조절)
+                const response = await fetchApi('/api/v1/my-plants?size=50', { method: 'GET' });
+                
+                if (!response.ok) {
+                    throw new Error('식물 목록 로딩 실패');
+                }
+
+                const plants = await response.json();
+                
+                // 목록이 비었을 경우 처리
+                if (plants.length === 0) {
+                    plantSelect.innerHTML = '<option value="">등록된 식물이 없습니다</option>';
+                    alert('먼저 홈 화면에서 식물을 등록해주세요!');
+                    return;
+                }
+
+                // 목록 채우기
+                plantSelect.innerHTML = '<option value="">진단할 식물을 선택하세요</option>';
+                plants.forEach(plant => {
+                    const option = document.createElement('option');
+                    // DTO 필드명 확인 (예: my_plant_id, nickname)
+                    option.value = plant.my_plant_id; 
+                    option.textContent = plant.nickname;
+                    plantSelect.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error(error);
+                plantSelect.innerHTML = '<option value="">목록 로딩 에러</option>';
+            }
+        }
+
+        // 2. 이미지 업로드 UI 처리 (클릭 시 파일 선택창 열기)
+        uploadBox.addEventListener('click', () => imageInput.click());
+
+        // 파일 선택 시 미리보기 표시
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block'; // 이미지 보이기
+                    placeholder.style.display = 'none'; // 안내 문구 숨기기
+                    checkFormValidity(); // 버튼 활성화 체크
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 식물 선택 시 버튼 활성화 체크
+        plantSelect.addEventListener('change', checkFormValidity);
+
+        // 3. 유효성 검사: 식물 선택 + 이미지 업로드 완료 시 버튼 활성화
+        function checkFormValidity() {
+            if (plantSelect.value && imageInput.files.length > 0) {
+                diagnoseBtn.disabled = false;
+            } else {
+                diagnoseBtn.disabled = true;
+            }
+        }
+
+        // 4. 진단 요청 실행 (버튼 클릭)
+        diagnoseBtn.addEventListener('click', async () => {
+            const myPlantId = plantSelect.value;
+            const imageFile = imageInput.files[0];
+
+            if (!myPlantId || !imageFile) return;
+
+            // 로딩 시작, 기존 결과 숨김
+            loading.style.display = 'flex';
+            resultCard.style.display = 'none';
+
+            // FormData 생성
+            const formData = new FormData();
+            formData.append('myPlantId', myPlantId);
+            formData.append('image', imageFile);
+            // 위치 정보가 있다면 추가 가능
+            // formData.append('lat', 37.5);
+            // formData.append('lon', 127.0);
+
+            try {
+                // fetchApi 호출
+                // [핵심] FormData 전송 시 Content-Type을 지워야 함
+                // core_api.js가 기본적으로 application/json을 넣으므로 undefined로 덮어써서 삭제 유도
+                const response = await fetchApi('/api/v1/diagnosis', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Content-Type': undefined } 
+                });
+
+                if (!response.ok) {
+                    throw new Error(`서버 오류: ${response.status}`);
+                }
+
+                const data = await response.json(); // PlantIdResponseDto 수신
+
+                // 5. 결과 파싱 및 UI 업데이트
+                // API 구조: result -> disease -> suggestions
+                const diseaseResult = data.result?.disease;
+                
+                if (diseaseResult && diseaseResult.suggestions?.length > 0) {
+                    const topSuggestion = diseaseResult.suggestions[0];
+                    
+                    // 병명 및 확률 표시
+                    const diseaseName = topSuggestion.name;
+                    const probability = (topSuggestion.probability * 100).toFixed(1);
+                    
+                    // 건강함/질병 텍스트 색상 처리
+                    const diseaseNameElem = document.getElementById('res-disease');
+                    if (diseaseName.toLowerCase() === 'healthy') {
+                        diseaseNameElem.textContent = '건강함 🌿';
+                        diseaseNameElem.className = 'disease-name healthy-text';
+                    } else {
+                        diseaseNameElem.textContent = diseaseName;
+                        diseaseNameElem.className = 'disease-name';
+                    }
+                    
+                    document.getElementById('res-prob').textContent = `정확도 ${probability}%`;
+                    
+                    // 치료법 파싱 (details.treatment)
+                    let treatmentText = "";
+                    const t = topSuggestion.details?.treatment;
+
+                    if (t) {
+                        if(t.biological && t.biological.length > 0) {
+                            treatmentText += `🌿 [친환경적 방제]\n${t.biological.join(', ')}\n\n`;
+                        }
+                        if(t.chemical && t.chemical.length > 0) {
+                            treatmentText += `💊 [화학적 방제]\n${t.chemical.join(', ')}\n\n`;
+                        }
+                        if(t.prevention && t.prevention.length > 0) {
+                            treatmentText += `🛡️ [예방 방법]\n${t.prevention.join(', ')}`;
+                        }
+                    }
+                    
+                    if (!treatmentText.trim()) {
+                        treatmentText = "상세한 치료 정보가 없습니다.\n전문가와 상담해보세요.";
+                    }
+
+                    document.getElementById('res-treatment').textContent = treatmentText;
+
+                    // 결과 카드 표시 및 스크롤 이동
+                    resultCard.style.display = 'block';
+                    resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                } else {
+                    alert('진단 결과를 찾을 수 없습니다.');
+                }
+
+            } catch (error) {
+                console.error('진단 에러:', error);
+                alert('진단 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+
+        // 초기화 함수 실행
+        init();
+    </script>
+</body>
+</html>
