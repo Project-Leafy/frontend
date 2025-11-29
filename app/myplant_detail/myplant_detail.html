@@ -34,12 +34,18 @@
                         <button id="save-nickname-btn" style="padding: 8px 15px; font-size: 0.9em;">저장</button>
                     </div>
                     <p id="plant-species-name"></p>
+                    <!-- ✅ 입양일 표시 추가 -->
+                    <p id="plant-adoption-display" style="margin-top: 10px; font-size: 0.95em; color: #666;">
+                        입양일: <span id="adoption-date-text">-</span>
+                    </p>
+
                     <!-- 입양일 편집 -->
                     <div style="display: flex; align-items: center; gap: 10px; justify-content: center; margin-top: 10px;">
                         <label><strong>입양일:</strong></label>
                         <input type="date" id="plant-adoption-date-input" style="padding: 5px; border-radius: 4px; border: 1px solid #ddd;">
                         <button id="save-date-btn" style="padding: 8px 15px; font-size: 0.9em;">저장</button>
                     </div>
+
                 </section>
 
                 <section class="info-card">
@@ -109,10 +115,17 @@
             plantNicknameInput.value = nickname; // ✅ input에 값 설정
             plantSpeciesName.textContent = speciesName;
 
-            // 입양일 input에 값 설정
-            if (plant.adoption_date) {
-                plantAdoptionDateInput.value = plant.adoption_date;
+            // ✅ 입양일을 화면에 표시하고 input에도 설정
+            const adoptionDateText = document.getElementById('adoption-date-text');
+            const adoptionDate = plant.adoption_date || plant.adoptionDate;
+            
+            if (adoptionDate) {
+                adoptionDateText.textContent = adoptionDate;
+                plantAdoptionDateInput.value = adoptionDate;
+            } else {
+                adoptionDateText.textContent = '미등록';
             }
+
         }
 
         /**
@@ -171,6 +184,9 @@
                     throw new Error('서버 응답 오류');
                 }
 
+                // ✅ 화면에 표시된 입양일도 업데이트
+                const adoptionDateText = document.getElementById('adoption-date-text');
+                adoptionDateText.textContent = newDate;
                 alert('입양일이 저장되었습니다!');
                 
                 // 식별 후보 상세 정보 다시 렌더링 (입양일 업데이트)
