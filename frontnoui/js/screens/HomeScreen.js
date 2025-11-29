@@ -119,6 +119,7 @@ window.renderHomeScreen = async function ({
 
     // 카드 전체 클릭 → 상세 화면
     card.addEventListener("click", () => {
+      console.log("Plant card clicked:", p.nickname); // Added for debugging
       onPlantClick && onPlantClick(p);
     });
 

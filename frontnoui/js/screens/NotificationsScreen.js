@@ -1,4 +1,4 @@
-console.log("[NotificationsScreen loaded]");
+// NotificationsScreen.js
 
 const mockNotifications = [
   {
@@ -51,41 +51,6 @@ const mockNotifications = [
   },
 ];
 
-document.addEventListener("DOMContentLoaded", () => {
-  lucide.createIcons();
-
-  const backBtn = document.getElementById("back-btn");
-  const unreadCount = document.getElementById("unread-count");
-  const list = document.getElementById("notification-list");
-
-  unreadCount.textContent = `${mockNotifications.filter(n => !n.read).length}개의 새 알림`;
-
-  mockNotifications.forEach(n => {
-    const card = document.createElement("button");
-    card.className = `card ${n.read ? "" : "card-unread"}`;
-    card.innerHTML = `
-      <div class="row">
-        <div class="icon-circle" style="background:${bg(n.type)}">
-          <i data-lucide="${icon(n.type)}"></i>
-        </div>
-        <div class="content">
-          <div class="title-row">
-            <h3 class="title ${n.read ? "read" : ""}">${n.title}</h3>
-            <span class="time">${n.time}</span>
-          </div>
-          <p class="msg ${n.read ? "read" : ""}">${n.message}</p>
-          ${!n.read ? '<span class="unread-dot"></span>' : ""}
-        </div>
-      </div>
-    `;
-    card.addEventListener("click", () => handleNotificationClick(n));
-    list.appendChild(card);
-  });
-
-  backBtn.addEventListener("click", () => window.history.back());
-  lucide.createIcons();
-});
-
 function bg(type) {
   return {
     water: "#DBEAFE",
@@ -104,14 +69,88 @@ function icon(type) {
   }[type];
 }
 
-function handleNotificationClick(notification) {
-  console.log("clicked:", notification.title);
 
-  if (notification.action === "plant" && notification.plantNickname) {
-    // 🔥 식물 상세 페이지로 이동
-    window.location.href = `./PlantDetailScreen.html?plant=${notification.plantNickname}`;
-  } else if (notification.action === "calendar") {
-    // 🔥 캘린더로 이동
-    window.location.href = `./CalendarScreen.html`;
+// The main render function for the Notifications Screen, called by main.js
+async function renderNotificationsScreen({ plants, onBack, onNavigateToPlant, onNavigateToCalendar }) {
+  const appDiv = document.getElementById("app");
+  if (!appDiv) {
+    console.error("App container not found");
+    return;
+  }
+
+  try {
+    const response = await fetch("./pages/NotificationsScreen.html");
+    const html = await response.text();
+    appDiv.innerHTML = html;
+
+    // After injecting HTML, initialize lucide icons
+    lucide.createIcons();
+
+    // Now select elements as they are available in the DOM
+    const backBtn = document.getElementById("back-btn");
+    const unreadCountEl = document.getElementById("unread-count");
+    const notificationList = document.getElementById("notification-list");
+
+    function handleNotificationClick(notification) {
+      console.log("clicked:", notification.title);
+
+      if (notification.action === "plant" && notification.plantNickname) {
+        // Find the plant object by nickname
+        const targetPlant = plants.find(p => p.nickname === notification.plantNickname);
+        if (targetPlant) {
+            onNavigateToPlant(targetPlant);
+        } else {
+            console.warn("Plant not found for notification:", notification.plantNickname);
+            // Fallback: navigate to home or show error
+            onBack();
+        }
+      } else if (notification.action === "calendar") {
+        onNavigateToCalendar();
+      }
+    }
+
+
+    if (unreadCountEl) {
+        unreadCountEl.textContent = `${mockNotifications.filter(n => !n.read).length}개의 새 알림`;
+    } else {
+        console.error("unread-count element not found.");
+    }
+
+    if (notificationList) {
+        notificationList.innerHTML = ""; // Clear existing content
+        mockNotifications.forEach(n => {
+            const card = document.createElement("button");
+            card.className = `card ${n.read ? "" : "card-unread"}`;
+            card.innerHTML = `
+                <div class="row">
+                    <div class="icon-circle" style="background:${bg(n.type)}">
+                    <i data-lucide="${icon(n.type)}"></i>
+                    </div>
+                    <div class="content">
+                    <div class="title-row">
+                        <h3 class="title ${n.read ? "read" : ""}">${n.title}</h3>
+                        <span class="time">${n.time}</span>
+                    </div>
+                    <p class="msg ${n.read ? "read" : ""}">${n.message}</p>
+                    ${!n.read ? '<span class="unread-dot"></span>' : ""}
+                    </div>
+                </div>
+            `;
+            card.addEventListener("click", () => handleNotificationClick(n));
+            notificationList.appendChild(card);
+        });
+        lucide.createIcons(); // Re-create icons after rendering new content
+    } else {
+        console.error("notification-list element not found.");
+    }
+
+    if (backBtn) {
+      backBtn.addEventListener("click", onBack);
+    } else {
+      console.error("back-btn not found in NotificationsScreen");
+    }
+
+  } catch (error) {
+    console.error("Failed to load NotificationsScreen.html:", error);
   }
 }

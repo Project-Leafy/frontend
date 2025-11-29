@@ -1,10 +1,10 @@
 // =============================================================
 // CalendarScreen.js
 // React 없이 CalendarScreen.tsx의 기능 전체 구현
-// 전역 함수 initCalendarScreen() 으로 페이지 초기화
+// 전역 함수 renderCalendarScreen() 으로 페이지 초기화
 // =============================================================
 
-// 전역 상태
+// 전역 상태 (reset on render)
 let plantsData = [];
 let onProfileClickCallback = null;
 
@@ -22,7 +22,7 @@ let scheduleData = {
   30: [{ type: "repot", plant: "공기요정" }]
 };
 
-// 요소 참조
+// 요소 참조 (now functions to ensure elements are retrieved after HTML load)
 const monthTitleEl = () => document.getElementById("monthTitle");
 const calendarGridEl = () => document.getElementById("calendarGrid");
 const upcomingListEl = () => document.getElementById("upcomingList");
@@ -88,15 +88,21 @@ function getScheduleIconHTML(type, forToday) {
 // =============================================================
 
 function renderMonthTitle() {
-  const title = currentDate.toLocaleDateString("ko-KR", {
-    year: "numeric",
-    month: "long"
-  });
-  monthTitleEl().textContent = title;
+  const titleEl = monthTitleEl();
+  if (titleEl) {
+    titleEl.textContent = currentDate.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "long"
+    });
+  }
 }
 
 function renderCalendar() {
   const grid = calendarGridEl();
+  if (!grid) {
+    console.error("Calendar grid element not found.");
+    return;
+  }
   grid.innerHTML = "";
 
   const days = getDaysInMonth(currentDate);
@@ -140,6 +146,10 @@ function renderCalendar() {
 
 function renderUpcoming() {
   const list = upcomingListEl();
+  if (!list) {
+    console.error("Upcoming list element not found.");
+    return;
+  }
   list.innerHTML = "";
 
   // 단순 mock (TSX에서도 실제 로직과 별도)
@@ -192,121 +202,186 @@ function handleDayClick(day) {
 
   if (!scheduleData[day]) return;
 
-  dayDetailTitleEl().textContent = `${currentDate.getMonth() + 1}월 ${day}일 일정`;
+  const titleEl = dayDetailTitleEl();
+  if (titleEl) titleEl.textContent = `${currentDate.getMonth() + 1}월 ${day}일 일정`;
 
-  dayDetailItemsEl().innerHTML = scheduleData[day]
-    .map(
-      (item) => `
-      <div class="schedule-card" style="border:none; background:#F5F5F3;">
-        <div class="schedule-icon" style="background:${
-          item.type === "water" ? "#DBEAFE" : "#FEF3C7"
-        };">
-          ${getScheduleIconHTML(item.type, false)}
+  const itemsEl = dayDetailItemsEl();
+  if (itemsEl) {
+    itemsEl.innerHTML = scheduleData[day]
+      .map(
+        (item) => `
+        <div class="schedule-card" style="border:none; background:#F5F5F3;">
+          <div class="schedule-icon" style="background:${
+            item.type === "water" ? "#DBEAFE" : "#FEF3C7"
+          };">
+            ${getScheduleIconHTML(item.type, false)}
+          </div>
+          <div class="schedule-main">
+            <p>${item.plant}</p>
+            <span>${item.type === "water" ? "물주기" : item.type === "repot" ? "분갈이" : "비료주기"}</span>
+          </div>
         </div>
-        <div class="schedule-main">
-          <p>${item.plant}</p>
-          <span>${item.type === "water" ? "물주기" : item.type === "repot" ? "분갈이" : "비료주기"}</span>
-        </div>
-      </div>
-    `
-    )
-    .join("");
+      `
+      )
+      .join("");
+  }
 
-  dayDetailModal().classList.remove("hidden");
+
+  const modal = dayDetailModal();
+  if (modal) modal.classList.remove("hidden");
 }
 
-// 모달 닫기
-document.getElementById("dayDetailClose").onclick = () => {
-  dayDetailModal().classList.add("hidden");
-};
 
-// =============================================================
-// Add Schedule Modal
-// =============================================================
-
-document.getElementById("openAddSchedule").onclick = () => {
-  addScheduleModal().classList.remove("hidden");
-};
-
-document.getElementById("addScheduleCancel").onclick = () => {
-  addScheduleModal().classList.add("hidden");
-};
-
-document.getElementById("addScheduleConfirm").onclick = () => {
-  const dateVal = scheduleDateInput().value;
-  const plantId = schedulePlantSelect().value;
-  const typeVal = scheduleTypeSelect().value;
-
-  if (!dateVal || !plantId) {
-    toastError("날짜와 식물을 선택해주세요");
+// The main render function for the Calendar Screen, called by main.js
+async function renderCalendarScreen({ plants, onProfileClick }) {
+  const appDiv = document.getElementById("app");
+  if (!appDiv) {
+    console.error("App container not found");
     return;
   }
 
-  const d = new Date(dateVal);
-  const day = d.getDate();
+  try {
+    const response = await fetch("./pages/CalendarScreen.html");
+    const html = await response.text();
+    appDiv.innerHTML = html;
 
-  const plant = plantsData.find((p) => p.id === plantId);
-  if (!plant) return;
+    // After injecting HTML, initialize lucide icons
+    lucide.createIcons();
 
-  const newItem = {
-    type: typeVal,
-    plant: plant.nickname
-  };
+    // Reset global state
+    plantsData = plants;
+    onProfileClickCallback = onProfileClick;
+    currentDate = new Date(2025, 9, 25); // Reset current date to initial state
+    selectedDay = null;
 
-  scheduleData[day] = [...(scheduleData[day] || []), newItem];
+    // Attach all event listeners and perform initial renders here
+    const dayDetailCloseBtn = document.getElementById("dayDetailClose");
+    if (dayDetailCloseBtn) {
+        dayDetailCloseBtn.onclick = () => {
+            const modal = dayDetailModal();
+            if (modal) modal.classList.add("hidden");
+        };
+    } else {
+        console.error("dayDetailClose button not found.");
+    }
 
-  toastSuccess("일정이 추가되었습니다");
 
-  addScheduleModal().classList.add("hidden");
+    const openAddScheduleBtn = document.getElementById("openAddSchedule");
+    if (openAddScheduleBtn) {
+        openAddScheduleBtn.onclick = () => {
+            const modal = addScheduleModal();
+            if (modal) modal.classList.remove("hidden");
 
-  // UI 다시 렌더링
-  renderCalendar();
-};
+            // Populate plant select
+            const plantSelect = schedulePlantSelect();
+            if (plantSelect) {
+                plantSelect.innerHTML = plants
+                    .map((p) => `<option value="${p.id}">${p.nickname} (${p.name})</option>`)
+                    .join("");
+            }
+        };
+    } else {
+        console.error("openAddSchedule button not found.");
+    }
 
-// =============================================================
-// Month Navigation
-// =============================================================
 
-document.getElementById("prevMonth").onclick = () => {
-  currentDate = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth() - 1
-  );
-  renderMonthTitle();
-  renderCalendar();
-};
+    const addScheduleCancelBtn = document.getElementById("addScheduleCancel");
+    if (addScheduleCancelBtn) {
+        addScheduleCancelBtn.onclick = () => {
+            const modal = addScheduleModal();
+            if (modal) modal.classList.add("hidden");
+        };
+    } else {
+        console.error("addScheduleCancel button not found.");
+    }
 
-document.getElementById("nextMonth").onclick = () => {
-  currentDate = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth() + 1
-  );
-  renderMonthTitle();
-  renderCalendar();
-};
+    const addScheduleConfirmBtn = document.getElementById("addScheduleConfirm");
+    if (addScheduleConfirmBtn) {
+        addScheduleConfirmBtn.onclick = () => {
+            const dateVal = scheduleDateInput()?.value;
+            const plantId = schedulePlantSelect()?.value;
+            const typeVal = scheduleTypeSelect()?.value;
 
-// =============================================================
-// Profile Click
-// =============================================================
+            if (!dateVal || !plantId) {
+                // Assuming a global toastError exists or needs to be provided
+                // toastError("날짜와 식물을 선택해주세요");
+                alert("날짜와 식물을 선택해주세요");
+                return;
+            }
 
-document.getElementById("profileButton").onclick = () => {
-  if (onProfileClickCallback) onProfileClickCallback();
-};
+            const d = new Date(dateVal);
+            const day = d.getDate();
 
-// =============================================================
-// Init Function
-// =============================================================
+            const plant = plantsData.find((p) => p.id === plantId);
+            if (!plant) return;
 
-window.initCalendarScreen = function (plants, onProfileClick) {
-  plantsData = plants;
-  onProfileClickCallback = onProfileClick;
+            const newItem = {
+                type: typeVal,
+                plant: plant.nickname
+            };
 
-  // 식물 select 채우기
-  schedulePlantSelect().innerHTML = plants
-    .map((p) => `<option value="${p.id}">${p.nickname} (${p.name})</option>`)
-    .join("");
+            scheduleData[day] = [...(scheduleData[day] || []), newItem];
 
-  renderMonthTitle();
-  renderCalendar();
-  renderUpcoming();
-};
+            // Assuming a global toastSuccess exists or needs to be provided
+            // toastSuccess("일정이 추가되었습니다");
+            alert("일정이 추가되었습니다");
+
+
+            const modal = addScheduleModal();
+            if (modal) modal.classList.add("hidden");
+
+            // UI 다시 렌더링
+            renderCalendar();
+        };
+    } else {
+        console.error("addScheduleConfirm button not found.");
+    }
+
+
+    const prevMonthBtn = document.getElementById("prevMonth");
+    if (prevMonthBtn) {
+        prevMonthBtn.onclick = () => {
+            currentDate = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth() - 1
+            );
+            renderMonthTitle();
+            renderCalendar();
+        };
+    } else {
+        console.error("prevMonth button not found.");
+    }
+
+
+    const nextMonthBtn = document.getElementById("nextMonth");
+    if (nextMonthBtn) {
+        nextMonthBtn.onclick = () => {
+            currentDate = new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth() + 1
+            );
+            renderMonthTitle();
+            renderCalendar();
+        };
+    } else {
+        console.error("nextMonth button not found.");
+    }
+
+    const profileButton = document.getElementById("profileButton");
+    if (profileButton) {
+        profileButton.onclick = () => {
+            if (onProfileClickCallback) onProfileClickCallback();
+        };
+    } else {
+        console.error("profileButton not found.");
+    }
+
+
+    renderMonthTitle();
+    renderCalendar();
+    renderUpcoming();
+
+  } catch (error) {
+    console.error("Failed to load CalendarScreen.html:", error);
+  }
+}

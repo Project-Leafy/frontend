@@ -1,10 +1,8 @@
 // AddJournalScreen.js
-// ★ export 제거완료
-// ★ window.initAddJournalScreen 으로 전역 공개
-// ★ 완전 동작 버전
 
 const availableTags = ['새순', '물주기', '분갈이', '가지치기', '성장', '개화', '건강'];
 
+// Global state for the screen, reset on each render
 let memo = "";
 let selectedTags = [];
 let images = [];
@@ -14,40 +12,20 @@ let plantData = null;
 let onBackCallback = null;
 let onSaveCallback = null;
 
-// DOM
-const memoInput = document.getElementById("memoInput");
-const memoError = document.getElementById("memoError");
-const tagContainer = document.getElementById("tagContainer");
-const imageGrid = document.getElementById("imageGrid");
-const backButton = document.getElementById("backButton");
-const backModal = document.getElementById("backModal");
-const modalCancel = document.getElementById("modalCancel");
-const modalConfirm = document.getElementById("modalConfirm");
-const saveButton = document.getElementById("saveButton");
-const plantNicknameLabel = document.getElementById("plantNickname");
+// DOM elements will be fetched inside renderAddJournalScreen
+// const memoInput;
+// const memoError;
+// ... (all other DOM elements)
 
 
 // ======================================================
-//   전역 함수로 init 제공
-//   HTML에서 initAddJournalScreen(...) 호출하면 페이지 세팅됨
-// ======================================================
-window.initAddJournalScreen = function (plant, onBack, onSave) {
-  plantData = plant;
-  onBackCallback = onBack;
-  onSaveCallback = onSave;
-
-  plantNicknameLabel.textContent = plant.nickname;
-
-  renderTags();
-  renderImages();
-};
-
-
-// ======================================================
-//   렌더링 함수들
+//   렌더링 함수들 (moved inside renderAddJournalScreen or made local helpers)
 // ======================================================
 
 function renderTags() {
+  const tagContainer = document.getElementById("tagContainer");
+  if (!tagContainer) return;
+
   tagContainer.innerHTML = "";
 
   availableTags.forEach(tag => {
@@ -62,6 +40,9 @@ function renderTags() {
 }
 
 function renderImages() {
+  const imageGrid = document.getElementById("imageGrid");
+  if (!imageGrid) return;
+
   imageGrid.innerHTML = "";
 
   images.forEach((img, i) => {
@@ -100,18 +81,8 @@ function renderImages() {
 
 
 // ======================================================
-//   내부 로직
+//   내부 로직 (moved inside renderAddJournalScreen or made local helpers)
 // ======================================================
-
-memoInput.oninput = (e) => {
-  memo = e.target.value;
-
-  if (memo.trim().length > 0) {
-    memoError.textContent = "";
-  }
-
-  checkChanges();
-};
 
 function toggleTag(tag) {
   if (selectedTags.includes(tag)) {
@@ -147,48 +118,134 @@ function checkChanges() {
 
 
 // ======================================================
-//   뒤로가기 처리
+//   메인 렌더 함수
 // ======================================================
-
-backButton.onclick = () => {
-  if (hasChanges) {
-    backModal.classList.remove("hidden");
-  } else {
-    onBackCallback();
-  }
-};
-
-modalCancel.onclick = () => {
-  backModal.classList.add("hidden");
-};
-
-modalConfirm.onclick = () => {
-  backModal.classList.add("hidden");
-  onBackCallback();
-};
-
-
-// ======================================================
-//   저장하기
-// ======================================================
-
-saveButton.onclick = () => {
-  if (!memo.trim()) {
-    memoError.textContent = "메모를 입력해주세요";
+async function renderAddJournalScreen({ plant, onBack, onSave }) {
+  const appDiv = document.getElementById("app");
+  if (!appDiv) {
+    console.error("App container not found");
     return;
   }
 
-  memoError.textContent = "";
+  try {
+    const response = await fetch("./pages/AddJournalScreen.html");
+    const html = await response.text();
+    appDiv.innerHTML = html;
 
-  const journal = {
-    id: Date.now().toString(),
-    plantId: plantData.id,
-    plantNickname: plantData.nickname,
-    date: new Date().toISOString().split("T")[0],
-    images: [...images],
-    memo: memo,
-    tags: [...selectedTags],
-  };
+    // After injecting HTML, initialize lucide icons
+    lucide.createIcons();
 
-  onSaveCallback(journal);
-};
+    // Reset screen state
+    memo = "";
+    selectedTags = [];
+    images = [];
+    hasChanges = false;
+    plantData = plant;
+    onBackCallback = onBack;
+    onSaveCallback = onSave;
+
+
+    // Get DOM elements after HTML is loaded
+    const memoInput = document.getElementById("memoInput");
+    const memoError = document.getElementById("memoError");
+    const backButton = document.getElementById("backButton");
+    const backModal = document.getElementById("backModal");
+    const modalCancel = document.getElementById("modalCancel");
+    const modalConfirm = document.getElementById("modalConfirm");
+    const saveButton = document.getElementById("saveButton");
+    const plantNicknameLabel = document.getElementById("plantNickname");
+
+
+    if (plantNicknameLabel) {
+      plantNicknameLabel.textContent = plantData.nickname;
+    }
+
+    if (memoInput) {
+      memoInput.oninput = (e) => {
+        memo = e.target.value;
+        if (memo.trim().length > 0 && memoError) {
+          memoError.textContent = "";
+        }
+        checkChanges();
+      };
+    } else {
+        console.error("memoInput not found");
+    }
+
+    // ======================================================
+    //   뒤로가기 처리
+    // ======================================================
+    if (backButton) {
+      backButton.onclick = () => {
+        console.log("[AddJournalScreen] Back button clicked."); // Debugging
+        if (hasChanges) {
+          if (backModal) backModal.classList.remove("hidden");
+        } else {
+          onBackCallback();
+        }
+      };
+    } else {
+        console.error("backButton not found");
+    }
+
+
+    if (modalCancel) {
+      modalCancel.onclick = () => {
+        console.log("[AddJournalScreen] Modal Cancel clicked."); // Debugging
+        if (backModal) backModal.classList.add("hidden");
+      };
+    } else {
+        console.error("modalCancel not found");
+    }
+
+
+    if (modalConfirm) {
+      modalConfirm.onclick = () => {
+        console.log("[AddJournalScreen] Modal Confirm clicked."); // Debugging
+        if (backModal) backModal.classList.add("hidden");
+        onBackCallback();
+      };
+    } else {
+        console.error("modalConfirm not found");
+    }
+
+
+    // ======================================================
+    //   저장하기
+    // ======================================================
+    if (saveButton) {
+      saveButton.onclick = () => {
+        console.log("[AddJournalScreen] Save button clicked."); // Debugging
+        if (!memo.trim()) {
+          if (memoError) memoError.textContent = "메모를 입력해주세요";
+          return;
+        }
+
+        if (memoError) memoError.textContent = "";
+
+        const journal = {
+          id: Date.now().toString(),
+          plantId: plantData.id,
+          plantNickname: plantData.nickname,
+          date: new Date().toISOString().split("T")[0],
+          images: [...images],
+          memo: memo,
+          tags: [...selectedTags],
+        };
+
+        onSaveCallback(journal);
+      };
+    } else {
+        console.error("saveButton not found");
+    }
+
+
+    // Initial render for tags and images
+    renderTags();
+    renderImages();
+    checkChanges(); // Initialize hasChanges
+
+  } catch (error) {
+    console.error("Failed to load AddJournalScreen.html:", error);
+  }
+}

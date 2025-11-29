@@ -1,6 +1,4 @@
-const fallbackImg = "../assets/placeholder.png";
-
-/* 추천 식물 데이터 */
+// global data for recommended plants
 const recommendedPlants = [
   {
     id: "1",
@@ -58,77 +56,130 @@ const recommendedPlants = [
   },
 ];
 
-const list = document.getElementById("recommendationList");
-const backBtn = document.getElementById("backBtn");
-const restartBtn = document.getElementById("restartBtn");
-const findStoreBtn = document.getElementById("findStoreBtn");
+const fallbackImg = "../assets/placeholder.png"; // Defined here for broader scope if needed
 
-/* 상세 팝업 DOM */
-const overlay = document.getElementById("detailOverlay");
-const detailName = document.getElementById("detailName");
-const detailScientific = document.getElementById("detailScientific");
-const detailImage = document.getElementById("detailImage");
-const detailDescription = document.getElementById("detailDescription");
-const detailInfoGrid = document.getElementById("detailInfoGrid");
-const detailLight = document.getElementById("detailLight");
-const detailWater = document.getElementById("detailWater");
-const detailDifficulty = document.getElementById("detailDifficulty");
-const closeDetailBtn = document.getElementById("closeDetailBtn");
 
-/* 리스트 렌더 */
-recommendedPlants.forEach((p) => {
-  const card = document.createElement("button");
-  card.className = "recommend-card";
-  card.innerHTML = `
-    <img src="${p.imageUrl}" class="recommend-img" onerror="this.src='${fallbackImg}'" />
-    <div class="recommend-body">
-      <h3 class="recommend-title">${p.name}</h3>
-      <p class="recommend-sub">${p.scientific}</p>
-      <p class="rec-desc">${p.description}</p>
-      <div class="feature-grid">
-        <div class="feature-box feature-light"><i data-lucide="sun"></i> ${p.light}</div>
-        <div class="feature-box feature-water"><i data-lucide="droplets"></i> ${p.water}</div>
-        <div class="feature-box feature-hard"><i data-lucide="leaf"></i> ${p.difficulty}</div>
-      </div>
-    </div>
-  `;
-  card.addEventListener("click", () => openDetail(p));
-  list.appendChild(card);
-});
+// The main render function for the Recommendation Results Screen, called by main.js
+async function renderRecommendationResultsScreen({ onBack, onFindStores, onRestartSurvey }) {
+  const appDiv = document.getElementById("app");
+  if (!appDiv) {
+    console.error("App container not found");
+    return;
+  }
 
-/* 팝업 열기 */
-function openDetail(p) {
-  detailName.textContent = p.name;
-  detailScientific.textContent = p.scientific;
-  detailImage.src = p.imageUrl;
-  detailDescription.textContent = p.description;
+  try {
+    const response = await fetch("./pages/RecommendationResultsScreen.html");
+    const html = await response.text();
+    appDiv.innerHTML = html;
 
-  detailInfoGrid.innerHTML = `
-    <div><b>온도</b><br>${p.detailedInfo.temperature}</div>
-    <div><b>습도</b><br>${p.detailedInfo.humidity}</div>
-    <div><b>토양</b><br>${p.detailedInfo.soil}</div>
-    <div><b>성장 속도</b><br>${p.detailedInfo.growth}</div>
-    <div><b>독성</b><br>${p.detailedInfo.toxicity}</div>
-    <div><b>공기정화</b><br>${p.detailedInfo.airPurification}</div>
-  `;
+    // After injecting HTML, initialize lucide icons
+    lucide.createIcons();
 
-  detailLight.textContent = p.light;
-  detailWater.textContent = p.water;
-  detailDifficulty.textContent = p.difficulty;
+    // Now select elements as they are available in the DOM
+    const list = document.getElementById("recommendationList");
+    const backBtn = document.getElementById("backBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const findStoreBtn = document.getElementById("findStoreBtn");
 
-  overlay.classList.remove("hidden");
-  lucide.createIcons();
+    // 상세 팝업 DOM (needs to be defined inside render function or globally accessible)
+    const overlay = document.getElementById("detailOverlay");
+    const detailName = document.getElementById("detailName");
+    const detailScientific = document.getElementById("detailScientific");
+    const detailImage = document.getElementById("detailImage");
+    const detailDescription = document.getElementById("detailDescription");
+    const detailInfoGrid = document.getElementById("detailInfoGrid");
+    const detailLight = document.getElementById("detailLight");
+    const detailWater = document.getElementById("detailWater");
+    const detailDifficulty = document.getElementById("detailDifficulty");
+    const closeDetailBtn = document.getElementById("closeDetailBtn");
+
+    /* 팝업 열기 */
+    function openDetail(p) {
+        if (!overlay || !detailName || !detailScientific || !detailImage || !detailDescription || !detailInfoGrid || !detailLight || !detailWater || !detailDifficulty) {
+            console.error("One or more detail popup DOM elements not found.");
+            return;
+        }
+        detailName.textContent = p.name;
+        detailScientific.textContent = p.scientific;
+        detailImage.src = p.imageUrl;
+        detailDescription.textContent = p.description;
+
+        detailInfoGrid.innerHTML = `
+            <div><b>온도</b><br>${p.detailedInfo.temperature}</div>
+            <div><b>습도</b><br>${p.detailedInfo.humidity}</div>
+            <div><b>토양</b><br>${p.detailedInfo.soil}</div>
+            <div><b>성장 속도</b><br>${p.detailedInfo.growth}</div>
+            <div><b>독성</b><br>${p.detailedInfo.toxicity}</div>
+            <div><b>공기정화</b><br>${p.detailedInfo.airPurification}</div>
+        `;
+
+        detailLight.textContent = p.light;
+        detailWater.textContent = p.water;
+        detailDifficulty.textContent = p.difficulty;
+
+        overlay.classList.remove("hidden");
+        lucide.createIcons();
+    }
+
+    /* 팝업 닫기 */
+    if (closeDetailBtn) {
+        closeDetailBtn.addEventListener("click", () => overlay.classList.add("hidden"));
+    } else {
+        console.error("closeDetailBtn not found");
+    }
+    if (overlay) {
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) overlay.classList.add("hidden");
+        });
+    }
+
+
+    /* 리스트 렌더 */
+    if (list) {
+        list.innerHTML = ''; // Clear existing content before rendering
+        recommendedPlants.forEach((p) => {
+            const card = document.createElement("button");
+            card.className = "recommend-card";
+            card.innerHTML = `
+                <img src="${p.imageUrl}" class="recommend-img" onerror="this.src='${fallbackImg}'" />
+                <div class="recommend-body">
+                    <h3 class="recommend-title">${p.name}</h3>
+                    <p class="recommend-sub">${p.scientific}</p>
+                    <p class="rec-desc">${p.description}</p>
+                    <div class="feature-grid">
+                        <div class="feature-box feature-light"><i data-lucide="sun"></i> ${p.light}</div>
+                        <div class="feature-box feature-water"><i data-lucide="droplets"></i> ${p.water}</div>
+                        <div class="feature-box feature-hard"><i data-lucide="leaf"></i> ${p.difficulty}</div>
+                    </div>
+                </div>
+            `;
+            card.addEventListener("click", () => openDetail(p));
+            list.appendChild(card);
+        });
+        lucide.createIcons(); // Re-create icons after rendering new content
+    } else {
+        console.error("recommendationList not found");
+    }
+
+
+    /* 네비 */
+    if (backBtn) {
+      backBtn.addEventListener("click", onBack);
+    } else {
+      console.error("backBtn not found in RecommendationResultsScreen");
+    }
+    if (restartBtn) {
+      restartBtn.addEventListener("click", onRestartSurvey);
+    } else {
+      console.error("restartBtn not found in RecommendationResultsScreen");
+    }
+    if (findStoreBtn) {
+      findStoreBtn.addEventListener("click", onFindStores);
+    } else {
+      console.error("findStoreBtn not found in RecommendationResultsScreen");
+    }
+
+  } catch (error) {
+    console.error("Failed to load RecommendationResultsScreen.html:", error);
+  }
 }
-
-/* 팝업 닫기 */
-closeDetailBtn.addEventListener("click", () => overlay.classList.add("hidden"));
-overlay.addEventListener("click", (e) => {
-  if (e.target === overlay) overlay.classList.add("hidden");
-});
-
-/* 네비 */
-backBtn.addEventListener("click", () => history.back());
-restartBtn.addEventListener("click", () => location.reload());
-findStoreBtn.addEventListener("click", () => alert("준비 중입니다!"));
-
-lucide.createIcons();

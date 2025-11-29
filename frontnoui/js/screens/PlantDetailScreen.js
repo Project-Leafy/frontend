@@ -1,106 +1,115 @@
-console.log("[PlantDetailScreen loaded]");
+// PlantDetailScreen.js
 
-document.addEventListener("DOMContentLoaded", () => {
-  lucide.createIcons();
-
-  // ---------------------------
-  // 🌿 예시 데이터 자동 주입
-  // ---------------------------
-  const samplePlant = {
-    id: "p1",
-    nickname: "초록이",
-    name: "몬스테라",
-    imageUrl: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=1080&q=80",
-    adoptionDate: "2024-03-12"
-  };
-
-  const sampleJournals = [
-    {
-      id: "j1",
-      plantNickname: "초록이",
-      date: "2024-11-21",
-      memo: "잎이 새로 하나 더 나왔다! 줄기가 생각보다 빨리 길어지는 중.",
-      images: [
-        "https://images.unsplash.com/photo-1624421719748-179e1a8e956d?w=1080&q=80",
-        "https://images.unsplash.com/photo-1587502536263-3f8dc3b1d2b6?w=1080&q=80"
-      ],
-      tags: ["새순", "성장"]
-    },
-    {
-      id: "j2",
-      plantNickname: "초록이",
-      date: "2024-11-03",
-      memo: "이번엔 물을 조금 늦게 줬더니 잎이 살짝 힘이 없었음. 다음부터는 주기 유지하기!",
-      images: [],
-      tags: ["물주기"]
-    }
-  ];
-
-  // localStorage에 없으면 자동 등록
-  if (!localStorage.getItem("currentPlant")) {
-    localStorage.setItem("currentPlant", JSON.stringify(samplePlant));
+function formatDate(dateString) {
+  const d = new Date(dateString);
+  if (isNaN(d.getTime())) { // Check for invalid date
+    return "날짜 오류";
   }
-  if (!localStorage.getItem("currentJournals")) {
-    localStorage.setItem("currentJournals", JSON.stringify(sampleJournals));
-  }
-
-  const plant = JSON.parse(localStorage.getItem("currentPlant"));
-  const journals = JSON.parse(localStorage.getItem("currentJournals") || "[]");
-
-  // ---------------------------
-  // 🌿 화면 렌더링
-  // ---------------------------
-
-  document.getElementById("plant-img").src = plant.imageUrl;
-  document.getElementById("plant-nickname").textContent = plant.nickname;
-  document.getElementById("plant-name").textContent = plant.name;
-
-  document.getElementById("adoption-date").textContent = formatDate(plant.adoptionDate);
-  document.getElementById("days-since").textContent =
-    Math.floor((Date.now() - new Date(plant.adoptionDate)) / 86400000) + "일";
-
-  document.getElementById("back-btn").addEventListener("click", () => history.back());
-  document.getElementById("info-btn").addEventListener("click", () => {
-    alert("식물 정보 페이지 예정 기능");
-  });
-
-  document.getElementById("add-journal-btn").addEventListener("click", () => {
-    alert("일지 추가 페이지 예정 기능");
-  });
-
-  // 📌 일지 렌더링
-  const list = document.getElementById("journal-list");
-  list.innerHTML = "";
-
-  journals.forEach(j => {
-    const card = document.createElement("button");
-    card.className = "journal-card";
-    card.innerHTML = `
-      <div class="journal-content">
-        ${j.images.length ? `<div class="journal-thumb"><img src="${j.images[0]}"></div>` : ""}
-        <div class="journal-meta">
-          <div style="display:flex;justify-content:space-between;">
-            <span class="journal-date">${formatDate(j.date)}</span>
-            ${j.images.length > 1 ? `<span class="journal-img-count">+${j.images.length - 1}</span>` : ""}
-          </div>
-          <p class="journal-text">${j.memo}</p>
-          <div class="journal-tags">
-            ${j.tags.map(t => `<span class="tag">#${t}</span>`).join("")}
-          </div>
-        </div>
-      </div>
-    `;
-    card.addEventListener("click", () => {
-      alert("일지 상세 페이지 예정 기능");
-    });
-
-    list.appendChild(card);
-  });
-
-  lucide.createIcons();
-});
-
-function formatDate(date) {
-  const d = new Date(date);
   return `${d.getMonth() + 1}월 ${d.getDate()}일`;
+}
+
+
+// The main render function for the Plant Detail Screen, called by main.js
+async function renderPlantDetailScreen({ plant, journals, onBack, onAddJournal, onJournalClick, onInfoClick }) {
+  const appDiv = document.getElementById("app");
+  if (!appDiv) {
+    console.error("App container not found");
+    return;
+  }
+
+  try {
+    const response = await fetch("./pages/PlantDetailScreen.html");
+    const html = await response.text();
+    appDiv.innerHTML = html;
+    console.log("[PlantDetailScreen] Injected HTML:", appDiv.innerHTML); // Debugging: log injected HTML
+
+    // After injecting HTML, initialize lucide icons
+    lucide.createIcons();
+
+    // Now select elements as they are available in the DOM
+    const plantImg = document.getElementById("plant-img");
+    const plantNickname = document.getElementById("plant-nickname");
+    const plantName = document.getElementById("plant-name");
+    const adoptionDateEl = document.getElementById("adoption-date");
+    const daysSinceEl = document.getElementById("days-since");
+    const backBtn = document.getElementById("back-btn");
+    const infoBtn = document.getElementById("info-btn");
+    const addJournalBtn = document.getElementById("add-journal-btn");
+    const journalList = document.getElementById("journal-list");
+
+    // ---------------------------
+    // 🌿 화면 렌더링
+    // ---------------------------
+    if (plantImg && plant) {
+      plantImg.src = plant.imageUrl;
+    } else { console.error("plant-img not found or plant data missing"); }
+
+    if (plantNickname && plant) {
+      plantNickname.textContent = plant.nickname;
+    } else { console.error("plant-nickname not found or plant data missing"); }
+
+    if (plantName && plant) {
+      plantName.textContent = plant.name;
+    } else { console.error("plant-name not found or plant data missing"); }
+
+    if (adoptionDateEl && plant) {
+      adoptionDateEl.textContent = formatDate(plant.adoptionDate);
+    } else { console.error("adoption-date not found or plant data missing"); }
+
+    if (daysSinceEl && plant) {
+      const adoptionDate = new Date(plant.adoptionDate);
+      if (!isNaN(adoptionDate.getTime())) {
+        const diffTime = Math.abs(Date.now() - adoptionDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        daysSinceEl.textContent = `${diffDays}일`;
+      } else {
+        daysSinceEl.textContent = "날짜 오류";
+        console.error("Invalid adoption date:", plant.adoptionDate);
+      }
+    } else { console.error("days-since not found or plant data missing"); }
+
+
+    if (backBtn) {
+      backBtn.addEventListener("click", onBack);
+    } else { console.error("back-btn not found"); }
+
+    if (infoBtn) {
+      infoBtn.addEventListener("click", () => onInfoClick(plant));
+    } else { console.error("info-btn not found"); }
+
+    if (addJournalBtn) {
+      addJournalBtn.addEventListener("click", () => onAddJournal(plant));
+    } else { console.error("add-journal-btn not found"); }
+
+    // 📌 일지 렌더링
+    if (journalList) {
+        journalList.innerHTML = "";
+        journals.forEach(j => {
+            const card = document.createElement("button");
+            card.className = "journal-card";
+            card.innerHTML = `
+                <div class="journal-content">
+                    ${j.images.length ? `<div class="journal-thumb"><img src="${j.images[0]}" onerror="this.onerror=null;this.src='../assets/placeholder.png';"></div>` : ""}
+                    <div class="journal-meta">
+                        <div style="display:flex;justify-content:space-between;">
+                            <span class="journal-date">${formatDate(j.date)}</span>
+                            ${j.images.length > 1 ? `<span class="journal-img-count">+${j.images.length - 1}</span>` : ""}
+                        </div>
+                        <p class="journal-text">${j.memo}</p>
+                        <div class="journal-tags">
+                            ${j.tags.map(t => `<span class="tag">#${t}</span>`).join("")}
+                        </div>
+                    </div>
+                </div>
+            `;
+            card.addEventListener("click", () => onJournalClick(j));
+            journalList.appendChild(card);
+        });
+        lucide.createIcons(); // Re-create icons for dynamically added content
+    } else { console.error("journal-list not found"); }
+
+
+  } catch (error) {
+    console.error("Failed to load PlantDetailScreen.html:", error);
+  }
 }
