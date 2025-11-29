@@ -7,6 +7,30 @@
     <title>Leafy - 홈</title>
     <link rel="stylesheet" href="main.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .plant-card {
+            position: relative;
+            cursor: pointer;
+        }
+        .delete-plant-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.4);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+        }
+        .delete-plant-btn:hover {
+            background: rgba(255, 0, 0, 0.7);
+        }
+    </style>
 </head>
 
 <body>
@@ -61,14 +85,12 @@
     </script>
 
     <script type="module">
-        // 1. 'getMyPlants'를 import 하도록 수정
-        import { getMyPlants } from '../plant/plant_api.js';
+        import { getMyPlants, deleteMyPlant } from '../plant/plant_api.js';
 
         const plantListContainer = document.querySelector('.plant-list');
 
         async function loadUserPlants() {
             try {
-                // 2. 'getMyPlants()' 함수를 호출하도록 수정
                 const myPlants = await getMyPlants();
 
                 plantListContainer.innerHTML = '';
@@ -78,34 +100,71 @@
                     return;
                 }
 
-                // 3. 백엔드 DTO의 필드명(snake_case)에 맞게 수정
                 myPlants.forEach(plant => {
-                    const plantCard = document.createElement('a');
-
-                    // 4. 상세 페이지로 이동 시 DTO의 'my_plant_id'를 사용
-                    plantCard.href = `/app/myplant_detail/myplant_detail.html?id=${plant.my_plant_id}`;
+                    const plantCard = document.createElement('div');
                     plantCard.className = 'plant-card';
+                    plantCard.setAttribute('data-my-plant-id', plant.my_plant_id); // ID를 카드 자체에도 저장
 
-                    // DTO의 필드명(image_url, nickname, plant_species_name)을 사용
                     const imageUrl = plant.image_url || 'https://placehold.co/150';
                     const nickname = plant.nickname || '이름 없음';
                     const speciesName = plant.plant_species_name || '종 정보 없음';
 
                     plantCard.innerHTML = `
-                    <img src="${imageUrl}" alt="${nickname} 이미지">
-                    <div class="plant-card-info">
-                        <h3>${nickname}</h3> 
-                        <p>${speciesName}</p> 
-                    </div>
-                `;
+                        <img src="${imageUrl}" alt="${nickname} 이미지">
+                        <div class="plant-card-info">
+                            <h3>${nickname}</h3> 
+                            <p>${speciesName}</p> 
+                        </div>
+                        <button class="delete-plant-btn" data-my-plant-id="${plant.my_plant_id}" aria-label="삭제">
+                            <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+                        </button>
+                    `;
                     plantListContainer.appendChild(plantCard);
                 });
+                
+                // innerHTML로 아이콘을 추가한 후에는 lucide.createIcons()를 다시 호출해야 아이콘이 렌더링됩니다.
+                lucide.createIcons();
 
             } catch (error) {
                 console.error('내 식물 목록을 불러오는 중 에러 발생:', error);
                 plantListContainer.innerHTML = '<p>식물 목록을 불러오는데 실패했습니다. 다시 시도해주세요.</p>';
             }
         }
+
+        // 이벤트 위임을 사용하여 식물 카드 클릭 및 삭제 버튼 클릭 처리
+        plantListContainer.addEventListener('click', async (event) => {
+            const target = event.target;
+            const deleteBtn = target.closest('.delete-plant-btn');
+            const plantCard = target.closest('.plant-card');
+
+            if (deleteBtn) {
+                event.stopPropagation(); // 카드 클릭으로 인한 페이지 이동 방지
+                const myPlantId = deleteBtn.dataset.myPlantId;
+                const plantCardToDelete = document.querySelector(`.plant-card[data-my-plant-id='${myPlantId}']`);
+                const plantName = plantCardToDelete.querySelector('h3').textContent;
+
+                if (confirm(`'${plantName}' 식물을 정말 삭제하시겠습니까?`)) {
+                    try {
+                        await deleteMyPlant(myPlantId);
+                        plantCardToDelete.remove();
+                        alert('식물이 성공적으로 삭제되었습니다.');
+
+                        // 식물 삭제 후 목록이 비었는지 확인
+                        if (plantListContainer.children.length === 0) {
+                            plantListContainer.innerHTML = '<p>아직 등록된 식물이 없어요. 첫 식물을 등록해보세요!</p>';
+                        }
+
+                    } catch (error) {
+                        console.error('식물 삭제 중 에러 발생:', error);
+                        alert('식물 삭제에 실패했습니다. 다시 시도해주세요.');
+                    }
+                }
+            } else if (plantCard) {
+                // 삭제 버튼이 아닌 카드 영역을 클릭했을 때 상세 페이지로 이동
+                const myPlantId = plantCard.dataset.myPlantId;
+                window.location.href = `/app/myplant_detail/myplant_detail.html?id=${myPlantId}`;
+            }
+        });
 
         // 페이지가 로드되면 식물 목록을 불러옵니다.
         loadUserPlants();

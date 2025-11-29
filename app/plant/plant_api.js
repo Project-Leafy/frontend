@@ -135,3 +135,20 @@ export async function updateMyPlantInfo(plantId, updateData) {
 
     return await response.json();
 }
+
+/**
+ * [추가] 내 식물을 삭제하는 API(DELETE /api/v1/my-plants/{myPlantId})를 호출합니다.
+ * @param {number} myPlantId - 삭제할 '내 식물'의 ID
+ * @returns {Promise<Response>} HTTP 응답 Promise
+ */
+export async function deleteMyPlant(myPlantId) {
+    const response = await fetchApi(`/api/v1/my-plants/${myPlantId}`, {
+        method: 'DELETE',
+    });
+
+    if (!response.ok) {
+        throw new Error('내 식물 삭제에 실패했습니다.');
+    }
+
+    return response;
+}
