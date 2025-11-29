@@ -1,12 +1,5 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>성장 기록 추가</title>
-
-  <link rel="stylesheet" href="../css/global.css" />
-  <link rel="stylesheet" href="../css/AddJournalScreen.css" />
 </head>
 
 <body>
@@ -84,26 +77,3 @@
     </div> <!-- #app -->
 
   </div> <!-- .page-container -->
-
-  
-  <script src="../js/screens/AddJournalScreen.js"></script>
-
-  <!-- 페이지 초기화 (예시) 
-       실제로는 앱 라우팅에서 호출해줘야함 -->
-  <script>
-    // 예시용 가짜 데이터 (원래는 라우터나 App에서 주입)
-    const dummyPlant = {
-      id: "1",
-      nickname: "몬스테라"
-    };
-
-    // initAddJournalScreen 호출
-    initAddJournalScreen(
-      dummyPlant,
-      () => alert("뒤로가기 이벤트 (onBack) 호출됨"),
-      (journal) => console.log("저장됨:", journal)
-    );
-  </script>
-
-</body>
-</html>

@@ -1,40 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Diagnosis Flow</title>
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- DiagnosisFlow 전용 CSS -->
-  <link rel="stylesheet" href="../css/DiagnosisFlow.css" />
 </head>
 
 <body>
   <!-- 렌더링 공간 -->
   <div id="diagnosisApp"></div>
-
-  <!-- DiagnosisFlow JS -->
-  <script src="../js/screens/DiagnosisFlow.js"></script>
-
-  <script>
-    // 테스트용 mock 데이터
-    const plants = [
-      { id: "1", name: "몬스테라", nickname: "초록이" },
-      { id: "2", name: "스투키", nickname: "뾰족이" }
-    ];
-
-    function onBack() {
-      alert("뒤로가기 실행 (원하는 화면 이동 처리)");
-    }
-
-    function onSaveDiagnosis(entry) {
-      console.log("저장된 일지:", entry);
-    }
-
-    initDiagnosisFlow(plants, onBack, onSaveDiagnosis);
-  </script>
 </body>
 </html>

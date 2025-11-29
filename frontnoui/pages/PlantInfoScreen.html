@@ -1,18 +1,5 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plant Info</title>
-
-  <!-- 🔹 전역 스타일 (반드시 가장 먼저) -->
-  <link rel="stylesheet" href="../css/global.css" />
-
-  <!-- 🔹 이 화면 전용 스타일 -->
-  <link rel="stylesheet" href="../css/PlantInfoScreen.css" />
-
-  <!-- 🔹 lucide 아이콘 -->
-  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <div class="app-container">
@@ -75,15 +62,3 @@
       </div>
     </div>
   </div>
-
-  <!-- 🔹 module 말고 일반 스크립트로 (file://에서도 덜 까다롭게) -->
-  <script src="../js/screens/PlantInfoScreen.js"></script>
-
-  <!-- 🔥 lucide 아이콘 자동 랜더링 (필수) -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      lucide.createIcons();
-    });
-  </script>
-</body>
-</html>

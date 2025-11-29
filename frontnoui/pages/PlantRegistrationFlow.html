@@ -1,20 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>식물 등록</title>
-
-  <link rel="stylesheet" href="../css/global.css" />
-  <link rel="stylesheet" href="../css/PlantRegistrationFlow.css" />
-
-  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
   <div class="app-container">
 
     <!-- 🔹 1단계: 촬영 화면 -->
-    <section id="step1" class="screen active">
+    <section id="step1" class="registration-step-screen active">
       <header class="header">
         <button id="back1" class="icon-btn">
           <i data-lucide="arrow-left"></i>
@@ -44,7 +35,7 @@
     </section>
 
     <!-- 🔹 2단계: 분석 화면 -->
-    <section id="step2" class="screen">
+    <section id="step2" class="registration-step-screen">
       <header class="header">
         <button id="back2" class="icon-btn">
           <i data-lucide="arrow-left"></i>
@@ -83,7 +74,7 @@
     </section>
 
     <!-- 🔹 3단계: 정보 입력 -->
-    <section id="step3" class="screen">
+    <section id="step3" class="registration-step-screen">
       <header class="header">
         <button id="back3" class="icon-btn">
           <i data-lucide="arrow-left"></i>
@@ -121,7 +112,3 @@
     </section>
 
   </div>
-
-  <script src="../js/screens/PlantRegistrationFlow.js"></script>
-</body>
-</html>
