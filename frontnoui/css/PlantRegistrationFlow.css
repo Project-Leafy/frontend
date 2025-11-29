@@ -6,10 +6,10 @@
 }
 
 /* 공통 */
-.screen {
+.registration-step-screen {
   display: none;
 }
-.screen.active {
+.registration-step-screen.active {
   display: block;
 }
 .header {
@@ -213,10 +213,10 @@ b.app-container {
 }
 
 /* 공통 */
-.screen {
+.registration-step-screen {
   display: none;
 }
-.screen.active {
+.registration-step-screen.active {
   display: block;
 }
 .header {
