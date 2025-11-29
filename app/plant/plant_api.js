@@ -116,3 +116,22 @@ export async function registerMyPlant(plantData) {
     }
     return response.json();
 }
+
+// plant_api.js에 추가
+export async function updateMyPlantInfo(plantId, updateData) {
+    const response = await fetch(`/api/plants/${plantId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            // 인증 토큰이 필요하면 추가
+            // 'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(updateData)
+    });
+
+    if (!response.ok) {
+        throw new Error('식물 정보 업데이트 실패');
+    }
+
+    return await response.json();
+}

@@ -206,3 +206,24 @@
     font-size: 0.9rem;
     margin: 8px 0;
 }
+
+#plant-nickname:focus {
+    background-color: #f0f0f0;
+    border: 1px solid #4CAF50;
+}
+
+#plant-adoption-date-input {
+    font-size: 0.95em;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
