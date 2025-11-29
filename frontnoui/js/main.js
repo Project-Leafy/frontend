@@ -103,12 +103,38 @@ function handleDeletePlant(id) {
 }
 
 function handleDeleteJournal(id) {
+  console.log("[main.js] handleDeleteJournal called for ID:", id); // Debugging
+  console.log("[main.js] Journals before delete:", journals.length); // Debugging
   journals = journals.filter((j) => j.id !== id);
+  console.log("[main.js] Journals after delete:", journals.length); // Debugging
   navigateTo("plantDetail", selectedPlant);
 }
 
 /* --------------------  네비게이션 -------------------- */
-function navigateTo(screen, payload = null) {
+// Function to hide all known global modals/dialogs that might persist across screens
+function hideAllModalsAndDialogs() {
+  const modals = [
+    document.getElementById("deleteDialog"), // From HomeScreen
+    document.getElementById("backModal"), // From AddJournalScreen
+    document.getElementById("dayDetailModal"), // From CalendarScreen
+    document.getElementById("addScheduleModal"), // From CalendarScreen
+    document.getElementById("dialogOverlay"), // From PlantInfoScreen
+    document.getElementById("journal-delete-dialog") // From JournalDetailScreen
+  ];
+
+  modals.forEach(modal => {
+    if (modal) {
+      modal.classList.add("hidden");
+    }
+  });
+}
+
+async function navigateTo(screen, payload = null) {
+  console.log(`[main.js] Navigating to: ${screen}`, payload);
+
+  // Hide any open modals/dialogs before navigating to a new screen
+  hideAllModalsAndDialogs();
+
   // 🔥 previousScreen 저장 규칙
   // 로그인 이동, 탭 이동, 자기 자신 이동은 저장 ❌
   const tabScreens = ["home", "feed", "recommendations", "calendar"];
@@ -127,12 +153,16 @@ function navigateTo(screen, payload = null) {
 
   switch (screen) {
     case "login":
-      return renderLoginScreen({ onLogin: handleLogin });
+      return await renderLoginScreen({ onLogin: handleLogin });
 
     case "home":
-      return renderHomeScreen({
+      console.log("[main.js] Rendering HomeScreen"); // Added for debugging
+      return await renderHomeScreen({
         plants,
-        onPlantClick: (p) => navigateTo("plantDetail", p),
+        onPlantClick: (p) => {
+          console.log("[main.js] onPlantClick triggered, navigating to plantDetail for:", p.nickname); // Added for debugging
+          navigateTo("plantDetail", p);
+        },
         onAddPlant: () => navigateTo("plantRegistration"),
         onProfileClick: () => navigateTo("profile"),
         onNotificationsClick: () => navigateTo("notifications"),
@@ -140,33 +170,33 @@ function navigateTo(screen, payload = null) {
       });
 
     case "feed":
-      return renderFeedScreen({
+      return await renderFeedScreen({
         journals,
         onJournalClick: (j) => navigateTo("journalDetail", j),
         onProfileClick: () => navigateTo("profile"),
       });
 
     case "recommendations":
-      return renderRecommendationScreen({
+      return await renderRecommendationScreen({
         onProfileClick: () => navigateTo("profile"),
         onViewResults: () => navigateTo("recommendationResults"),
       });
 
     case "recommendationResults":
-      return renderRecommendationResultsScreen({
+      return await renderRecommendationResultsScreen({
         onBack: () => navigateTo("recommendations"),
         onFindStores: () => navigateTo("storeFinder"),
         onRestartSurvey: () => navigateTo("recommendations"),
       });
 
     case "calendar":
-      return renderCalendarScreen({
+      return await renderCalendarScreen({
         plants,
         onProfileClick: () => navigateTo("profile"),
       });
 
     case "profile":
-      return renderProfileScreen({
+      return await renderProfileScreen({
         plants,
         journals,
         onBack: () => navigateTo(previousScreen || "home"),
@@ -175,7 +205,7 @@ function navigateTo(screen, payload = null) {
 
     case "plantDetail":
       selectedPlant = payload;
-      return renderPlantDetailScreen({
+      return await renderPlantDetailScreen({
         plant: selectedPlant,
         journals: journals.filter((j) => j.plantId === selectedPlant.id),
         onBack: () => navigateTo("home"),
@@ -185,7 +215,7 @@ function navigateTo(screen, payload = null) {
       });
 
     case "addJournal":
-      return renderAddJournalScreen({
+      return await renderAddJournalScreen({
         plant: selectedPlant,
         onBack: () => navigateTo("plantDetail", selectedPlant),
         onSave: handleAddJournal,
@@ -193,7 +223,7 @@ function navigateTo(screen, payload = null) {
 
     case "journalDetail":
       selectedJournal = payload;
-      return renderJournalDetailScreen({
+      return await renderJournalDetailScreen({
         journal: selectedJournal,
         onBack: () =>
           selectedJournal.plantId === selectedPlant?.id
@@ -203,26 +233,26 @@ function navigateTo(screen, payload = null) {
       });
 
     case "plantRegistration":
-      return renderPlantRegistrationFlow({
+      return await renderPlantRegistrationFlow({
         onBack: () => navigateTo("home"),
         onComplete: handleAddPlant,
       });
 
     case "diagnosis":
-      return renderDiagnosisFlow({
+      return await renderDiagnosisFlow({
         plants,
         onBack: () => navigateTo(currentTab),
         onSaveDiagnosis: handleAddJournal,
       });
 
     case "plantInfo":
-      return renderPlantInfoScreen({
+      return await renderPlantInfoScreen({
         plant: selectedPlant,
         onBack: () => navigateTo("plantDetail", selectedPlant),
       });
 
     case "notifications":
-      return renderNotificationsScreen({
+      return await renderNotificationsScreen({
         plants,
         onBack: () => navigateTo("home"),
         onNavigateToPlant: (p) => navigateTo("plantDetail", p),
@@ -230,7 +260,7 @@ function navigateTo(screen, payload = null) {
       });
 
     case "storeFinder":
-      return renderStoreFinderScreen({
+      return await renderStoreFinderScreen({
         onBack: () => navigateTo("recommendationResults"),
       });
   }
