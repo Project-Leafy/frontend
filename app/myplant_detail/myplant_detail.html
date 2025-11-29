@@ -108,7 +108,7 @@
         function renderBaseInfo(plant, firstSuggestionName) {
             const imageUrl = plant.image_url || 'https://placehold.co/400x400';
             const nickname = plant.nickname || '이름 없음';
-            const speciesName = firstSuggestionName || plant.common_name || '종 정보 없음';
+            const speciesName = firstSuggestionName || plant.common_name || '학명 정보 없음';
 
             headerTitle.textContent = nickname;
             plantImage.src = imageUrl;

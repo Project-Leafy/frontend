@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Leafy 백과사전</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* 기본 스타일 초기화 및 폰트 설정 */
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background-color: #f7f9f7; /* 은은한 배경색 */
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background-color: #38761d; /* 진한 녹색 계열 (Leafy 컨셉) */
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        header h1 i {
+            margin-right: 10px;
+        }
+
+        /* 검색 바 스타일 */
+        .search-container {
+            padding: 0 15px 15px 15px;
+            background-color: #38761d;
+        }
+        .search-bar {
+            display: flex;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .search-bar input {
+            flex-grow: 1;
+            border: none;
+            padding: 10px 15px;
+            font-size: 1em;
+            outline: none;
+        }
+        .search-bar button {
+            background-color: #6aa84f; /* 중간 녹색 */
+            border: none;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .search-bar button:hover {
+            background-color: #4f852f;
+        }
+
+        /* 컨텐츠 스타일 */
+        main {
+            padding: 20px 15px;
+        }
+        .content-section h2 {
+            font-size: 1.5em;
+            color: #38761d; /* 포인트 색상 */
+            border-bottom: 2px solid #6aa84f;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        /* 항목 리스트 스타일 */
+        .entry-list a {
+            display: block;
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #555;
+            transition: transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .entry-list a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: #38761d;
+        }
+        .entry-list h3 {
+            margin: 0;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .entry-list p {
+            margin: 5px 0 0 0;
+            font-size: 0.9em;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>
+            <i data-lucide="book-open" style="width: 32px; height: 32px;"></i>
+            식물 백과사전
+        </h1>
+    </header>
+
+    <div class="search-container">
+        <div class="search-bar">
+            <input type="text" placeholder="식물 이름 또는 키워드를 검색하세요">
+            <button aria-label="검색">
+                <i data-lucide="search" style="width: 20px; height: 20px;"></i>
+            </button>
+        </div>
+    </div>
+
+    <main>
+        <section class="content-section">
+            <h2>최근 추가된 항목</h2>
+            <div class="entry-list">
+                <a href="#">
+                    <h3>몬스테라 (Monstera deliciosa)</h3>
+                    <p>특징: 커다란 잎과 독특한 구멍이 매력적인 실내 인기 식물</p>
+                </a>
+                <a href="#">
+                    <h3>스투키 (Sansevieria stuckyi)</h3>
+                    <p>특징: 공기 정화 능력이 뛰어나고 건조에 강한 다육 식물</p>
+                </a>
+                <a href="#">
+                    <h3>라플레시아 (Rafflesia)</h3>
+                    <p>특징: 세상에서 가장 큰 꽃을 피우며 독특한 냄새를 풍김</p>
+                </a>
+                </div>
+        </section>
+        
+        <section class="content-section" style="margin-top: 30px;">
+            <h2>인기 검색어</h2>
+            <div class="entry-list">
+                <a href="#"><h3>물주기 주기</h3></a>
+                <a href="#"><h3>병해충 관리</h3></a>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
