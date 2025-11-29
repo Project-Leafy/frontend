@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- 2단계 (register2.html) 로직 ---
+    // --- 2단계 (register2.html) 로직 ---
     const registerBtn = document.getElementById('register-btn');
     if (registerBtn) {
         // 2단계 DOM 요소 가져오기
@@ -111,10 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const adoptionDateInput = document.getElementById('adoption-date');
         
         console.log('=== 2단계 페이지 로드 ==='); 
-        console.log('DOM 요소 확인:');
-        console.log('- plantPreview:', plantPreview);
-        console.log('- commonNameEl:', commonNameEl);
-        console.log('- scientificNameEl:', scientificNameEl);
         
         // 1. sessionStorage에서 1단계 응답 데이터 읽기
         const resultString = sessionStorage.getItem('identificationResult');
@@ -124,58 +121,67 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (resultString) {
             try {
-                identificationResult = JSON.parse(resultString);
-                console.log('파싱된 데이터:', identificationResult);
-                
-                let imageUrl = identificationResult.image_url;
-                let commonName = identificationResult.common_name;
-                let scientificName = identificationResult.scientific_name;
-                let speciesId = identificationResult.species_id;
-                let probability = identificationResult.probability; // probability 추가
+                const parsedData = JSON.parse(resultString);
+                console.log('파싱된 데이터(원본):', parsedData);
 
-                // data 객체 안에 있는 경우도 체크
-                if (!imageUrl && identificationResult.data) {
-                    console.log('data 객체에서 추출 시도:', identificationResult.data);
-                    imageUrl = identificationResult.data.image_url;
-                    commonName = identificationResult.data.common_name;
-                    scientificName = identificationResult.data.scientific_name;
-                    speciesId = identificationResult.data.species_id;
-                    probability = identificationResult.data.probability; // probability 추가
+                // 1. 기본 정보 추출 (카멜/스네이크 모두 체크)
+                let imageUrl = parsedData.imageUrl || parsedData.image_url;
+                let commonName = parsedData.commonName || parsedData.common_name;
+                let scientificName = parsedData.scientificName || parsedData.scientific_name;
+                let speciesId = parsedData.speciesId || parsedData.species_id;
+                let probability = parsedData.probability;
+
+                // ⭐️⭐️⭐️ [수정된 보물 찾기] ⭐️⭐️⭐️
+                let candidates = [];
+
+                // 1) 배열 찾기 시도
+                if (Array.isArray(parsedData.identification_candidates)) {
+                    candidates = parsedData.identification_candidates;
+                } else if (Array.isArray(parsedData.suggestions)) {
+                    candidates = parsedData.suggestions;
+                } else if (parsedData.result && parsedData.result.classification && Array.isArray(parsedData.result.classification.suggestions)) {
+                    candidates = parsedData.result.classification.suggestions;
+                } else if (parsedData.data) {
+                    const d = parsedData.data;
+                    if (Array.isArray(d.suggestions)) candidates = d.suggestions;
+                    else if (Array.isArray(d.identification_candidates)) candidates = d.identification_candidates;
                 }
 
-                console.log('=== 최종 추출된 값 ===');
-                console.log('imageUrl:', imageUrl);
-                console.log('commonName:', commonName);
-                console.log('scientificName:', scientificName);
-                console.log('speciesId:', speciesId);
-                console.log('probability:', probability); // probability 로그 추가
-                console.log('=====================');
+                // ⭐️⭐️⭐️ [추가된 핵심 로직] 목록이 없으면 단일 정보로 만들기! ⭐️⭐️⭐️
+                if (candidates.length === 0 && (commonName || scientificName)) {
+                    console.log('⚠️ 후보 목록이 없어서, 현재 정보로 목록을 생성합니다.');
+                    candidates = [{
+                        name: commonName,
+                        scientific_name: scientificName,
+                        probability: probability || 0,
+                        url: null // 필요시 추가
+                    }];
+                }
+
+                console.log('=== 🔎 보물 찾기 결과 ===');
+                console.log('찾아낸 후보 개수:', candidates.length); // 이제 1개 이상 나올 겁니다!
+                console.log('후보 목록:', candidates);
+                console.log('=======================');
 
                 // 1) 이미지 URL 할당
                 if (plantPreview) {
                     const finalImageUrl = imageUrl || 'https://placehold.co/300x300/eee/ccc?text=No+Image';
                     plantPreview.src = finalImageUrl;
-                    console.log('이미지 설정됨:', finalImageUrl);
                 }
 
-                // 2) 이름 할당
+                // 2) 이름 할당 (로딩 중... 없애기)
                 if (commonNameEl) {
-                    const finalCommonName = commonName || '이름 없음';
-                    commonNameEl.textContent = finalCommonName;
-                    console.log('일반명 설정됨:', finalCommonName);
+                    commonNameEl.textContent = commonName || '이름 없음';
+                    // 로딩 클래스 제거 (혹시 있다면)
+                    commonNameEl.classList.remove('loading'); 
                 }
                 if (scientificNameEl) {
-                    const finalScientificName = scientificName || '학명 정보 없음';
-                    scientificNameEl.textContent = finalScientificName;
-                    console.log('학명 설정됨:', finalScientificName);
+                    scientificNameEl.textContent = scientificName || '학명 정보 없음';
                 }
-
-                // [수정 후 ✅]
+                
                 // 3) 신뢰도 할당
                 if (probability) {
-                    // ⭐️ 100을 곱하고 반올림하여 정수 퍼센트로 만듦
                     const percentage = Math.round(probability * 100); 
-                    
                     if (progressTextEl) progressTextEl.textContent = `${percentage}%`;
                     if (progressBarFgEl) progressBarFgEl.style.width = `${percentage}%`;
                 } else {
@@ -183,14 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (progressBarFgEl) progressBarFgEl.style.width = '0%';
                 }
                 
-                // identificationResult 재구성 (등록 시 사용)
+                // ✅ [수정] 최종 사용할 객체 생성
                 identificationResult = {
                     imageUrl,
                     commonName,
                     scientificName,
                     speciesId,
-                    probability: probability || null, // probability가 없으면 null로 저장
-                    identificationData: identificationResult.identification_data
+                    probability: probability || null,
+                    identificationData: candidates // 여기에 배열 저장!
                 };
 
             } catch (parseError) {
@@ -204,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // --- [추가됨] 3단계 (최종 등록) 로직 ---
+        // --- 3단계 (최종 등록) 로직 ---
         registerBtn.addEventListener('click', async () => {
             const nickname = nicknameInput.value.trim();
             const adoptionDate = adoptionDateInput.value;
@@ -219,12 +225,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // ✅ [수정] 백엔드 전송용 데이터 (중복 선언 제거됨)
             const plantData = {
                 species_id: identificationResult.speciesId,
                 nickname: nickname,
                 adoption_date: adoptionDate,
                 image_url: identificationResult.imageUrl,
-                identification_data: identificationResult.identificationData                
+                //중요! 식별 후보 목록을 문자열로 변환하여 전요
+                identification_result: JSON.stringify(identificationResult.identificationData)        
             };
             
             console.log('=== 최종 등록 데이터 ===');

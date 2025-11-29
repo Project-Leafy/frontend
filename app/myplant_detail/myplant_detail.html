@@ -87,16 +87,17 @@
         /**
          * 백엔드에서 받은 내 식물 기본 정보를 화면에 렌더링
          */
-        function renderBaseInfo(plant) {
+        function renderBaseInfo(plant, firstSuggestionName) {
             const imageUrl = plant.image_url || 'https://placehold.co/400x400';
             const nickname = plant.nickname || '이름 없음';
-            const speciesName = plant.plant_species_name || '종 정보 없음';
-            
+            // ✅ [수정] 메인 DTO에서 common_name을 가져와 종 정보 자리에 표시
+            const speciesName = firstSuggestionName || plant.common_name || '종 정보 없음';
+
             headerTitle.textContent = nickname;
             plantImage.src = imageUrl;
             plantNickname.textContent = nickname;
             plantSpeciesName.textContent = speciesName;
-            
+
             if (plant.adoption_date) {
                 plantAdoptionDate.textContent = `입양일: ${plant.adoption_date}`;
             }
@@ -133,22 +134,30 @@
         }
 
         /**
-         * 선택된 식별 후보 1개의 상세 정보를 렌더링
+         * [수정됨] 선택된 식별 후보 1개의 상세 정보를 렌더링
          */
         function renderSuggestionDetail(suggestion) {
-            const details = suggestion.details;
-            let description = details.description ? details.description.value : '제공된 설명이 없습니다.';
+            // 1️⃣ 데이터 추출 (scientific_name 필드가 학명 값을 가지고 있다 이다.)
+            const name = suggestion.name || '이름 없음';
+            const scientificNameValue = suggestion.scientific_name || ''; //학명 정보 없음을  '' 으로 고침
+            const imageUrl = suggestion.image_url || suggestion.imageUrl;
             
-            let commonNames = '없음';
-            if (details.common_names && details.common_names.length > 0) {
-                commonNames = details.common_names.join(', ');
+            // 2️⃣ 상세 설명 추출 (description 필드 사용)
+            const description = suggestion.description || '제공된 설명이 없습니다.';
+            
+            let imageHtml = '';
+            if (imageUrl) {
+                imageHtml = `<img src="${imageUrl}" alt="${name}" style="max-width: 100%; border-radius: 8px; margin-top: 10px; margin-bottom: 10px;">`;
             }
 
             suggestionDetail.innerHTML = `
-                <h4>${suggestion.name}</h4>
-                <p><strong>일반명:</strong> ${commonNames}</p>
-                <p><strong>설명:</strong> ${description}</p>
-                <a href="${details.url}" target="_blank">위키피디아/정보 더보기</a>
+                <h4>${name}</h4>
+                <p><strong>학명:</strong> <i>${scientificNameValue}</i></p> 
+                ${imageHtml}
+                <p style="margin-top: 10px;"><strong>설명:</strong> ${description}</p>
+                <p style="margin-top:10px; font-size: 0.9em; color: #666;">
+                    (위키피디아 등 외부 링크 기능은 준비 중입니다)
+                </p>
             `;
         }
 
@@ -194,53 +203,49 @@
         }
 
         /**
-         * 페이지 로드 시 실행되는 메인 함수
+         * [진짜 최종 수정] 페이지 로드 시 실행되는 메인 함수
          */
         async function loadPlantDetail() {
             try {
-                // 1. URL에서 식물 ID 가져오기
                 const urlParams = new URLSearchParams(window.location.search);
                 const plantId = urlParams.get('id');
 
-                if (!plantId) {
-                    throw new Error('식물 ID가 URL에 없습니다.');
-                }
+                if (!plantId) throw new Error('식물 ID가 URL에 없습니다.');
 
-                // 2. API 호출
-                // (가정: 백엔드는 '내 식물' 정보와 원본 identification_data를 함께 반환)
                 const plantDetail = await getMyPlantDetail(plantId);
                 console.log("백엔드 응답:", plantDetail);
 
-                // 3. 기본 정보 렌더링
-                renderBaseInfo(plantDetail);
-
-                // 4. plant.id 원본 JSON 데이터 추출
-                const rawData = plantDetail.identification_data;
-
-                if (rawData && rawData.result) {
-                    // 5. 식별 후보 렌더링
-                    renderSuggestions(rawData.result.classification.suggestions);
-                    
-                    // 6. 질병 정보 렌더링
-                    renderDisease(rawData.result.disease);
-
-                    // 7. 기타 정보 렌더링
-                    renderOtherInfo(rawData);
-
-                } else {
-                    // 원본 데이터가 없는 경우
-                    document.getElementById('suggestions-dropdown').innerHTML = '<option>원본 식별 데이터 없음</option>';
-                    diseaseInfoContainer.innerHTML = '<p>원본 건강 분석 데이터 없음</p>';
+                // ✅ suggestions를 먼저 선언
+                let suggestions = plantDetail.identification_candidates 
+                            || plantDetail.identificationCandidates 
+                            || [];
+                
+                // (혹시 모를 예외 처리: 문자열로 잘못 왔을 때만 파싱)
+                if (typeof suggestions === 'string') {
+                    try {
+                        suggestions = JSON.parse(suggestions);
+                    } catch (e) {
+                        console.warn("JSON 파싱 실패", e);
+                        suggestions = [];
+                    }
                 }
+                const firstSuggestionName = suggestions.length > 0 ? suggestions[0].name : null;
+                renderBaseInfo(plantDetail, firstSuggestionName); // 👈 수정된 부분
 
-                // 8. 로딩 완료
+                // 5. 식별 후보 렌더링
+                renderSuggestions(suggestions);
+
+                // 6. 기타 정보 처리
+                if (diseaseInfoContainer) diseaseInfoContainer.innerHTML = '<p>건강 분석 데이터가 없습니다.</p>';
+                if (otherInfoContainer) otherInfoContainer.innerHTML = '<p>추가 분석 데이터가 없습니다.</p>';
+
                 loadingSpinner.classList.remove('loading-active');
                 dataContainer.style.display = 'block';
 
             } catch (error) {
-                console.error('식물 상세 정보 로드 실패:', error);
+                console.error('로드 실패:', error);
                 loadingSpinner.classList.remove('loading-active');
-                dataContainer.innerHTML = `<p class="error-message">데이터를 불러오는 데 실패했습니다: ${error.message}</p>`;
+                dataContainer.innerHTML = `<p class="error-message">오류: ${error.message}</p>`;
                 dataContainer.style.display = 'block';
             }
         }
@@ -250,3 +255,6 @@
     </script>
 </body>
 </html>
+
+
+
