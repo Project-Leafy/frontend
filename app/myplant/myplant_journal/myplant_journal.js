@@ -1,5 +1,5 @@
-import { createGrowthRecord } from './myplant_journal_api.js';
-
+// uploadImageFile을 중괄호 안에 꼭 추가해야 해
+import { createGrowthRecord, uploadImageFile } from './myplant_journal_api.js';
 // === 상태 관리 변수 ===
 const state = {
     images: [], // { file: File객체, url: 'blob:...' } 형태로 저장
@@ -182,38 +182,47 @@ async function handleSave() {
     // 여기서는 일단 '파일 업로드가 구현되지 않았음'을 가정하고 null을 보내거나, 
     // 추후 구현해야 할 로직을 주석으로 남겨둡니다.
 
-    const requestData = {
-        // [수정] recordDate -> record_date
-        record_date: new Date().toISOString().split('T')[0], 
-        
-        // [수정] photoUrl -> photo_url
-        photo_url: state.images.length > 0 ? "https://placeholder.com/image_uploaded" : null,
-        
-        memo: memoValue,
-        
-        watered: state.selectedTags.includes('물주기'),
-        repotted: state.selectedTags.includes('분갈이'),
-        pruned: state.selectedTags.includes('가지치기'),
-        fertilized: state.selectedTags.includes('비료'),
-        
-        // [수정] waterAmountType -> water_amount_type
-        water_amount_type: null,
-        
-        // [수정] fertilizerType -> fertilizer_type
-        fertilizer_type: null
-    };
-
-    console.log('Sending data:', requestData); // 확인용 로그
-
-
     try {
+        let finalImageUrl = null;
+
+        if (state.images.length > 0) {
+            const imageFile = state.images[0].file;
+            console.log("S3 업로드 시작...");
+            
+            // 2. API 파일에서 가져온 uploadImageFile 함수 사용 (정상)
+            finalImageUrl = await uploadImageFile(imageFile);
+            
+            console.log("S3 업로드 완료. URL:", finalImageUrl);
+        }
+
+        // 2. 받은 URL을 포함하여 데이터 구성
+        const requestData = {
+            record_date: new Date().toISOString().split('T')[0],
+            
+            // 여기에 '가짜 주소' 대신 '서버에서 받은 S3 주소'를 넣음
+            photo_url: finalImageUrl, 
+
+            memo: memoValue,
+            watered: state.selectedTags.includes('물주기'),
+            repotted: state.selectedTags.includes('분갈이'),
+            pruned: state.selectedTags.includes('가지치기'),
+            fertilized: state.selectedTags.includes('비료'),
+            water_amount_type: null,
+            fertilizer_type: null
+        };
+
+        // 3. 최종 데이터 저장 (기존 백엔드 로직 사용)
         if (!plantId) throw new Error("URL에 식물 ID(plantId)가 없습니다.");
         
         await createGrowthRecord(plantId, requestData);
+        
         alert('성장 기록이 저장되었습니다!');
         history.back();
-        
+
     } catch (error) {
-        alert(error.message);
+        console.error(error);
+        alert('저장 중 오류가 발생했습니다: ' + error.message);
     }
 }
+
+

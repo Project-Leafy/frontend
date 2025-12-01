@@ -65,3 +65,39 @@ export async function getGrowthJournals(plantId) {
         return [];
     }
 }
+
+// myplant_journal_api.js 파일 내부에 추가
+
+// [NEW] 이미지 파일만 서버(S3)로 보내고 URL을 받아오는 함수
+export async function uploadImageFile(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    // 1. 토큰 가져오기
+    const token = localStorage.getItem('accessToken');
+    
+    try {
+        // 2. 주소를 백엔드 포트(8080)까지 포함해서 정확히 적기
+        // (ImageUploadController의 @RequestMapping("/api/images")와 맞춤)
+        const response = await fetch('http://localhost:8080/api/images/upload', {
+            method: 'POST',
+            headers: {
+                // 3. 인증 토큰 추가 (중요!)
+                // 주의: Content-Type은 적지 않는다 (브라우저가 자동으로 boundary 설정함)
+                'Authorization': `Bearer ${token}` 
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('이미지 업로드 실패');
+        }
+
+        const data = await response.json();
+        return data.imageUrl; 
+    } catch (error) {
+        console.error("Upload error:", error);
+        throw error;
+    }
+}
+
