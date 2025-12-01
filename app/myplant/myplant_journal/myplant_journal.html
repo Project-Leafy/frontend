@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>성장 기록 추가</title>
+    
+    <link rel="stylesheet" href="myplant_journal.css">
+    <link rel="icon" href="../../../assets/images/favicon.svg" type="image/svg+xml">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <main class="screen">
+        <header class="journal-header-bar">
+            <button class="nav-btn" id="backBtn">
+                <i data-lucide="arrow-left"></i>
+            </button>
+            <h1>성장 기록 추가</h1>
+            <div style="width: 24px;"></div> </header>
+
+        <div class="plant-info-bar">
+            <p id="plantNicknameDisplay">로딩 중...</p>
+        </div>
+
+        <div class="form-container">
+            <div class="form-group">
+                <label class="form-label">사진</label>
+                <div class="photo-grid" id="imageGrid">
+                    <button class="add-photo-btn" id="addImageBtn">
+                        <i data-lucide="camera" class="camera-icon"></i>
+                        <span>추가</span>
+                    </button>
+                </div>
+                
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label">메모 <span class="required">*</span></label>
+                <textarea id="memoInput" class="custom-textarea" placeholder="오늘의 식물 상태나 특이사항을 기록해보세요..."></textarea>
+                <p class="error-msg" id="memoError">메모를 입력해주세요</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">태그</label>
+                <div class="tag-selector" id="tagContainer">
+                    </div>
+            </div>
+        </div>
+
+        <div class="bottom-action-bar">
+            <button class="submit-btn" id="saveBtn">저장하기</button>
+        </div>
+    </main>
+
+    <script type="module" src="myplant_journal.js"></script>
+    <script>
+        // 아이콘 초기화
+        lucide.createIcons();
+    </script>
+</body>
+</html>
