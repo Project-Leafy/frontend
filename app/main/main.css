@@ -20,7 +20,7 @@ body {
   max-width: 448px;
   background: #fafaf8;
   min-height: 100vh;
-  padding-bottom: 90px; /* 하단 네비게이션 공간 넉넉히 확보 */
+  padding-bottom: 150px; /* 하단 네비게이션 공간 넉넉히 확보 */
   position: relative;
 }
 
@@ -200,29 +200,30 @@ body {
 /* =================================================================
    5. 하단 네비게이션 (최종 수정: 겹침 해결 및 간격 확보)
 ================================================================= */
+/* =================================================================
+   하단 내비게이션 (calendar.css와 완전 동일)
+================================================================= */
 #bottom-nav {
     position: fixed;
     bottom: 0;
     width: 100%;
     max-width: 448px;
-    height: 85px; /* 높이를 충분히 확보 (중요) */
+    height: 85px;
     
     background-color: white;
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
     
-    /* 상단 그림자 */
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
     border-top: 1px solid #f0f0f0;
 
     z-index: 50;
     display: flex;
-    justify-content: space-between; /* 양옆 균등 배분 */
+    justify-content: space-between;
     align-items: center;
-    padding: 0 10px; /* 양옆 여백 */
+    padding: 0 10px;
 }
 
-/* 기본 네비게이션 아이템 */
 .nav-item {
     display: flex;
     flex-direction: column;
@@ -234,7 +235,7 @@ body {
     flex: 1;
     height: 100%;
     position: relative;
-    padding-bottom: 5px; /* 텍스트와 하단 간격 */
+    padding-bottom: 5px;
 }
 
 .nav-item.active {
@@ -247,15 +248,11 @@ body {
     margin-bottom: 6px;
 }
 
-/* --------------------------------------
-   가운데 아이템 영역 (공간 확보용)
--------------------------------------- */
 .nav-item.center-item {
-    flex: 0 0 140px; /* 가운데 공간을 강제로 넓게 잡음 (텍스트 안 짤리게) */
-    overflow: visible; /* 튀어나온 버튼 보이게 */
+    flex: 0 0 140px;
+    overflow: visible;
 }
 
-/* 1. 초록색 카메라 버튼 (위로 올림) */
 .center-circle-btn {
     width: 64px;
     height: 64px;
@@ -267,12 +264,11 @@ body {
     justify-content: center;
     
     color: white;
-    /* 버튼 그림자 */
     box-shadow: 0 8px 20px rgba(74, 124, 89, 0.4);
     
     position: absolute;
-    top: -35px; /* 위로 쑥 올림 (이 값을 조절해서 높이 맞춤) */
-    z-index: 20; /* 텍스트 박스보다 위에 */
+    top: -35px;
+    z-index: 20;
     
     transition: transform 0.1s;
 }
@@ -287,38 +283,33 @@ body {
     margin-bottom: 0;
 }
 
-/* 2. 캡슐 모양 텍스트 박스 (버튼 아래 배치) */
 .tooltip-bubble {
     position: absolute;
-    bottom: 12px; /* 바닥에서 12px 띄움 */
+    bottom: 12px;
     left: 50%;
     transform: translateX(-50%);
     
-    /* 박스 디자인 */
-    background-color: white; /* 흰색 배경 */
+    background-color: white;
     border: 1px solid #E5E5E0;
     border-radius: 30px;
     padding: 8px 16px;
-    width: max-content; /* 글자 길이에 맞춤 */
+    width: max-content;
     
-    /* 텍스트 스타일 */
     color: #4B5563;
     font-size: 13px;
     font-weight: 600;
     letter-spacing: -0.3px;
     white-space: nowrap;
     
-    /* 그림자 */
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     
-    z-index: 10; /* 버튼보다 아래 */
-    pointer-events: none; /* 클릭 안 되게 */
+    z-index: 10;
+    pointer-events: none;
 }
 
-/* 기존 꼬리 제거 */
 .tooltip-bubble::after {
     display: none;
-}
+} 
 
 /* =========================================
    6. 다이얼로그

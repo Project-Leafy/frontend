@@ -1,11 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>맞춤 식물 추천</title>
+    <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="recommend.css"> 
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <p>recommend page</p>   
+  <div id="app-container">
+    
+    <div class="header">
+      <div>
+        <h1 class="header-title">🪴 맞춤 식물 추천</h1>
+        <p class="subtitle">간단한 질문으로 나에게 맞는<br>식물을 찾아보세요</p>
+      </div>
+      <button id="profileBtn" class="icon-btn">
+        <i data-lucide="user"></i>
+      </button>
+    </div>
+
+    <div class="content">
+        
+        <div class="block">
+            <div class="block-header">
+                <div class="block-icon" style="background-color: #FEF3C7; color: #F59E0B;">
+                    <i data-lucide="sun"></i>
+                </div>
+                <h3 class="block-title">햇빛 환경</h3>
+            </div>
+            <div class="options-group">
+                <input type="radio" name="sunlight" id="sun_bright" value="bright" class="option-input">
+                <label for="sun_bright" class="option-label">
+                    <div class="radio-circle"></div>
+                    <span class="option-text">햇빛이 잘 드는 곳 (남향, 동향)</span>
+                </label>
+                <input type="radio" name="sunlight" id="sun_partial" value="partial" class="option-input">
+                <label for="sun_partial" class="option-label">
+                    <div class="radio-circle"></div>
+                    <span class="option-text">적당한 햇빛 (반양지)</span>
+                </label>
+                <input type="radio" name="sunlight" id="sun_shade" value="shade" class="option-input">
+                <label for="sun_shade" class="option-label">
+                    <div class="radio-circle"></div>
+                    <span class="option-text">햇빛이 잘 안 드는 곳 (실내)</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="block">
+            <div class="block-header">
+                <div class="block-icon" style="background-color: #DBEAFE; color: #3B82F6;">
+                    <i data-lucide="droplets"></i>
+                </div>
+                <h3 class="block-title">물주기 선호도</h3>
+            </div>
+            <div class="options-group">
+                <input type="radio" name="watering" id="water_freq" value="frequent" class="option-input">
+                <label for="water_freq" class="option-label">
+                    <div class="radio-circle"></div>
+                    <span class="option-text">자주 주고 싶어요 (2-3일)</span>
+                </label>
+
+                <input type="radio" name="watering" id="water_mod" value="moderate" class="option-input">
+                <label for="water_mod" class="option-label">
+                    <div class="radio-circle"></div>
+                    <span class="option-text">적당히 (1주일)</span>
+                </label>
+
+                <input type="radio" name="watering" id="water_rare" value="rare" class="option-input">
+                <label for="water_rare" class="option-label">
+                    <div class="radio-circle"></div>
+                    <span class="option-text">가끔 (2주 이상)</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="block">
+            <div class="block-header">
+                <div class="block-icon" style="background-color: #E8F4EC; color: #4A7C59;">
+                    <i data-lucide="clock"></i>
+                </div>
+                <h3 class="block-title">식물 키우기 경험</h3>
+            </div>
+            <div class="options-group">
+                <input type="radio" name="experience" id="exp_beg" value="beginner" class="option-input">
+                <label for="exp_beg" class="option-label">
+                    <div class="radio-circle"></div>
+                    <span class="option-text">처음이에요</span>
+                </label>
+
+                <input type="radio" name="experience" id="exp_int" value="intermediate" class="option-input">
+                <label for="exp_int" class="option-label">
+                    <div class="radio-circle"></div>
+                    <span class="option-text">몇 번 키워봤어요</span>
+                </label>
+
+                <input type="radio" name="experience" id="exp_exp" value="expert" class="option-input">
+                <label for="exp_exp" class="option-label">
+                    <div class="radio-circle"></div>
+                    <span class="option-text">능숙해요</span>
+                </label>
+            </div>
+        </div>
+
+        <button id="submitBtn" class="submit-btn" disabled>
+            추천 받기
+            <i data-lucide="arrow-right"></i>
+        </button>
+
+    </div> <nav id="bottom-nav">
+        <a href="/app/main/main.html" class="nav-item">
+            <i data-lucide="home"></i>
+            <span>홈</span>
+        </a>
+        <a href="/app/dictionary/dictionary.html" class="nav-item">
+            <i data-lucide="book-open"></i>
+            <span>백과사전</span>
+        </a>
+        
+        <a href="/app/diagnosis/diagnosis.html" class="nav-item center-item">
+            <div class="center-circle-btn">
+                <i data-lucide="camera" style="width: 28px; height: 28px;"></i>
+            </div>
+            <div class="tooltip-bubble">아픈 식물을 진단하세요</div>
+        </a>
+
+        <a href="/app/recommend/recommend.html" class="nav-item active">
+            <i data-lucide="sparkles"></i>
+            <span>추천</span>
+        </a>
+        <a href="/app/calendar/calendar.html" class="nav-item">
+            <i data-lucide="calendar"></i>
+            <span>캘린더</span>
+        </a>
+    </nav>
+
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // 버튼 활성화 로직
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function checkCompletion() {
+        const sunlight = document.querySelector('input[name="sunlight"]:checked');
+        const watering = document.querySelector('input[name="watering"]:checked');
+        const experience = document.querySelector('input[name="experience"]:checked');
+
+        if (sunlight && watering && experience) {
+            submitBtn.disabled = false;
+        }
+    }
+
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', checkCompletion);
+    });
+
+    // 버튼 클릭 시 (추후 로직 구현)
+    submitBtn.addEventListener('click', () => {
+        alert("결과 페이지로 이동합니다!");
+        // window.location.href = '결과페이지경로';
+    });
+  </script>
 </body>
 </html>

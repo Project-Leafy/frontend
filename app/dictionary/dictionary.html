@@ -3,157 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Leafy 백과사전</title>
+    <title>📚 식물 백과사전</title>
+    <!-- 파비콘 및 CSS 연결 --> 
+    <link rel="icon" href="../../../assets/images/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="dictionary.css">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        /* 기본 스타일 초기화 및 폰트 설정 */
-        body {
-            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
-            background-color: #f7f9f7; /* 은은한 배경색 */
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* 헤더 스타일 */
-        header {
-            background-color: #38761d; /* 진한 녹색 계열 (Leafy 컨셉) */
-            color: white;
-            padding: 20px 15px;
-            text-align: center;
-        }
-        header h1 {
-            margin: 0 0 10px 0;
-            font-size: 1.8em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        header h1 i {
-            margin-right: 10px;
-        }
-
-        /* 검색 바 스타일 */
-        .search-container {
-            padding: 0 15px 15px 15px;
-            background-color: #38761d;
-        }
-        .search-bar {
-            display: flex;
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .search-bar input {
-            flex-grow: 1;
-            border: none;
-            padding: 10px 15px;
-            font-size: 1em;
-            outline: none;
-        }
-        .search-bar button {
-            background-color: #6aa84f; /* 중간 녹색 */
-            border: none;
-            color: white;
-            padding: 10px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .search-bar button:hover {
-            background-color: #4f852f;
-        }
-
-        /* 컨텐츠 스타일 */
-        main {
-            padding: 20px 15px;
-        }
-        .content-section h2 {
-            font-size: 1.5em;
-            color: #38761d; /* 포인트 색상 */
-            border-bottom: 2px solid #6aa84f;
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-        }
-
-        /* 항목 리스트 스타일 */
-        .entry-list a {
-            display: block;
-            background-color: white;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: #555;
-            transition: transform 0.1s, box-shadow 0.1s;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-        .entry-list a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            color: #38761d;
-        }
-        .entry-list h3 {
-            margin: 0;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-        .entry-list p {
-            margin: 5px 0 0 0;
-            font-size: 0.9em;
-            color: #888;
-        }
-    </style>
 </head>
-
 <body>
-    <header>
-        <h1>
-            <i data-lucide="book-open" style="width: 32px; height: 32px;"></i>
-            식물 백과사전
-        </h1>
-    </header>
-
-    <div class="search-container">
-        <div class="search-bar">
-            <input type="text" placeholder="식물 이름 또는 키워드를 검색하세요">
-            <button aria-label="검색">
-                <i data-lucide="search" style="width: 20px; height: 20px;"></i>
+  <div id="app-container">
+    
+    <!-- 헤더 & 검색창 고정 영역 -->
+    <div class="header-container">
+        <div class="header">
+            <div>
+                <h1 class="header-title">📚 식물 백과사전</h1>
+                <p class="subtitle">궁금한 식물을 검색해보세요</p>
+            </div>
+            <button id="profileBtn" class="icon-btn">
+                <i data-lucide="user"></i>
             </button>
+        </div>
+
+        <div class="search-wrapper">
+            <div class="search-box">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="식물 이름 검색 (예: 몬스테라)">
+            </div>
         </div>
     </div>
 
-    <main>
-        <section class="content-section">
-            <h2>최근 추가된 항목</h2>
-            <div class="entry-list">
-                <a href="#">
-                    <h3>몬스테라 (Monstera deliciosa)</h3>
-                    <p>특징: 커다란 잎과 독특한 구멍이 매력적인 실내 인기 식물</p>
-                </a>
-                <a href="#">
-                    <h3>스투키 (Sansevieria stuckyi)</h3>
-                    <p>특징: 공기 정화 능력이 뛰어나고 건조에 강한 다육 식물</p>
-                </a>
-                <a href="#">
-                    <h3>라플레시아 (Rafflesia)</h3>
-                    <p>특징: 세상에서 가장 큰 꽃을 피우며 독특한 냄새를 풍김</p>
-                </a>
-                </div>
-        </section>
+    <!-- 메인 컨텐츠 (리스트) -->
+    <div class="content">
+        <p id="resultCount" class="result-count">전체 0종</p>
         
-        <section class="content-section" style="margin-top: 30px;">
-            <h2>인기 검색어</h2>
-            <div class="entry-list">
-                <a href="#"><h3>물주기 주기</h3></a>
-                <a href="#"><h3>병해충 관리</h3></a>
+        <div id="dictionaryList" class="dictionary-list">
+            <!-- 자바스크립트로 식물 카드가 여기에 추가됩니다 -->
+        </div>
+    </div>
+
+    <!-- 하단 내비게이션 (유지) -->
+    <nav id="bottom-nav">
+        <a href="/app/main/main.html" class="nav-item">
+            <i data-lucide="home"></i>
+            <span>홈</span>
+        </a>
+        <a href="/app/dictionary/dictionary.html" class="nav-item active">
+            <i data-lucide="book-open"></i>
+            <span>백과사전</span>
+        </a>
+        
+        <a href="/app/diagnosis/diagnosis.html" class="nav-item center-item">
+            <div class="center-circle-btn">
+                <i data-lucide="camera" style="width: 28px; height: 28px;"></i>
             </div>
-        </section>
+            <div class="tooltip-bubble">아픈 식물을 진단하세요</div>
+        </a>
 
-    </main>
+        <a href="/app/recommend/recommend.html" class="nav-item">
+            <i data-lucide="sparkles"></i>
+            <span>추천</span>
+        </a>
+        <a href="/app/calendar/calendar.html" class="nav-item">
+            <i data-lucide="calendar"></i>
+            <span>캘린더</span>
+        </a>
+    </nav>
 
-    <script>
-        lucide.createIcons();
-    </script>
+  </div>
+
+  <script>
+    // 1. 더미 데이터 생성 (Mock Data)
+    const plantDatabase = [
+        {
+            id: 1,
+            name: "몬스테라",
+            sciName: "Monstera deliciosa",
+            desc: "구멍 뚫린 잎이 매력적인 플랜테리어의 정석",
+            image: "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&w=150&q=80"
+        },
+        {
+            id: 2,
+            name: "스투키",
+            sciName: "Sansevieria stuckyi",
+            desc: "공기 정화 능력이 뛰어나고 키우기 쉬운 다육식물",
+            image: "https://images.unsplash.com/photo-1599598425947-320d39893d93?auto=format&fit=crop&w=150&q=80"
+        },
+        {
+            id: 3,
+            name: "여인초 (극락조)",
+            sciName: "Strelitzia nicolai",
+            desc: "이국적인 분위기를 연출하는 넓은 잎을 가진 식물",
+            image: "https://images.unsplash.com/photo-1598887142487-3c824963ef02?auto=format&fit=crop&w=150&q=80"
+        },
+        {
+            id: 4,
+            name: "테이블 야자",
+            sciName: "Chamaedorea elegans",
+            desc: "책상 위에 올려두기 좋은 아담한 야자수",
+            image: "https://images.unsplash.com/photo-1616629739527-3a6d97b0a70b?auto=format&fit=crop&w=150&q=80"
+        },
+        {
+            id: 5,
+            name: "고무나무",
+            sciName: "Ficus elastica",
+            desc: "두툼하고 광택 있는 잎이 멋진 생명력 강한 나무",
+            image: "https://images.unsplash.com/photo-1598327889396-78759d57a941?auto=format&fit=crop&w=150&q=80"
+        },
+        {
+            id: 6,
+            name: "율마",
+            sciName: "Cupressus macrocarpa",
+            desc: "쓰다듬으면 상큼한 레몬 향기가 나는 침엽수",
+            image: "https://images.unsplash.com/photo-1520412099551-62b6bafeb5bb?auto=format&fit=crop&w=150&q=80"
+        },
+        {
+            id: 7,
+            name: "스킨답서스",
+            sciName: "Epipremnum aureum",
+            desc: "어디서든 잘 자라는 초보자용 덩굴 식물",
+            image: "https://images.unsplash.com/photo-1596720426673-e4e14290f0cc?auto=format&fit=crop&w=150&q=80"
+        },
+        {
+            id: 8,
+            name: "유칼립투스",
+            sciName: "Eucalyptus globulus",
+            desc: "은은한 향기와 동그란 잎이 감성적인 식물",
+            image: "https://images.unsplash.com/photo-1515509787463-22272e505041?auto=format&fit=crop&w=150&q=80"
+        },
+        {
+            id: 9,
+            name: "바질",
+            sciName: "Ocimum basilicum",
+            desc: "요리에도 활용 가능한 향기로운 허브",
+            image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=crop&w=150&q=80"
+        },
+        {
+            id: 10,
+            name: "선인장",
+            sciName: "Cactaceae",
+            desc: "물을 자주 주지 않아도 되는 강인한 식물",
+            image: "https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?auto=format&fit=crop&w=150&q=80"
+        }
+    ];
+
+    // DOM 요소
+    const listContainer = document.getElementById('dictionaryList');
+    const searchInput = document.getElementById('searchInput');
+    const resultCount = document.getElementById('resultCount');
+
+    // 2. 리스트 렌더링 함수
+    function renderList(data) {
+        listContainer.innerHTML = ''; // 초기화
+        resultCount.textContent = `전체 ${data.length}종`;
+
+        if (data.length === 0) {
+            listContainer.innerHTML = `
+                <div class="no-result">
+                    <i data-lucide="sprout" size="48"></i>
+                    <p>검색 결과가 없습니다</p>
+                </div>
+            `;
+            lucide.createIcons();
+            return;
+        }
+
+        data.forEach(plant => {
+            const card = document.createElement('div');
+            card.className = 'plant-item';
+            // 카드 클릭 시 상세 페이지 이동 (예시)
+            // card.onclick = () => window.location.href = `/app/dictionary/detail.html?id=${plant.id}`;
+            
+            card.innerHTML = `
+                <img src="${plant.image}" alt="${plant.name}" class="plant-thumb">
+                <div class="plant-info">
+                    <h3 class="plant-name">${plant.name}</h3>
+                    <p class="plant-sci-name">${plant.sciName}</p>
+                    <p class="plant-desc">${plant.desc}</p>
+                </div>
+                <i data-lucide="chevron-right" class="arrow-icon"></i>
+            `;
+            listContainer.appendChild(card);
+        });
+
+        lucide.createIcons(); // 아이콘 렌더링
+    }
+
+    // 3. 검색 핸들러
+    function handleSearch(e) {
+        const query = e.target.value.trim().toLowerCase();
+
+        // 필터링 로직: 이름에 검색어가 포함된 경우
+        const filtered = plantDatabase.filter(plant => 
+            plant.name.toLowerCase().includes(query)
+        );
+
+        // 정렬 로직: 포함된 글자가 많은 순서 (사실상 정확도/길이와 연관)
+        // 여기서는 간단히 '검색어가 앞에 올수록', '이름이 짧을수록' 상위에 오도록 정렬하여
+        // 사용자에게 가장 관련성 높은 결과를 보여줍니다.
+        filtered.sort((a, b) => {
+            // 1. 정확히 일치하는 경우 최상단
+            if (a.name === query) return -1;
+            if (b.name === query) return 1;
+            
+            // 2. 검색어로 시작하는 경우 우선
+            const aStarts = a.name.startsWith(query);
+            const bStarts = b.name.startsWith(query);
+            if (aStarts && !bStarts) return -1;
+            if (!aStarts && bStarts) return 1;
+
+            // 3. 이름 길이가 짧은 순 (더 구체적인 명칭일 가능성)
+            return a.name.length - b.name.length;
+        });
+
+        renderList(filtered);
+    }
+
+    // 초기 실행
+    renderList(plantDatabase);
+
+    // 이벤트 리스너 등록
+    searchInput.addEventListener('input', handleSearch);
+
+  </script>
 </body>
 </html>

@@ -34,7 +34,7 @@
 .logo-circle {
   width: 80px;
   height: 80px;
-  background-color: var(--primary); /* globals.css의 변수 사용 */
+  background-color: #4A7C59;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -48,6 +48,7 @@
   color: white;
   width: 40px;
   height: 40px;
+  background-color: #4A7C59;
 }
 
 /* --- 4. 텍스트 스타일 --- */
