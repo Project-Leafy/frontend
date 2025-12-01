@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>내 식물 상세정보</title>
-    <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="../../../assets/images/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="myplant_detail.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -17,77 +17,84 @@
 
         <div id="plant-data-container" style="display: none;">
             
-            <div class="header">
-                <button id="backBtn" class="icon-btn" onclick="location.href='/app/main/main.html'">
+            <header class="header">
+                <button id="backBtn" class="icon-btn" onclick="history.back()">
                     <i data-lucide="arrow-left"></i>
                 </button>
-                <div class="header-text">
-                    <h1 id="plant-nickname-header">로딩 중...</h1>
-                    <p id="plant-species-name"></p>
-                </div>
-            </div>
+                <h1 class="header-title" id="plant-nickname-header">상세 정보</h1>
+                <button class="icon-btn" style="opacity: 0; cursor: default;">
+                    <i data-lucide="more-vertical"></i> </button>
+            </header>
 
-            <div class="main-content">
+            <main class="main-content">
                 
                 <section class="plant-hero-section">
                     <img id="plant-image" src="https://placehold.co/400x400" alt="식물 이미지">
                     
-                    <div class="edit-group">
-                        <input type="text" id="plant-nickname-input" placeholder="닉네임 입력">
-                        <button id="save-nickname-btn" class="save-btn">저장</button>
-                    </div>
-
-                    <div class="edit-group" style="margin-top: 10px;">
-                        <input type="date" id="plant-adoption-date-input">
-                        <button id="save-date-btn" class="save-btn">저장</button>
+                    <div class="input-wrapper">
+                        <input type="text" id="plant-nickname-input" placeholder="닉네임 (예: 초록이)">
+                        <button id="save-nickname-btn" class="save-btn">변경</button>
                     </div>
                 </section>
 
-                <section class="intro-box">
-                    <h2>
-                        <i data-lucide="sprout" size="20"></i>
-                        식별 정보
-                    </h2>
+                <section class="info-card date-card">
+                    <div class="date-label">
+                        <i data-lucide="calendar-heart" size="20" color="#4A7C59"></i>
+                        <span>함께한 날</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="date" id="plant-adoption-date-input" style="border: 1px solid #ddd; padding: 4px; border-radius: 6px; font-size: 13px;">
+                        <button id="save-date-btn" class="save-btn" style="padding: 4px 10px; font-size: 12px;">저장</button>
+                    </div>
+                </section>
+
+                <section class="info-card intro-box">
+                    <div class="section-header">
+                        <i data-lucide="sprout" size="20" color="#064E3B"></i>
+                        <h3>식별 정보</h3>
+                    </div>
                     
-                    <div style="margin-bottom: 12px;">
-                        <label for="suggestions-dropdown" style="font-size: 13px; color: #4A7C59; font-weight: 600;">후보 선택</label>
-                        <select id="suggestions-dropdown" style="width: 100%; margin-top: 4px;"></select>
+                    <div class="dropdown-container">
+                        <label for="suggestions-dropdown" class="dropdown-label">AI 분석 결과</label>
+                        <select id="suggestions-dropdown"></select>
                     </div>
 
-                    <div id="suggestion-detail"></div>
+                    <div id="suggestion-detail">
+                        </div>
                 </section>
-                
-                <section class="care-card" style="flex-direction: row; align-items: center; justify-content: space-between; padding: 16px;">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <i data-lucide="calendar-heart" color="#4A7C59"></i>
-                        <span style="font-weight: 600; color:#2C3E2F;">입양일</span>
+
+                <section>
+                    <div class="section-header">
+                        <i data-lucide="stethoscope" size="20" color="#4A7C59"></i>
+                        <h3>건강 상태</h3>
                     </div>
-                    <span id="adoption-date-text" style="color:#6B7280;">-</span>
+                    <div class="info-card">
+                        <div id="disease-info">
+                            </div>
+                    </div>
                 </section>
 
-                <h3 class="section-title">건강 상태 분석</h3>
-                <div class="care-card">
-                    <div id="disease-info">
-                        </div>
-                </div>
+                <section>
+                    <div class="section-header">
+                        <i data-lucide="clipboard-list" size="20" color="#4A7C59"></i>
+                        <h3>상세 분석</h3>
+                    </div>
+                    <div class="info-card">
+                        <div id="other-info">
+                            </div>
+                    </div>
+                </section>
 
-                <h3 class="section-title">기타 분석 정보</h3>
-                <div class="care-card">
-                    <div id="other-info">
-                        </div>
-                </div>
+            </main> </div> </div>
 
-            </div> </div> </div> <script type="module">
+    <script type="module">
         import { getMyPlantDetail } from '../../plant/plant_api.js';
 
-        // DOM 요소 가져오기 (ID 유지)
         const loadingSpinner = document.getElementById('loading-spinner');
         const dataContainer = document.getElementById('plant-data-container');
-        
-        const headerTitle = document.getElementById('plant-nickname-header');
+        const headerTitle = document.getElementById('plant-nickname-header'); // 헤더 타이틀은 고정, 혹은 닉네임 연동 선택
         const plantImage = document.getElementById('plant-image');
         const plantNicknameInput = document.getElementById('plant-nickname-input');
-        const plantSpeciesName = document.getElementById('plant-species-name');
         const plantAdoptionDateInput = document.getElementById('plant-adoption-date-input');
         
         const suggestionsDropdown = document.getElementById('suggestions-dropdown');
@@ -97,26 +104,18 @@
 
         let currentPlantId = null;
 
-        // --- 렌더링 함수들 ---
-
+        // 렌더링 함수
         function renderBaseInfo(plant, firstSuggestionName) {
             const imageUrl = plant.image_url || 'https://placehold.co/400x400';
-            const nickname = plant.nickname || '이름 없음';
-            const speciesName = firstSuggestionName || plant.common_name || '학명 정보 없음';
-
-            headerTitle.textContent = nickname;
-            plantImage.src = imageUrl;
-            plantNicknameInput.value = nickname;
-            plantSpeciesName.textContent = speciesName;
-
-            const adoptionDateText = document.getElementById('adoption-date-text');
-            const adoptionDate = plant.adoption_date || plant.adoptionDate;
+            const nickname = plant.nickname || '';
             
+            // 닉네임 인풋에 값 채우기
+            plantNicknameInput.value = nickname;
+            plantImage.src = imageUrl;
+
+            const adoptionDate = plant.adoption_date || plant.adoptionDate;
             if (adoptionDate) {
-                adoptionDateText.textContent = adoptionDate;
                 plantAdoptionDateInput.value = adoptionDate;
-            } else {
-                adoptionDateText.textContent = '미등록';
             }
         }
 
@@ -136,17 +135,16 @@
                     body: JSON.stringify({ nickname: newNickname })
                 });
                 if (!response.ok) throw new Error('서버 응답 오류');
-                headerTitle.textContent = newNickname;
-                alert('닉네임이 저장되었습니다!');
+                alert('닉네임이 변경되었습니다!');
             } catch (error) {
                 console.error('닉네임 저장 실패:', error);
-                alert('닉네임 저장에 실패했습니다.');
+                alert('저장에 실패했습니다.');
             }
         }
 
         async function updatePlantAdoptionDate(plantId, newDate) {
             if (!newDate) {
-                alert('입양일을 선택해주세요.');
+                alert('날짜를 선택해주세요.');
                 return;
             }
             try {
@@ -160,28 +158,18 @@
                     body: JSON.stringify({ adoptionDate: newDate })
                 });
                 if (!response.ok) throw new Error('서버 응답 오류');
-                
-                const adoptionDateText = document.getElementById('adoption-date-text');
-                adoptionDateText.textContent = newDate;
                 alert('입양일이 저장되었습니다!');
-                
-                // 식별 후보 상세 정보 다시 렌더링 (입양일 포함된 내용 업데이트)
-                const selectedIndex = suggestionsDropdown.value;
-                if (suggestionsDropdown.dataset.suggestions) {
-                    const suggestions = JSON.parse(suggestionsDropdown.dataset.suggestions);
-                    if (suggestions[selectedIndex]) {
-                        renderSuggestionDetail(suggestions[selectedIndex]);
-                    }
-                }
             } catch (error) {
                 console.error('입양일 저장 실패:', error);
-                alert('입양일 저장에 실패했습니다.');
+                alert('저장에 실패했습니다.');
             }
         }
 
         function renderSuggestions(suggestions) {
             if (!suggestions || suggestions.length === 0) {
-                suggestionsDropdown.innerHTML = '<option value="">식별 후보 없음</option>';
+                suggestionsDropdown.innerHTML = '<option value="">식별 정보 없음</option>';
+                suggestionsDropdown.disabled = true;
+                suggestionDetail.innerHTML = '<p class="empty-state">식별된 정보가 없습니다.</p>';
                 return;
             }
 
@@ -192,7 +180,7 @@
                 const percentage = (suggestion.probability * 100).toFixed(1);
                 const option = document.createElement('option');
                 option.value = index;
-                option.textContent = `#${index + 1}: ${suggestion.name} (${percentage}%)`;
+                option.textContent = `${suggestion.name} (${percentage}%)`;
                 suggestionsDropdown.appendChild(option);
             });
 
@@ -209,20 +197,23 @@
             const commonName = suggestion.common_name || suggestion.name || '이름 없음';
             const scientificName = suggestion.scientific_name || suggestion.name || '';
             const imageUrl = suggestion.image_url || suggestion.imageUrl;
-            const description = suggestion.description || '제공된 설명이 없습니다.';
+            const description = suggestion.description || '상세 설명이 없습니다.';
             
-            // 이미지
             let imageHtml = '';
             if (imageUrl) {
-                imageHtml = `<img src="${imageUrl}" alt="${commonName}" style="width: 100%; border-radius: 12px; margin: 10px 0; max-height: 200px; object-fit: cover;">`;
+                imageHtml = `<img src="${imageUrl}" alt="${commonName}" style="width: 100%; border-radius: 8px; margin-top: 12px; height: 180px; object-fit: cover;">`;
             }
 
             suggestionDetail.innerHTML = `
                 <div class="suggestion-info">
-                    <h4 style="margin: 0 0 4px 0; font-size: 16px; color: #2C3E2F;">${commonName}</h4>
-                    <p style="margin: 0 0 8px 0; font-size: 13px; color: #6B7280; font-style: italic;">${scientificName}</p>
+                    <div class="suggestion-header">
+                        <div class="plant-names">
+                            <h4>${commonName}</h4>
+                            <p>${scientificName}</p>
+                        </div>
+                    </div>
                     ${imageHtml}
-                    <p style="font-size: 14px; color: #333; line-height: 1.5;">${description}</p>
+                    <p class="suggestion-desc">${description}</p>
                 </div>
             `;
         }
@@ -232,11 +223,11 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const plantId = urlParams.get('id');
 
-                if (!plantId) throw new Error('식물 ID가 URL에 없습니다.');
+                if (!plantId) throw new Error('식물 ID가 없습니다.');
 
                 currentPlantId = plantId;
                 const plantDetail = await getMyPlantDetail(plantId);
-                console.log("백엔드 응답:", plantDetail);
+                console.log("Data:", plantDetail);
 
                 let suggestions = plantDetail.identification_candidates 
                             || plantDetail.identificationCandidates 
@@ -251,7 +242,7 @@
                 renderBaseInfo(plantDetail, firstSuggestionName);
                 renderSuggestions(suggestions);
 
-                // 버튼 이벤트 리스너
+                // 이벤트 리스너 연결
                 document.getElementById('save-nickname-btn').addEventListener('click', () => {
                     const newNickname = plantNicknameInput.value.trim();
                     updatePlantNickname(currentPlantId, newNickname);
@@ -262,19 +253,17 @@
                     updatePlantAdoptionDate(currentPlantId, newDate);
                 });
                 
-                if (diseaseInfoContainer) diseaseInfoContainer.innerHTML = '<p style="font-size:14px; color:#999;">건강 분석 데이터가 없습니다.</p>';
-                if (otherInfoContainer) otherInfoContainer.innerHTML = '<p style="font-size:14px; color:#999;">추가 분석 데이터가 없습니다.</p>';
+                if (diseaseInfoContainer) diseaseInfoContainer.innerHTML = '<p class="empty-state">건강 분석 데이터가 없습니다.</p>';
+                if (otherInfoContainer) otherInfoContainer.innerHTML = '<p class="empty-state">추가 분석 데이터가 없습니다.</p>';
 
                 loadingSpinner.classList.remove('loading-active');
                 dataContainer.style.display = 'block';
-
-                // 아이콘 생성
                 lucide.createIcons();
 
             } catch (error) {
-                console.error('로드 실패:', error);
+                console.error('Error:', error);
                 loadingSpinner.classList.remove('loading-active');
-                dataContainer.innerHTML = `<p class="error-message">오류: ${error.message}</p>`;
+                dataContainer.innerHTML = `<div class="error-message">데이터를 불러오지 못했습니다.<br><span style="font-size:12px; color:#666;">${error.message}</span></div>`;
                 dataContainer.style.display = 'block';
             }
         }
