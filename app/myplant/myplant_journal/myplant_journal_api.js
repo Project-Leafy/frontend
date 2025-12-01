@@ -14,6 +14,7 @@ export async function createGrowthRecord(plantId, data) {
         return;
     }
 
+
     try {
         const response = await fetch(`${BASE_URL}/plants/${plantId}/journal`, {
             method: 'POST',
@@ -101,3 +102,47 @@ export async function uploadImageFile(file) {
     }
 }
 
+/**
+ * 성장일지 상세 조회 API 호출 (정확한 경로로 수정!)
+ */
+export async function getJournalDetail(recordId) {
+    const token = localStorage.getItem('accessToken');
+    if (!token) throw new Error('로그인 필요');
+
+    const response = await fetch(`${BASE_URL}/journal/${recordId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) throw new Error('상세 조회 실패');
+    return await response.json();
+}
+/**
+ * 성장일지 삭제 API 호출 (백엔드 정확한 경로!)
+ * DELETE /api/v1/journal/{recordId}
+ */
+export async function deleteJournal(recordId) {
+    const token = localStorage.getItem('accessToken');
+    if (!token) throw new Error('로그인 필요');
+
+    try {
+        const response = await fetch(`${BASE_URL}/journal/${recordId}`, {  // 여기! plants/ 없애고 journal/만
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            throw new Error(error.message || '삭제 실패');
+        }
+        return true;
+    } catch (error) {
+        console.error('Delete error:', error);
+        throw error;
+    }
+}

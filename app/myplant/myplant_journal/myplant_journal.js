@@ -195,6 +195,7 @@ async function handleSave() {
             console.log("S3 업로드 완료. URL:", finalImageUrl);
         }
 
+        
         // 2. 받은 URL을 포함하여 데이터 구성
         const requestData = {
             record_date: new Date().toISOString().split('T')[0],

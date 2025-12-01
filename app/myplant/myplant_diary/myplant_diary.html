@@ -138,8 +138,9 @@
                 
                 // 상세 페이지 이동 이벤트
                 card.onclick = () => {
-                    const recordId = journal.record_id || journal.recordId; // ID도 매핑 체크
-                    window.location.href = `../myplant_journal/journal_detail.html?recordId=${recordId}`;
+                    const recordId = journal.record_id || journal.recordId;
+                    const plantId = new URLSearchParams(window.location.search).get('id'); // 이거!!
+                    window.location.href = `../myplant_journal/myplant_journal_detail.html?recordId=${recordId}&plantId=${plantId}`;
                 };
 
                 // 4. HTML 조립 (디자인 반영: 좌측 썸네일, 우측 내용)
