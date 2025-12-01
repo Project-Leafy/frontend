@@ -4,107 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>내 식물 상세정보</title>
+    <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="myplant_detail.css">
-    <link rel="stylesheet" href="../../register/registerglobal.css"> <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <div id="app-container">
-        <header id="detail-header">
-            <a href="/app/main/main.html" class="back-button">
-                <i data-lucide="chevron-left"></i>
-            </a>
-            <h1 id="plant-nickname-header">로딩 중...</h1>
-            <button class="menu-button">
-                <i data-lucide="more-vertical"></i>
-            </button>
-        </header>
+        
+        <div id="loading-spinner" class="loading-active">
+            <div class="spinner"></div>
+        </div>
 
-        <main id="detail-content">
-            <div id="loading-spinner" class="loading-active">
-                <div class="spinner"></div>
+        <div id="plant-data-container" style="display: none;">
+            
+            <div class="header">
+                <button id="backBtn" class="icon-btn" onclick="location.href='/app/main/main.html'">
+                    <i data-lucide="arrow-left"></i>
+                </button>
+                <div class="header-text">
+                    <h1 id="plant-nickname-header">로딩 중...</h1>
+                    <p id="plant-species-name"></p>
+                </div>
             </div>
 
-            <div id="plant-data-container" style="display: none;">
+            <div class="main-content">
                 
-                <section class="plant-profile">
+                <section class="plant-hero-section">
                     <img id="plant-image" src="https://placehold.co/400x400" alt="식물 이미지">
-                    <!-- 닉네임 편집 -->
-                    <div style="display: flex; align-items: center; gap: 10px; justify-content: center; margin-top: 15px;">
-                        <input type="text" id="plant-nickname-input" style="font-size: 1.5em; font-weight: bold; padding: 5px; border: 1px solid #ddd; border-radius: 4px; text-align: center;">
-                        <button id="save-nickname-btn" style="padding: 8px 15px; font-size: 0.9em;">저장</button>
-                    </div>
-                    <p id="plant-species-name"></p>
-                    <!-- ✅ 입양일 표시 추가 -->
-                    <p id="plant-adoption-display" style="margin-top: 10px; font-size: 0.95em; color: #666;">
-                        입양일: <span id="adoption-date-text">-</span>
-                    </p>
-
-                    <!-- 입양일 편집 -->
-                    <div style="display: flex; align-items: center; gap: 10px; justify-content: center; margin-top: 10px;">
-                        <label><strong>입양일:</strong></label>
-                        <input type="date" id="plant-adoption-date-input" style="padding: 5px; border-radius: 4px; border: 1px solid #ddd;">
-                        <button id="save-date-btn" style="padding: 8px 15px; font-size: 0.9em;">저장</button>
+                    
+                    <div class="edit-group">
+                        <input type="text" id="plant-nickname-input" placeholder="닉네임 입력">
+                        <button id="save-nickname-btn" class="save-btn">저장</button>
                     </div>
 
+                    <div class="edit-group" style="margin-top: 10px;">
+                        <input type="date" id="plant-adoption-date-input">
+                        <button id="save-date-btn" class="save-btn">저장</button>
+                    </div>
                 </section>
 
-                <section class="info-card">
-                    <h3>🌳 식별 후보 목록</h3>
-                    <p>등록 시점의 식별 API 결과입니다.</p>
-                    <select id="suggestions-dropdown"></select>
-                    <div id="suggestion-detail" class="suggestion-info">
-                        </div>
+                <section class="intro-box">
+                    <h2>
+                        <i data-lucide="sprout" size="20"></i>
+                        식별 정보
+                    </h2>
+                    
+                    <div style="margin-bottom: 12px;">
+                        <label for="suggestions-dropdown" style="font-size: 13px; color: #4A7C59; font-weight: 600;">후보 선택</label>
+                        <select id="suggestions-dropdown" style="width: 100%; margin-top: 4px;"></select>
+                    </div>
+
+                    <div id="suggestion-detail"></div>
+                </section>
+                
+                <section class="care-card" style="flex-direction: row; align-items: center; justify-content: space-between; padding: 16px;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <i data-lucide="calendar-heart" color="#4A7C59"></i>
+                        <span style="font-weight: 600; color:#2C3E2F;">입양일</span>
+                    </div>
+                    <span id="adoption-date-text" style="color:#6B7280;">-</span>
                 </section>
 
-                <section class="info-card">
-                    <h3>🩺 건강 상태 분석</h3>
+                <h3 class="section-title">건강 상태 분석</h3>
+                <div class="care-card">
                     <div id="disease-info">
                         </div>
-                </section>
+                </div>
 
-                <section class="info-card">
-                    <h3>📊 기타 분석 정보</h3>
+                <h3 class="section-title">기타 분석 정보</h3>
+                <div class="care-card">
                     <div id="other-info">
                         </div>
-                </section>
-            </div>
-        </main>
-    </div>
+                </div>
 
-    <script>
-        lucide.createIcons();
-    </script>
+            </div> </div> </div> <script type="module">
+        import { getMyPlantDetail } from '../../plant/plant_api.js';
 
-    <script type="module">
-        // API 함수 임포트
-        import { getMyPlantDetail } from '../plant/plant_api.js';
-
-        // --- DOM 요소 가져오기 ---
+        // DOM 요소 가져오기 (ID 유지)
         const loadingSpinner = document.getElementById('loading-spinner');
         const dataContainer = document.getElementById('plant-data-container');
-    
-        // 기본 정보
+        
         const headerTitle = document.getElementById('plant-nickname-header');
         const plantImage = document.getElementById('plant-image');
-        const plantNicknameInput = document.getElementById('plant-nickname-input'); // ✅ 추가
+        const plantNicknameInput = document.getElementById('plant-nickname-input');
         const plantSpeciesName = document.getElementById('plant-species-name');
-        const plantAdoptionDateInput = document.getElementById('plant-adoption-date-input'); // ✅ 추가
+        const plantAdoptionDateInput = document.getElementById('plant-adoption-date-input');
         
-        // 식별 후보
         const suggestionsDropdown = document.getElementById('suggestions-dropdown');
         const suggestionDetail = document.getElementById('suggestion-detail');
-
-        // 건강 상태
         const diseaseInfoContainer = document.getElementById('disease-info');
-        // 기타 정보
         const otherInfoContainer = document.getElementById('other-info');
 
-        // ✅ 현재 식물 ID 저장용 전역 변수
         let currentPlantId = null;
 
-        /**
-         * 백엔드에서 받은 내 식물 기본 정보를 화면에 렌더링
-         */
+        // --- 렌더링 함수들 ---
+
         function renderBaseInfo(plant, firstSuggestionName) {
             const imageUrl = plant.image_url || 'https://placehold.co/400x400';
             const nickname = plant.nickname || '이름 없음';
@@ -112,10 +106,9 @@
 
             headerTitle.textContent = nickname;
             plantImage.src = imageUrl;
-            plantNicknameInput.value = nickname; // ✅ input에 값 설정
+            plantNicknameInput.value = nickname;
             plantSpeciesName.textContent = speciesName;
 
-            // ✅ 입양일을 화면에 표시하고 input에도 설정
             const adoptionDateText = document.getElementById('adoption-date-text');
             const adoptionDate = plant.adoption_date || plant.adoptionDate;
             
@@ -125,18 +118,13 @@
             } else {
                 adoptionDateText.textContent = '미등록';
             }
-
         }
 
-        /**
-         * 닉네임 업데이트 함수
-         */
         async function updatePlantNickname(plantId, newNickname) {
             if (!newNickname || newNickname.trim() === '') {
                 alert('닉네임을 입력해주세요.');
                 return;
             }
-
             try {
                 const token = localStorage.getItem('accessToken');
                 const response = await fetch(`http://localhost:8080/api/v1/my-plants/${plantId}`, {
@@ -147,11 +135,7 @@
                     },
                     body: JSON.stringify({ nickname: newNickname })
                 });
-
-                if (!response.ok) {
-                    throw new Error('서버 응답 오류');
-                }
-
+                if (!response.ok) throw new Error('서버 응답 오류');
                 headerTitle.textContent = newNickname;
                 alert('닉네임이 저장되었습니다!');
             } catch (error) {
@@ -160,15 +144,11 @@
             }
         }
 
-        /**
-         * 입양일 업데이트 함수
-         */
         async function updatePlantAdoptionDate(plantId, newDate) {
             if (!newDate) {
                 alert('입양일을 선택해주세요.');
                 return;
             }
-
             try {
                 const token = localStorage.getItem('accessToken');
                 const response = await fetch(`http://localhost:8080/api/v1/my-plants/${plantId}`, {
@@ -179,17 +159,13 @@
                     },
                     body: JSON.stringify({ adoptionDate: newDate })
                 });
-
-                if (!response.ok) {
-                    throw new Error('서버 응답 오류');
-                }
-
-                // ✅ 화면에 표시된 입양일도 업데이트
+                if (!response.ok) throw new Error('서버 응답 오류');
+                
                 const adoptionDateText = document.getElementById('adoption-date-text');
                 adoptionDateText.textContent = newDate;
                 alert('입양일이 저장되었습니다!');
                 
-                // 식별 후보 상세 정보 다시 렌더링 (입양일 업데이트)
+                // 식별 후보 상세 정보 다시 렌더링 (입양일 포함된 내용 업데이트)
                 const selectedIndex = suggestionsDropdown.value;
                 if (suggestionsDropdown.dataset.suggestions) {
                     const suggestions = JSON.parse(suggestionsDropdown.dataset.suggestions);
@@ -203,9 +179,6 @@
             }
         }
 
-        /**
-         * plant.id의 식별 후보(suggestions)를 드롭다운으로 렌더링
-         */
         function renderSuggestions(suggestions) {
             if (!suggestions || suggestions.length === 0) {
                 suggestionsDropdown.innerHTML = '<option value="">식별 후보 없음</option>';
@@ -223,55 +196,37 @@
                 suggestionsDropdown.appendChild(option);
             });
 
-            // 드롭다운 변경 시 상세 정보 표시
             suggestionsDropdown.addEventListener('change', (e) => {
                 const selectedIndex = e.target.value;
                 const selectedSuggestion = suggestions[selectedIndex];
                 renderSuggestionDetail(selectedSuggestion);
             });
 
-            // 첫 번째 항목을 기본으로 선택 및 정보 표시
             renderSuggestionDetail(suggestions[0]);
         }
 
-        /**
-         * 선택된 식별 후보 1개의 상세 정보를 렌더링
-         */
         function renderSuggestionDetail(suggestion) {
             const commonName = suggestion.common_name || suggestion.name || '이름 없음';
             const scientificName = suggestion.scientific_name || suggestion.name || '';
             const imageUrl = suggestion.image_url || suggestion.imageUrl;
             const description = suggestion.description || '제공된 설명이 없습니다.';
             
-            // 입양일 가져오기
-            const adoptionDate = plantAdoptionDateInput.value;
-
+            // 이미지
             let imageHtml = '';
             if (imageUrl) {
-                imageHtml = `<img src="${imageUrl}" alt="${commonName}" style="max-width: 100%; border-radius: 8px; margin-top: 10px; margin-bottom: 10px;">`;
-            }
-
-            // ✅ 입양일을 학명 밑에 표시
-            let adoptionDateHtml = '';
-            if (adoptionDate) {
-                adoptionDateHtml = `<p><strong>입양일:</strong> ${adoptionDate}</p>`;
+                imageHtml = `<img src="${imageUrl}" alt="${commonName}" style="width: 100%; border-radius: 12px; margin: 10px 0; max-height: 200px; object-fit: cover;">`;
             }
 
             suggestionDetail.innerHTML = `
-                <h4>${commonName}</h4>
-                <p><strong>학명:</strong> <i>${scientificName}</i></p>
-                ${adoptionDateHtml}
-                ${imageHtml}
-                <p style="margin-top: 10px;"><strong>설명:</strong> ${description}</p>
-                <p style="margin-top:10px; font-size: 0.9em; color: #666;">
-                    (위키피디아 등 외부 링크 기능은 준비 중입니다)
-                </p>
+                <div class="suggestion-info">
+                    <h4 style="margin: 0 0 4px 0; font-size: 16px; color: #2C3E2F;">${commonName}</h4>
+                    <p style="margin: 0 0 8px 0; font-size: 13px; color: #6B7280; font-style: italic;">${scientificName}</p>
+                    ${imageHtml}
+                    <p style="font-size: 14px; color: #333; line-height: 1.5;">${description}</p>
+                </div>
             `;
         }
 
-        /**
-         * 페이지 로드 시 실행되는 메인 함수
-         */
         async function loadPlantDetail() {
             try {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -279,33 +234,24 @@
 
                 if (!plantId) throw new Error('식물 ID가 URL에 없습니다.');
 
-                // ✅ 전역 변수에 저장
                 currentPlantId = plantId;
-
                 const plantDetail = await getMyPlantDetail(plantId);
                 console.log("백엔드 응답:", plantDetail);
 
-                // suggestions를 먼저 선언
                 let suggestions = plantDetail.identification_candidates 
                             || plantDetail.identificationCandidates 
                             || [];
                 
                 if (typeof suggestions === 'string') {
-                    try {
-                        suggestions = JSON.parse(suggestions);
-                    } catch (e) {
-                        console.warn("JSON 파싱 실패", e);
-                        suggestions = [];
-                    }
+                    try { suggestions = JSON.parse(suggestions); } 
+                    catch (e) { suggestions = []; }
                 }
 
                 const firstSuggestionName = suggestions.length > 0 ? suggestions[0].name : null;
                 renderBaseInfo(plantDetail, firstSuggestionName);
-
-                // 식별 후보 렌더링
                 renderSuggestions(suggestions);
 
-                // ✅ 버튼 이벤트 리스너 등록 (한 번만!)
+                // 버튼 이벤트 리스너
                 document.getElementById('save-nickname-btn').addEventListener('click', () => {
                     const newNickname = plantNicknameInput.value.trim();
                     updatePlantNickname(currentPlantId, newNickname);
@@ -316,12 +262,14 @@
                     updatePlantAdoptionDate(currentPlantId, newDate);
                 });
                 
-                // 기타 정보 처리
-                if (diseaseInfoContainer) diseaseInfoContainer.innerHTML = '<p>건강 분석 데이터가 없습니다.</p>';
-                if (otherInfoContainer) otherInfoContainer.innerHTML = '<p>추가 분석 데이터가 없습니다.</p>';
+                if (diseaseInfoContainer) diseaseInfoContainer.innerHTML = '<p style="font-size:14px; color:#999;">건강 분석 데이터가 없습니다.</p>';
+                if (otherInfoContainer) otherInfoContainer.innerHTML = '<p style="font-size:14px; color:#999;">추가 분석 데이터가 없습니다.</p>';
 
                 loadingSpinner.classList.remove('loading-active');
                 dataContainer.style.display = 'block';
+
+                // 아이콘 생성
+                lucide.createIcons();
 
             } catch (error) {
                 console.error('로드 실패:', error);
@@ -331,14 +279,7 @@
             }
         }
 
-        // 스크립트 실행
         document.addEventListener('DOMContentLoaded', loadPlantDetail);
     </script>
 </body>
 </html>
-
-
-
-
-
-

@@ -1,137 +1,379 @@
-/* General App Styles */
+/* =========================================
+   1. 기본 설정 (Reset & Base)
+========================================= */
+/* 레이아웃 깨짐 방지를 위한 필수 설정 */
+* {
+  box-sizing: border-box;
+}
+
 body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
+  margin: 0;
+  background: #fafaf8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #333;
+  display: flex;
+  justify-content: center;
 }
 
 #app-container {
-    max-width: 448px;
-    margin: 0 auto;
-    background-color: white;
-    min-height: 100vh;
-    padding-bottom: 80px; /* Space for bottom nav */
-    box-sizing: border-box; /* Include padding in height calculation */
+  width: 100%;
+  max-width: 448px;
+  background: #fafaf8;
+  min-height: 100vh;
+  padding-bottom: 90px; /* 하단 네비게이션 공간 넉넉히 확보 */
+  position: relative;
 }
 
-/* Header */
-#main-header {
-    background-color: #4A7C59;
-    color: white;
-    padding: 1rem;
-    text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 10;
+/* =========================================
+   2. 헤더 디자인 (.hs-header)
+========================================= */
+.hs-header {
+  background: #fff;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e5e5e0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-#main-header h1 {
+.hs-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.hs-header-top h2 {
+    font-size: 20px; 
+    font-weight: 600; 
     margin: 0;
-    font-size: 1.25rem;
 }
 
-/* Main Content */
-#main-content {
-    padding: 1rem;
+.hs-header-top > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Plant List */
+.hs-icon {
+  width: 42px;
+  height: 42px;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hs-icon:hover {
+  background: #f5f5f3;
+}
+
+.subtitle {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* =========================================
+   3. 메인 컨텐츠
+========================================= */
+.hs-container {
+  padding: 24px;
+}
+
+.hs-add-btn {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  background: #4a7c59;
+  color: white;
+  padding: 18px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+  margin-bottom: 24px;
+  text-decoration: none;
+}
+
+.hs-add-btn:hover {
+  background: #3d6549;
+}
+
+/* =========================================
+   4. 식물 카드 리스트
+========================================= */
 .plant-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
 }
 
-.plant-card {
-    background-color: #fff;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
+.hs-card {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #e5e5e0;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 18px;
+  transition: 0.25s;
+  cursor: pointer;
 }
 
-.plant-card img {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
+.hs-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
 }
 
-.plant-card-info {
-    padding: 0.75rem;
+.hs-img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
 }
 
-.plant-card-info h3 {
-    margin: 0 0 0.25rem;
-    font-size: 1rem;
+.hs-card-body {
+  padding: 16px;
 }
 
-.plant-card-info p {
-    margin: 0;
-    font-size: 0.875rem;
-    color: #666;
+.hs-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
+.nickname {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e2f;
+}
 
-/* Bottom Navigation */
+.type {
+  background: #f5f5f3;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  color: #6b7280;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.hs-delete-btn {
+  width: 36px;
+  height: 36px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 0, 0, 0.8);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+  z-index: 5;
+}
+
+.hs-delete-btn:hover {
+  background: rgba(255, 0, 0, 1);
+}
+
+.hs-delete-btn i, .hs-delete-btn svg {
+  color: white;
+  width: 18px;
+  height: 18px;
+}
+
+/* =================================================================
+   5. 하단 네비게이션 (최종 수정: 겹침 해결 및 간격 확보)
+================================================================= */
 #bottom-nav {
     position: fixed;
     bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: white;
-    border-top: 1px solid #E5E5E0;
-    z-index: 50;
+    width: 100%;
     max-width: 448px;
-    margin: 0 auto;
+    height: 85px; /* 높이를 충분히 확보 (중요) */
+    
+    background-color: white;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    
+    /* 상단 그림자 */
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    border-top: 1px solid #f0f0f0;
+
+    z-index: 50;
     display: flex;
-    justify-content: space-around;
-    padding: 0.5rem 0;
+    justify-content: space-between; /* 양옆 균등 배분 */
+    align-items: center;
+    padding: 0 10px; /* 양옆 여백 */
 }
 
+/* 기본 네비게이션 아이템 */
 .nav-item {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     text-decoration: none;
     color: #9CA3AF;
-    font-size: 0.75rem;
-    padding: 0.5rem;
+    font-size: 10px;
+    flex: 1;
+    height: 100%;
+    position: relative;
+    padding-bottom: 5px; /* 텍스트와 하단 간격 */
 }
 
 .nav-item.active {
     color: #4A7C59;
 }
 
-.nav-item i {
+.nav-item i, .nav-item svg {
     width: 24px;
     height: 24px;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
-.register-plant-btn {
-    display: block;
-    width: calc(100% - 2rem); /* Full width minus padding */
-    margin: 1rem auto; /* Center the button with some margin */
-    padding: 0.75rem 1rem;
+/* --------------------------------------
+   가운데 아이템 영역 (공간 확보용)
+-------------------------------------- */
+.nav-item.center-item {
+    flex: 0 0 140px; /* 가운데 공간을 강제로 넓게 잡음 (텍스트 안 짤리게) */
+    overflow: visible; /* 튀어나온 버튼 보이게 */
+}
+
+/* 1. 초록색 카메라 버튼 (위로 올림) */
+.center-circle-btn {
+    width: 64px;
+    height: 64px;
     background-color: #4A7C59;
+    border-radius: 50%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
     color: white;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
+    /* 버튼 그림자 */
+    box-shadow: 0 8px 20px rgba(74, 124, 89, 0.4);
+    
+    position: absolute;
+    top: -35px; /* 위로 쑥 올림 (이 값을 조절해서 높이 맞춤) */
+    z-index: 20; /* 텍스트 박스보다 위에 */
+    
+    transition: transform 0.1s;
 }
 
-.register-plant-btn:hover {
-    background-color: #3D6549;
+.center-circle-btn:active {
+    transform: scale(0.95);
 }
 
-/* Responsive adjustments for smaller screens */
-@media (max-width: 360px) {
-    .plant-list {
-        grid-template-columns: 1fr; /* 한 줄에 하나씩 표시 */
-    }
+.center-circle-btn i, .center-circle-btn svg {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0;
+}
+
+/* 2. 캡슐 모양 텍스트 박스 (버튼 아래 배치) */
+.tooltip-bubble {
+    position: absolute;
+    bottom: 12px; /* 바닥에서 12px 띄움 */
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* 박스 디자인 */
+    background-color: white; /* 흰색 배경 */
+    border: 1px solid #E5E5E0;
+    border-radius: 30px;
+    padding: 8px 16px;
+    width: max-content; /* 글자 길이에 맞춤 */
+    
+    /* 텍스트 스타일 */
+    color: #4B5563;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+    
+    /* 그림자 */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    
+    z-index: 10; /* 버튼보다 아래 */
+    pointer-events: none; /* 클릭 안 되게 */
+}
+
+/* 기존 꼬리 제거 */
+.tooltip-bubble::after {
+    display: none;
+}
+
+/* =========================================
+   6. 다이얼로그
+========================================= */
+.hs-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.hs-dialog-backdrop.hidden {
+    display: none;
+}
+
+.hs-dialog {
+  width: 86%;
+  max-width: 380px;
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.hs-dialog-buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+}
+
+.hs-cancel,
+.hs-confirm {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+  border: none;
+  font-weight: 600;
+}
+
+.hs-cancel {
+  background: #f5f5f3;
+  color: #333;
+}
+
+.hs-confirm {
+  background: #e03134;
+  color: white;
+}
+
+.hs-confirm:hover {
+  background: #c8282b;
 }
