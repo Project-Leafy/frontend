@@ -1,5 +1,5 @@
-const BASE_URL = 'http://localhost:8080'; // 백엔드 서버 주소
-
+//const BASE_URL = 'http://localhost:8080'; // 백엔드 서버 주소 - 로컬에서 테스트 할떄 !
+const BASE_URL = 'http://3.36.110.234:8080';
 /**
  * 백엔드 API에 요청을 보냅니다.
  * @param {string} path - API 경로 (예: '/home', '/api/v1/users/me')
