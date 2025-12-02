@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>식물 진단하기</title>
+    
+    <link rel="stylesheet" href="./diagnose.css"> 
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div id="app-container">
+        <header id="detail-header">
+            <a href="javascript:history.back()" class="back-button">
+                <i data-lucide="chevron-left"></i>
+            </a>
+            <h1>식물 진단하기</h1>
+            <div style="width: 24px;"></div>
+        </header>
+
+        <main id="detail-content">
+            
+            <section id="diagnosis-form-section">
+                <div class="info-text">
+                    <p>아픈 식물의 사진을 올려주세요.<br>AI가 건강 상태를 정밀 분석합니다.</p>
+                </div>
+
+                <div class="image-upload-wrapper">
+                    <label for="diagnosis-image" class="image-upload-label">
+                        <img id="image-preview" src="https://placehold.co/600x600/E8F5E9/2C7A51?text=Touch+to+Upload" alt="미리보기">
+                        <div class="upload-overlay">
+                            <i data-lucide="camera"></i>
+                            <span>사진 업로드</span>
+                        </div>
+                    </label>
+                    <input type="file" id="diagnosis-image" accept="image/*" hidden>
+                </div>
+
+                <div class="form-group">
+                    <label for="my-plant-select">내 식물 선택 (선택)</label>
+                    <select id="my-plant-select" class="styled-select">
+                        <option value="" selected>선택 안함 (새로운 식물)</option>
+                    </select>
+                </div>
+
+                <button id="start-diagnosis-btn" class="submit-btn" disabled>
+                    진단 시작하기
+                </button>
+            </section>
+
+            <div id="loading-spinner" style="display: none; flex-direction: column; align-items: center; margin-top: 50px;">
+                <div class="spinner"></div>
+                <p style="margin-top: 20px; color: #666;">AI가 식물을 분석 중입니다...<br>잠시만 기다려주세요.</p>
+            </div>
+
+            <div id="diagnosis-result-container" style="display: none;">
+                
+                <section class="result-card" id="health-card">
+                    <div class="status-icon-box">
+                        <i id="status-icon" data-lucide="activity"></i>
+                    </div>
+                    <div class="status-text">
+                        <h2 id="health-title">분석 완료</h2>
+                        <p id="health-probability"></p>
+                    </div>
+                </section>
+
+                <hr class="divider">
+
+                <section id="disease-detail-section" style="display: none;">
+                    <div class="info-card">
+                        <h3>🩺 진단 결과</h3>
+                        <div class="info-item">
+                            <h4>추정 병명</h4>
+                            <p id="disease-name" class="highlight-text"></p>
+                        </div>
+                        <div class="info-item">
+                            <h4>설명</h4>
+                            <p id="disease-description"></p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>💊 처방 가이드</h3>
+                        <div id="solution-content" class="solution-list"></div>
+                    </div>
+                </section>
+
+                <button id="retry-btn" class="secondary-btn">다른 식물 진단하기</button>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <script type="module" src="./diagnose.js"></script>
+</body>
+</html>
