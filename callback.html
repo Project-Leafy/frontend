@@ -1,0 +1,41 @@
+# 3. OAuth2 토큰을 받는 보이지 않는 페이지
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>인증 처리 중...</title>
+</head>
+
+<body>
+    <p>로그인 처리 중입니다. 잠시만 기다려주세요...</p>
+
+    <script>
+        (function () {
+            const hash = window.location.hash;
+
+            if (hash) {
+                // #accessToken=... 형태의 문자열을 파싱한다.
+                const params = new URLSearchParams(hash.substring(1));
+                const accessToken = params.get('accessToken');
+
+                if (accessToken) {
+                    console.log('토큰 저장 성공');
+                    localStorage.setItem('accessToken', accessToken);
+                    // ✨ [중요] 보호된 /app/ 폴더의 메인 페이지로 이동
+                    window.location.replace('/app/main/main.html');
+                } else {
+                    console.error('AccessToken을 찾을 수 없습니다.');
+                    alert('로그인에 실패했습니다. (토큰 없음)');
+                    window.location.replace('/index.html');
+                }
+            } else {
+                console.error('URL 해시(#)를 찾을 수 없습니다.');
+                alert('로그인에 실패했습니다. (인증 정보 없음)');
+                window.location.replace('/index.html');
+            }
+        })();
+    </script>
+</body>
+
+</html>

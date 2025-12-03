@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>식물 등록 - 2단계</title>
+    <!-- Lucide 아이콘 -->
+    <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
+    <!-- CSS 파일 -->
+    <link rel="stylesheet" href="../registerglobal.css">
+    <link rel="stylesheet" href="register2.css">
+    <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+
+    <!-- 2단계: 정보 입력 -->
+    <div id="step-2" class="step-screen active">
+        <div class="header">
+            <a href="/app/main/main.html" class="icon-button">
+                <img src="https://img.icons8.com/?size=100&id=99284&format=png&color=000000" alt="뒤로가기 버튼" class="camera-icon back-btn">
+            </a>
+            <div>
+                <h1 class="header-title">식물 등록</h1>
+                <p class="header-subtitle">2/3 단계</p>
+            </div>
+        </div>
+
+        <div class="content-scroll">
+            <!-- 1. 식별 결과 표시 -->
+            <div class="image-wrapper-square">
+                <!-- 1단계 결과를 JS가 채워줄 예정 -->
+                <img id="plant-preview" src="https://placehold.co/300x300/eee/ccc?text=Loading..." alt="등록할 식물" />
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon-circle-small">
+                        <i data-lucide="check" class="check-icon"></i>
+                    </div>
+                    <div class="card-title-group">
+                        <h3 class="card-title">분석 완료!</h3>
+                        <p class="card-subtitle">Plant.id API 분석 결과</p>
+                    </div>
+                </div>
+
+                <div class="analysis-result-box">
+                    <!-- 1단계 결과를 JS가 채워줄 예정 -->
+                    <p id="common-name" class="analysis-name-text">식물 이름 로딩 중...</p>
+                    <p id="scientific-name" class="analysis-scientific-text">학명 로딩 중...</p>
+                    
+                    <!-- (참고) 신뢰도 표시는 API 응답에 없으므로 임시 처리 -->
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fg" style="width: 98%;"></div>
+                        </div>
+                        <span class="progress-text">98%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 사용자 추가 정보 입력 -->
+            <div class="form-group">
+                <label for="nickname" class="form-label">식물 애칭</label>
+                <input type="text" id="nickname" class="form-input" placeholder="예: 몬순이">
+            </div>
+
+            <div class="form-group">
+                <label for="adoption-date" class="form-label">입양일</label>
+                <input type="date" id="adoption-date" class="form-input">
+            </div>
+
+
+            <!-- 3. 최종 등록 버튼 -->
+            <div class="button-group-bottom">
+                <button id="register-btn" class="button button-primary">
+                    이 식물 등록하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- 4. 스크립트 모듈로 연결 -->
+    <script type="module" src="../register.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>식물 등록 - 1단계</title>
+    <!-- Lucide 아이콘 -->
+    <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
+    <!-- CSS 파일 -->
+    <link rel="stylesheet" href="../registerglobal.css">
+    <link rel="stylesheet" href="register1.css">
+     <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+
+    <!-- 1단계: 사진 촬영 -->
+    <div id="step-1" class="step-screen active">
+        <div class="header">
+            <a href="/app/main/main.html" class="icon-button">
+                <img src="https://img.icons8.com/?size=100&id=99284&format=png&color=000000" alt="뒤로가기 버튼" class="camera-icon back-btn">
+            </a>
+            <div>
+                <h1 class="header-title">식물 등록</h1>
+                <p class="header-subtitle">1/3 단계</p>
+            </div>
+        </div>
+
+        <div class="content-center">
+            <div class="icon-circle">
+                <img src="https://img.icons8.com/?size=100&id=dlNRF98qYou3&format=png&color=000000" alt="식물 아이콘" class="camera-icon">
+            </div>
+            
+            <h2 class="title-text">식물 사진을 촬영해주세요</h2>
+            <p class="description-text">
+                식물 전체가 잘 보이도록<br />
+                밝은 곳에서 촬영해주세요
+            </p>
+
+            <div class="button-group">
+                <button id="take-photo-btn" class="button button-primary">
+                    <i data-lucide="camera" class="button-icon"></i>
+                    카메라로 촬영하기
+                </button>
+                <button id="album-btn" class="button button-outline">
+                    앨범에서 선택하기
+                </button>
+            </div>
+
+            <!-- [수정됨] 1. 숨겨진 파일 입력 필드 추가 -->
+            <!-- 
+                register.js에서 '앨범에서 선택하기' 버튼 클릭 시 
+                이 input을 대신 클릭하도록 처리합니다.
+            -->
+            <input type="file" id="plant-image" accept="image/*" style="display: none;">
+
+            <!-- [수정됨] 2. '식별하기' 버튼 추가 -->
+            <!--
+                이 버튼은 register.js에서 파일이 선택되었을 때 
+                동적으로 표시되도록 처리하는 것이 좋습니다. (초기 숨김)
+            -->
+            <button id="identify-btn" class="button button-primary" style="margin-top: 1rem; display: none;">
+                식별하기
+            </button>
+        </div>
+    </div>
+
+    <!-- JS 파일 -->
+    <script type="module" src="../register.js"></script>
+</body>
+</html>

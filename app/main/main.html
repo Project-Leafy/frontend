@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Leafy - 홈</title>
+    <link rel="stylesheet" href="main.css">
+    
+    <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <script>
+        (function () {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                alert('로그인이 필요한 페이지입니다.');
+                window.location.replace('/index.html');
+            }
+        })();
+    </script>
+
+    <div id="app-container">
+
+        <div class="hs-header">
+            <div class="hs-header-top">
+                <h2>내 식물</h2>
+                <div>
+                    <button id="notifications-btn" class="hs-icon">
+                        <i data-lucide="bell"></i>
+                    </button>
+                    <button id="profile-btn" class="hs-icon">
+                        <i data-lucide="user"></i>
+                    </button>
+                </div>
+            </div>
+            <p id="plant-count" class="subtitle">로딩 중...</p>
+        </div>
+
+        <div class="hs-container">
+
+            <a href="/app/register/register1/register1.html" class="hs-add-btn">
+                <i data-lucide="plus-circle" style="margin-right: 6px;"></i>
+                식물 등록하기
+            </a>
+
+            <div id="plant-list" class="plant-list">
+                </div>
+        </div>
+
+        <nav id="bottom-nav">
+            <a href="/app/main/main.html" class="nav-item active">
+                <i data-lucide="home"></i>
+                <span>홈</span>
+            </a>
+            <a href="/app/dictionary/dictionary.html" class="nav-item">
+                <i data-lucide="book-open"></i>
+                <span>백과사전</span>
+            </a>
+            
+            <a href="/app/diagnosis/diagnosis.html" class="nav-item center-item">
+                <div class="center-circle-btn">
+                    <i data-lucide="camera" style="width: 28px; height: 28px;"></i>
+                </div>
+                <div class="tooltip-bubble">아픈 식물을 진단하세요</div>
+            </a>
+
+            <a href="/app/recommend/recommend.html" class="nav-item">
+                <i data-lucide="sparkles"></i> <span>추천</span>
+            </a>
+            <a href="/app/calendar/calendar.html" class="nav-item">
+                <i data-lucide="calendar"></i>
+                <span>캘린더</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <div id="deleteDialog" class="hs-dialog-backdrop hidden">
+        <div class="hs-dialog">
+            <h2 style="font-size:18px; font-weight:600; margin:0 0 8px 0;">식물을 삭제할까요?</h2>
+            <p style="margin:0; color:#6b7280; font-size:14px;">
+                삭제하면 해당 식물과 모든 기록이 사라집니다.
+            </p>
+
+            <div class="hs-dialog-buttons">
+                <button id="dialogCancel" class="hs-cancel">취소</button>
+                <button id="dialogConfirm" class="hs-confirm">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+
+
+    <script type="module">
+        import { getMyPlants, deleteMyPlant } from '../plant/plant_api.js';
+
+        // 선택자 업데이트
+        const plantListContainer = document.getElementById('plant-list');
+        const plantCountElement = document.getElementById('plant-count'); // 개수 표시용
+        
+        // 다이얼로그 관련 변수
+        const deleteDialog = document.getElementById('deleteDialog');
+        const dialogCancelBtn = document.getElementById('dialogCancel');
+        const dialogConfirmBtn = document.getElementById('dialogConfirm');
+        let plantIdToDelete = null; // 삭제할 식물 ID 저장용
+
+        async function loadUserPlants() {
+            try {
+                const myPlants = await getMyPlants();
+
+                plantListContainer.innerHTML = '';
+                
+                // [변경] 식물 개수 업데이트 로직 추가
+                plantCountElement.textContent = `총 ${myPlants.length}개의 식물`;
+
+                if (myPlants.length === 0) {
+                    plantListContainer.innerHTML = '<p style="text-align:center; color:#999; margin-top:40px;">등록된 식물이 없습니다.</p>';
+                    return;
+                }
+
+                myPlants.forEach(plant => {
+                    const plantCard = document.createElement('div');
+                    
+                    // [변경] 새로운 디자인 클래스 적용 (hs-card)
+                    plantCard.className = 'hs-card';
+                    plantCard.setAttribute('data-my-plant-id', plant.my_plant_id);
+
+                    const imageUrl = plant.image_url || 'https://placehold.co/400x250'; // 이미지 비율에 맞춰 텍스트 변경
+                    const nickname = plant.nickname || '이름 없음';
+                    const speciesName = plant.plant_species_name || '종 정보 없음';
+
+                    // [변경] 새로운 HTML 구조로 카드 렌더링
+                    plantCard.innerHTML = `
+                        <img src="${imageUrl}" alt="${nickname}" class="hs-img">
+                        
+                        <button class="hs-delete-btn" data-my-plant-id="${plant.my_plant_id}">
+                            <i data-lucide="trash-2"></i>
+                        </button>
+
+                        <div class="hs-card-body">
+                            <div class="hs-topline">
+                                <span class="nickname">${nickname}</span>
+                                <span class="type">${speciesName}</span>
+                            </div>
+                            <div class="info">
+                                <span>최근 물주기: -</span> <span>상태: 진단 X</span>
+                            </div>
+                        </div>
+                    `;
+                    plantListContainer.appendChild(plantCard);
+                });
+
+                lucide.createIcons();
+
+            } catch (error) {
+                console.error('내 식물 목록을 불러오는 중 에러 발생:', error);
+                plantListContainer.innerHTML = '<p style="text-align:center;">목록을 불러오는데 실패했습니다.</p>';
+            }
+        }
+
+        // --- 이벤트 핸들링 ---
+
+        // 1. 다이얼로그 닫기 함수
+        function closeDialog() {
+            deleteDialog.classList.add('hidden');
+            plantIdToDelete = null;
+        }
+
+        // 2. 다이얼로그 취소 버튼 클릭
+        dialogCancelBtn.addEventListener('click', closeDialog);
+
+        // 3. 다이얼로그 "삭제" 확정 버튼 클릭
+        dialogConfirmBtn.addEventListener('click', async () => {
+            if (!plantIdToDelete) return;
+
+            try {
+                await deleteMyPlant(plantIdToDelete);
+                
+                // UI에서 해당 카드 제거
+                const cardToRemove = document.querySelector(`.hs-card[data-my-plant-id='${plantIdToDelete}']`);
+                if (cardToRemove) cardToRemove.remove();
+
+                alert('식물이 삭제되었습니다.');
+                closeDialog();
+                
+                // 목록 다시 로드 (개수 갱신 등을 위해)
+                loadUserPlants();
+
+            } catch (error) {
+                console.error('식물 삭제 중 에러 발생:', error);
+                alert('식물 삭제에 실패했습니다.');
+                closeDialog();
+            }
+        });
+
+
+        // 4. 리스트 클릭 이벤트 위임 (카드 클릭 vs 삭제 버튼 클릭)
+        plantListContainer.addEventListener('click', (event) => {
+            const target = event.target;
+            
+            // [변경] 새로운 삭제 버튼 클래스 감지 (.hs-delete-btn)
+            const deleteBtn = target.closest('.hs-delete-btn');
+            // [변경] 새로운 카드 클래스 감지 (.hs-card)
+            const plantCard = target.closest('.hs-card');
+
+            if (deleteBtn) {
+                event.stopPropagation(); // 카드 클릭 이벤트 막기
+                
+                // 삭제할 ID 저장 후 다이얼로그 띄우기 (기존 confirm 대신 사용)
+                plantIdToDelete = deleteBtn.dataset.myPlantId;
+                deleteDialog.classList.remove('hidden');
+
+            } else if (plantCard) {
+                // 상세 페이지 이동 로직 (기존 유지)
+                const myPlantId = plantCard.dataset.myPlantId;
+                window.location.href = `/app/myplant/myplant_diary/myplant_diary.html?id=${myPlantId}`;
+            }
+        });
+
+        // 알람 벨 클릭 → 알람 페이지 이동
+        document.getElementById('notifications-btn').addEventListener('click', () => {
+            window.location.href = '/app/alarm/alarm.html';
+        });
+
+        // 프로필 버튼
+        document.getElementById('profile-btn').addEventListener('click', () => {
+            window.location.href = '/app/profile/profile.html';
+        });
+        
+
+
+        // 초기 로드
+        loadUserPlants();
+    </script>
+</body>
+
+</html>
+

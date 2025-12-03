@@ -1,0 +1,104 @@
+/* --- 1. 전체 화면 레이아웃 --- */
+#app-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;             /* 내용을 중앙에 배치하기 위해 */
+  justify-content: center;   /* 가로 중앙 */
+  align-items: center;       /* 세로 중앙 */
+  background-color: var(--background);
+  padding: 24px;             /* 모바일에서 여백 확보 */
+}
+
+.screen {
+  display: none; /* 기본적으로 숨김 */
+  width: 100%;
+  max-width: 400px; /* 너무 넓어지지 않게 제한 */
+}
+
+.screen.active {
+  display: flex; /* 활성화되면 보임 */
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- 2. 로그인 컨텐츠 내부 --- */
+.login-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* --- 3. 로고 스타일 --- */
+.logo-circle {
+  width: 80px;
+  height: 80px;
+  background-color: #4A7C59;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* 살짝 그림자 */
+}
+
+.logo-circle i, 
+.logo-circle svg {
+  color: white;
+  width: 40px;
+  height: 40px;
+  background-color: #4A7C59;
+}
+
+/* --- 4. 텍스트 스타일 --- */
+.login-title {
+  font-size: 1.75rem; /* 약 28px */
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #2C3E2F;
+}
+
+.login-subtitle {
+  font-size: 1rem;
+  color: var(--muted-foreground);
+  margin-bottom: 48px; /* 버튼과 간격 띄우기 */
+}
+
+/* --- 5. 카카오 버튼 스타일 --- */
+.kakao-login-btn {
+  width: 100%;
+  background-color: var(--kakao-yellow);
+  color: #3C1E1E;
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.kakao-login-btn:hover {
+  opacity: 0.9;
+}
+
+/* 버튼 안의 아이콘이 있다면 (HTML 구조에 따라) */
+.kakao-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  /* 카카오 아이콘 이미지가 있다면 여기에 background-image 넣기 */
+}
+
+/* --- 6. 하단 약관 텍스트 --- */
+.login-policy {
+  margin-top: 24px;
+  font-size: 12px;
+  color: #9CA3AF;
+  line-height: 1.5;
+}

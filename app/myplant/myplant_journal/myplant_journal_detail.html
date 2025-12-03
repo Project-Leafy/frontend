@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="../../../assets/images/favicon.svg" type="image/svg+xml">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>성장 기록 상세</title>
+    
+    <!-- 기존 myplant_diary.css는 이제 필요 없음 (버그 원인 제거) -->
+    <!-- <link rel="stylesheet" href="../myplant_diary/myplant_diary.css"> -->
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif;
+            background: #FAFAF8;
+            min-height: 100vh;
+        }
+        
+        .screen {
+            max-width: 430px;
+            margin: 0 auto;
+            background: #FAFAF8;
+            min-height: 100vh;
+        }
+
+        /* 헤더 */
+        .detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: white;
+            border-bottom: 1px solid #E5E5E0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .detail-header button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            transition: background 0.2s;
+        }
+
+        .detail-header button:hover {
+            background: #F5F5F3;
+        }
+
+        .detail-header button:active {
+            transform: scale(0.95);
+        }
+
+        .detail-header .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2C3E2F;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 내용 영역 */
+        .detail-content {
+            padding: 24px 20px 100px;
+            background: #FAFAF8;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .info-row p:first-child {
+            color: #4A7C59;
+            font-weight: 600;
+        }
+
+        .info-row p:last-child {
+            color: #9CA3AF;
+        }
+
+        /* 이미지 갤러리 */
+        .image-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .image-wrapper {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #f0f0f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 메모 카드 */
+        .memo-card {
+            background: white;
+            border: 1px solid #E5E5E0;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .tag-badge {
+            background: #E8F4EC;
+            color: #4A7C59;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 999px;
+        }
+
+        .memo-text {
+            color: #2C3E2F;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            font-size: 15px;
+        }
+
+        /* 모달 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: white;
+            width: 90%;
+            max-width: 320px;
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            color: #6B7280;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-cancel, .btn-delete {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .btn-cancel {
+            background: #F3F4F6;
+            color: #374151;
+        }
+
+        .btn-delete {
+            background: #EF4444;
+            color: white;
+        }
+    </style>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="screen">
+        <header class="detail-header">
+            <button id="backBtn">
+                <i data-lucide="arrow-left" color="#6B7280" size="22"></i>
+            </button>
+            <h1 class="header-title">성장 기록</h1>
+            <button id="deleteBtn">
+                <i data-lucide="trash-2" color="#EF4444" size="20"></i>
+            </button>
+        </header>
+
+        <main class="detail-content">
+            <div class="info-row">
+                <p id="plantNickname" style="color:#4A7C59;font-weight:600;">-</p>
+                <p id="recordDate" style="color:#9CA3AF;font-size:14px;">-</p>
+            </div>
+
+            <div id="imageGallery" class="image-gallery"></div>
+
+            <div class="memo-card">
+                <div id="tagContainer" class="tag-list"></div>
+                <p id="memoText" class="memo-text"></p>
+            </div>
+        </main>
+    </div>
+
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 class="modal-title">기록을 삭제하시겠습니까?</h3>
+            <p class="modal-desc">이 성장 기록이 영구적으로 삭제됩니다.<br>이 작업은 취소할 수 없습니다.</p>
+            <div class="modal-actions">
+                <button id="modalCancel" class="btn-cancel">취소</button>
+                <button id="modalConfirm" class="btn-delete">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { getGrowthJournals, deleteJournal } from './myplant_journal_api.js';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const recordId = urlParams.get('recordId');
+        const plantId = urlParams.get('plantId');
+
+        const plantNicknameEl = document.getElementById('plantNickname');
+        const recordDateEl = document.getElementById('recordDate');
+        const imageGalleryEl = document.getElementById('imageGallery');
+        const tagContainerEl = document.getElementById('tagContainer');
+        const memoTextEl = document.getElementById('memoText');
+        const deleteModal = document.getElementById('deleteModal');
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+            return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${weekDays[date.getDay()]})`;
+        }
+
+        function renderTags(journal) {
+            const tags = [];
+            if (journal.watered) tags.push('물주기');
+            if (journal.repotted) tags.push('분갈이');
+            if (journal.pruned) tags.push('가지치기');
+            if (journal.fertilized) tags.push('비료');
+
+            tagContainerEl.innerHTML = tags.map(tag => 
+                `<span class="tag-badge">#${tag}</span>`
+            ).join('');
+        }
+
+        async function loadDetail() {
+            if (!recordId) return history.back();
+
+            try {
+                const journals = await getGrowthJournals(plantId);
+                const journal = journals.find(j => String(j.record_id || j.recordId || j.id) === recordId);
+
+                if (!journal) return history.back();
+
+                plantNicknameEl.textContent = journal.plant_nickname || journal.plantNickname || "나의 반려식물";
+                recordDateEl.textContent = formatDate(journal.record_date || journal.recordDate);
+                memoTextEl.textContent = journal.memo || "작성된 메모가 없습니다.";
+                renderTags(journal);
+
+                imageGalleryEl.innerHTML = '';
+                let images = [];
+                if (journal.images && Array.isArray(journal.images)) images = journal.images;
+                else if (journal.photo_url || journal.photoUrl) images = [journal.photo_url || journal.photoUrl];
+
+                images.forEach(src => {
+                    const div = document.createElement('div');
+                    div.className = 'image-wrapper';
+                    div.innerHTML = `<img src="${src}" onerror="this.src='https://placehold.co/600x600?text=No+Image'">`;
+                    imageGalleryEl.appendChild(div);
+                });
+
+            } catch (error) {
+                console.error(error);
+                history.back();
+            }
+        }
+
+        document.getElementById('backBtn').onclick = () => history.back();
+        document.getElementById('deleteBtn').onclick = () => deleteModal.style.display = 'flex';
+        document.getElementById('modalCancel').onclick = () => deleteModal.style.display = 'none';
+        
+        document.getElementById('modalConfirm').addEventListener('click', async () => {
+            try {
+                await deleteJournal(recordId);  // 여기! plantId 완전 제거
+                alert('삭제되었습니다.');
+                history.back();
+            } catch (e) {
+                alert('삭제 실패: ' + e.message);
+                deleteModal.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            loadDetail();
+        });
+    </script>
+</body>
+</html>

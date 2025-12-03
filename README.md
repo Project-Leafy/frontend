@@ -118,3 +118,51 @@ git commit -m "feat: 로그인 페이지 UI 및 API 연동 기능 구현"
 팀원 최소 1명 이상의 **Approve(승인)**를 받아야만 develop 브랜치로 병합(Merge)할 수 있습니다.
 
 PR을 올릴 때는 어떤 기능을 구현했는지, 어떻게 테스트했는지 상세히 작성합니다.
+
+#### 4. 프로젝트 디렉토리 구조
+```
+/
+├── app/
+│   ├── calendar/
+│   │   ├── calendar.css
+│   │   └── calendar.html
+│   ├── diagnosis/
+│   │   ├── diagnosis_api.js
+│   │   ├── diagnosis.css
+│   │   └── diagnosis.html
+│   ├── dictionary/
+│   │   ├── dictionary.css
+│   │   └── dictionary.html
+│   ├── main/
+│   │   ├── main.css
+│   │   └── main.html
+│   ├── myplant_detail/
+│   │   ├── myplant_detail.css
+│   │   └── myplant_detail.html
+│   ├── plant/
+│   │   └── plant_api.js
+│   ├── recommend/
+│   │   ├── recommend.css
+│   │   └── recommend.html
+│   └── register/
+│       ├── register.js
+│       ├── registerglobal.css
+│       ├── register1/
+│       │   ├── register1.css
+│       │   └── register1.html
+│       ├── register2/
+│       │   ├── register2.css
+│       │   └── register2.html
+│       └── register3/
+│           ├── register3.css
+│           └── register3.html
+├── assets/
+│   ├── css/
+│   │   └── style.css
+│   └── js/
+│       ├── auth.js
+│       └── core_api.js
+├── callback.html
+├── index.html
+└── README.md
+```

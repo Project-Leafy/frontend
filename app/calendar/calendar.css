@@ -1,0 +1,477 @@
+/* ============================================================
+   기본 레이아웃 / 비율
+============================================================ */
+/* 폰트 로드 */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Pretendard', sans-serif;
+    background-color: #FAFAF8;
+    color: #333;
+}
+
+#app-container {
+    max-width: 448px;
+    margin: 0 auto;
+    background: #FAFAF8;
+    min-height: 100vh;
+    padding-bottom: 150px; /* ⭐️ 하단 내비게이션 높이 고려하여 여백 확보 */
+    position: relative;
+}
+
+/* ============================================================
+   Header
+============================================================ */
+.header {
+    background: #fff;
+    padding: 16px 24px 12px;
+    border-bottom: 1px solid #E5E5E0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.header-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2C3E2F;
+    margin: 0 0 8px 0;
+}
+
+.subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: #6B7280;
+    line-height: 1.4;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.icon-btn:hover { background: #F5F5F3; }
+
+/* ============================================================
+   Month Box (달력 컨테이너)
+============================================================ */
+.month-box {
+    background: #fff;
+    border: 1px solid #E5E5E0;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 24px;
+    margin-bottom: 12px;
+}
+
+.month-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.month-header h2 {
+    color: #2C3E2F;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.week-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 12px;
+    gap: 4px;
+}
+
+.week-header div {
+    color: #9CA3AF;
+    font-size: 13px;
+    padding: 6px 0;
+}
+
+/* ============================================================
+   Calendar Grid (날짜)
+============================================================ */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    transition: background 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+}
+
+.calendar-day:disabled {
+    cursor: default;
+    background: transparent !important;
+}
+
+.calendar-day:not(:disabled):hover {
+    background: #F5F5F3;
+}
+
+.calendar-day.today {
+    background: #4A7C59 !important;
+}
+.calendar-day.today .calendar-day-number {
+    color: white;
+    font-weight: 600;
+}
+.calendar-day.today .calendar-icons svg {
+    color: white !important;
+}
+
+.calendar-day.has-schedule {
+    background: #E8F4EC;
+}
+.calendar-day.has-schedule:hover {
+    background: #D1E7DD;
+}
+
+.calendar-day-number {
+    font-size: 14px;
+    margin-bottom: 2px;
+    color: #2C3E2F;
+}
+
+.calendar-icons {
+    display: flex;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+/* ============================================================
+   Upcoming Schedule (일정 목록)
+============================================================ */
+.upcoming-header {
+    padding: 0 24px;
+    margin-top: 20px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.upcoming-header h3 {
+    color: #2C3E2F;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.add-btn {
+    background: #4A7C59;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-btn:hover {
+    background: #3D6549;
+}
+
+.upcoming-list {
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.schedule-card {
+    background: #fff;
+    border: 1px solid #E5E5E0;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.schedule-icon {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.bg-blue { background-color: #DBEAFE; color: #3B82F6; }
+.bg-yellow { background-color: #FEF3C7; color: #F59E0B; }
+.bg-green { background-color: #E8F4EC; color: #4A7C59; }
+
+.schedule-main {
+    flex: 1;
+}
+
+.schedule-main p {
+    color: #2C3E2F;
+    margin: 0 0 4px 0;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.schedule-main span {
+    font-size: 13px;
+    color: #6B7280;
+}
+
+/* ============================================================
+   Modal (Dialog)
+============================================================ */
+.modal {
+    position: fixed;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s;
+}
+
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    width: 85%;
+    max-width: 360px;
+}
+
+.modal-content h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2C3E2F;
+    margin: 0 0 6px 0;
+}
+
+.modal-desc {
+    color: #6B7280;
+    font-size: 14px;
+    margin: 0 0 20px 0;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #E5E5E0;
+    border-radius: 10px;
+    font-size: 14px;
+    background-color: white;
+}
+
+.input:focus {
+    border-color: #4A7C59;
+    outline: 2px solid #E8F4EC;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.modal-btn {
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.modal-btn.cancel {
+    background: white;
+    border: 1px solid #E5E5E0;
+    color: #374151;
+}
+
+.modal-btn.confirm {
+    background: #4A7C59;
+    color: white;
+}
+
+.modal-btn.confirm:hover {
+    background: #3D6549;
+}
+
+/* =================================================================
+   [공통] 하단 내비게이션 (최종 디자인 적용)
+   ================================================================= */
+#bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 448px;
+    height: 85px; /* 높이 85px */
+    
+    background-color: white;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    
+    /* 상단 그림자 */
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    border-top: 1px solid #f0f0f0;
+
+    z-index: 50;
+    display: flex;
+    justify-content: space-between; /* 양옆 균등 배분 */
+    align-items: center;
+    padding: 0 10px; /* 양옆 여백 */
+}
+
+/* 기본 네비게이션 아이템 */
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #9CA3AF;
+    font-size: 10px;
+    flex: 1;
+    height: 100%;
+    position: relative;
+    padding-bottom: 5px; /* 텍스트와 하단 간격 */
+}
+
+.nav-item.active {
+    color: #4A7C59;
+}
+
+.nav-item i, .nav-item svg {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 6px;
+}
+
+/* --------------------------------------
+   가운데 아이템 영역 (공간 확보용)
+-------------------------------------- */
+.nav-item.center-item {
+    flex: 0 0 140px; /* 가운데 공간을 강제로 넓게 잡음 (중요) */
+    overflow: visible;
+}
+
+/* 1. 초록색 카메라 버튼 (위로 올림) */
+.center-circle-btn {
+    width: 64px;
+    height: 64px;
+    background-color: #4A7C59;
+    border-radius: 50%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    color: white;
+    box-shadow: 0 8px 20px rgba(74, 124, 89, 0.4);
+    
+    position: absolute;
+    top: -35px; /* 위로 쑥 올림 */
+    z-index: 20;
+    
+    transition: transform 0.1s;
+}
+
+.center-circle-btn:active {
+    transform: scale(0.95);
+}
+
+.center-circle-btn i, .center-circle-btn svg {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0;
+}
+
+/* 2. 캡슐 모양 텍스트 박스 (버튼 아래 배치) */
+.tooltip-bubble {
+    position: absolute;
+    bottom: 12px; /* 바닥에서 12px 띄움 */
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* 박스 디자인 */
+    background-color: white;
+    border: 1px solid #E5E5E0;
+    border-radius: 30px;
+    padding: 8px 16px;
+    width: max-content;
+    
+    /* 텍스트 스타일 */
+    color: #4B5563;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+    
+    /* 그림자 */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* 기존 꼬리 제거 */
+.tooltip-bubble::after {
+    display: none;
+}

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>관리 캘린더</title>
+    <link rel="stylesheet" href="calendar.css"> 
+    <link rel="icon" href="../../../assets/images/favicon.svg" type="image/svg+xml">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* 일정이 없을 때 안내 문구 스타일 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: #9CA3AF;
+            font-size: 14px;
+            background: white;
+            border-radius: 12px;
+            border: 1px dashed #E5E5E0;
+        }
+    </style>
+</head>
+<body>
+  <div id="app-container">
+    
+    <div class="header">
+      <div>
+        <h1 class="header-title">🗓️ 관리 캘린더</h1>
+        <p class="subtitle">식물 관리 일정을 확인하세요</p>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button id="notifications-btn" class="icon-btn">
+            <i data-lucide="bell"></i>
+        </button>
+        <button id="profileBtn" class="icon-btn">
+            <i data-lucide="user"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="month-box">
+        <div class="month-header">
+            <button id="prevMonthBtn" class="icon-btn">
+                <i data-lucide="chevron-left"></i>
+            </button>
+            <h2 id="currentMonthYear"></h2>
+            <button id="nextMonthBtn" class="icon-btn">
+                <i data-lucide="chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="week-header">
+            <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+        </div>
+
+        <div id="calendarGrid" class="calendar-grid"></div>
+    </div>
+
+    <div class="upcoming-header">
+        <h3>다가오는 일정</h3>
+        <button id="addScheduleBtn" class="add-btn">
+            <i data-lucide="plus" width="16"></i>
+            일정 추가
+        </button>
+    </div>
+
+    <div id="scheduleList" class="upcoming-list">
+        </div>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2>일정 추가</h2>
+            <p class="modal-desc">새로운 관리 일정을 추가하세요</p>
+            
+            <div class="form-group">
+                <label>날짜</label>
+                <input type="date" id="inputDate" class="input">
+            </div>
+            
+            <div class="form-group">
+                <label>식물</label>
+                <select id="inputPlant" class="input">
+                    <option value="" disabled selected>식물을 선택하세요</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>활동 종류</label>
+                <select id="inputType" class="input">
+                    <option value="WATER" selected>물주기</option>
+                    <option value="REPOT">분갈이</option>
+                    <option value="FERTILIZE">비료주기</option>
+                </select>
+            </div>
+
+            <div class="modal-buttons">
+                <button id="closeModalBtn" class="modal-btn cancel">취소</button>
+                <button id="saveScheduleBtn" class="modal-btn confirm">추가하기</button>
+            </div>
+        </div>
+    </div>
+
+    <nav id="bottom-nav">
+        <a href="/app/main/main.html" class="nav-item">
+            <i data-lucide="home"></i>
+            <span>홈</span>
+        </a>
+        <a href="/app/dictionary/dictionary.html" class="nav-item">
+            <i data-lucide="book-open"></i>
+            <span>백과사전</span>
+        </a>
+        
+        <a href="/app/diagnosis/diagnosis.html" class="nav-item center-item">
+            <div class="center-circle-btn">
+                <i data-lucide="camera" style="width: 28px; height: 28px;"></i>
+            </div>
+            <div class="tooltip-bubble">아픈 식물을 진단하세요</div>
+        </a>
+
+        <a href="/app/recommend/recommend.html" class="nav-item">
+            <i data-lucide="sparkles"></i>
+            <span>추천</span>
+        </a>
+        <a href="/app/calendar/calendar.html" class="nav-item active">
+            <i data-lucide="calendar"></i>
+            <span>캘린더</span>
+        </a>
+    </nav>
+
+  </div>
+
+  <script type="module">
+    // 경로에 주의하세요 (식물 조회 API, 일정 API)
+    import { getMyPlants } from '../plant/plant_api.js';
+    import { getMySchedules, addSchedule } from './schedule_api.js';
+
+    lucide.createIcons();
+
+    let currentDate = new Date();
+    const today = new Date();
+    
+    // DB 데이터를 날짜별로 저장할 객체
+    let scheduleDataMap = {}; 
+
+    const gridEl = document.getElementById('calendarGrid');
+    const monthYearEl = document.getElementById('currentMonthYear');
+    const scheduleListEl = document.getElementById('scheduleList');
+    
+    const modal = document.getElementById('addModal');
+    const addBtn = document.getElementById('addScheduleBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const saveBtn = document.getElementById('saveScheduleBtn');
+    const inputDate = document.getElementById('inputDate');
+    const inputPlant = document.getElementById('inputPlant');
+    const inputType = document.getElementById('inputType');
+
+    // 1. 초기 실행
+    async function init() {
+        await loadPlantsIntoSelect();
+        await fetchAndRenderCalendar();
+    }
+
+    async function loadPlantsIntoSelect() {
+        try {
+            console.log('===== 식물 목록 로드 시작 =====');
+            const plants = await getMyPlants();
+            console.log('불러온 식물 목록:', plants);
+            console.log('식물 개수:', plants.length);
+            
+            inputPlant.innerHTML = '<option value="" disabled selected>식물을 선택하세요</option>';
+            
+            if (plants.length === 0) {
+                console.warn('⚠️ 등록된 식물이 없습니다!');
+                inputPlant.innerHTML += '<option value="" disabled>등록된 식물이 없습니다</option>';
+                return;
+            }
+            
+            plants.forEach(plant => {
+                const option = document.createElement('option');
+                option.value = plant.my_plant_id; 
+                option.textContent = plant.nickname;
+                inputPlant.appendChild(option);
+                
+                console.log(`✅ 식물 추가: ${plant.nickname} (ID: ${plant.my_plant_id})`);
+            });
+            
+            console.log('===== 식물 목록 로드 완료 =====');
+        } catch (error) {
+            console.error("❌ 식물 목록 로드 실패:", error);
+            alert('식물 목록을 불러올 수 없습니다. 먼저 식물을 등록해주세요.');
+        }
+    }
+
+
+
+    // 3. 스케줄 불러오기 및 화면 그리기
+    async function fetchAndRenderCalendar() {
+        try {
+            const schedules = await getMySchedules();
+            
+            // 데이터 초기화 및 그룹화
+            scheduleDataMap = {};
+            schedules.forEach(sch => {
+                const dateKey = sch.nextDueDate; // "YYYY-MM-DD"
+                if (!scheduleDataMap[dateKey]) {
+                    scheduleDataMap[dateKey] = [];
+                }
+                
+                scheduleDataMap[dateKey].push({
+                    type: sch.scheduleType.toLowerCase(),
+                    plant: sch.plantNickname || '알 수 없음',  // ✅ 백엔드 키 이름에 맞게 수정
+                    id: sch.scheduleId
+                });
+
+            });
+
+            renderCalendar();
+            renderScheduleList();
+
+        } catch (error) {
+            console.error("스케줄 로드 실패", error);
+        }
+    }
+
+    // 4. 달력 그리기 (점 표시 포함)
+    function renderCalendar() {
+        gridEl.innerHTML = '';
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        monthYearEl.textContent = `${year}년 ${month + 1}월`;
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        const startDayOfWeek = firstDay.getDay();
+
+        // 빈 칸 채우기
+        for (let i = 0; i < startDayOfWeek; i++) {
+            gridEl.appendChild(document.createElement('div'));
+        }
+
+        // 날짜 채우기
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${year}-${String(month+1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const btn = document.createElement('button');
+            btn.className = 'calendar-day';
+            
+            // 오늘 날짜 표시
+            if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
+                btn.classList.add('today');
+            }
+
+            // 일정이 있는 날이면 .has-schedule 클래스 추가
+            const dailySchedules = scheduleDataMap[dateStr] || [];
+            if (dailySchedules.length > 0) {
+                btn.classList.add('has-schedule');
+            }
+
+            // 날짜 숫자
+            const numSpan = document.createElement('span');
+            numSpan.className = 'calendar-day-number';
+            numSpan.textContent = day;
+            btn.appendChild(numSpan);
+
+            // [핵심] 일정 종류에 따른 색상 점(Dot) 표시
+            const iconContainer = document.createElement('div');
+            iconContainer.className = 'calendar-icons';
+            
+            // 최대 3개까지만 점 표시
+            dailySchedules.slice(0, 3).forEach(sch => {
+                const dot = document.createElement('div');
+                dot.style.width = '5px';
+                dot.style.height = '5px';
+                dot.style.borderRadius = '50%';
+                
+                // 타입별 색상 지정
+                if(sch.type === 'water') dot.style.backgroundColor = '#3B82F6'; // 파랑
+                else if(sch.type === 'repot') dot.style.backgroundColor = '#F59E0B'; // 노랑
+                else dot.style.backgroundColor = '#4A7C59'; // 초록
+
+                iconContainer.appendChild(dot);
+            });
+            btn.appendChild(iconContainer);
+
+            // 날짜 클릭 시 일정 추가 모달 열기 (편의 기능)
+            btn.addEventListener('click', () => {
+                if(dailySchedules.length > 0) {
+                    // 일정이 있으면 alert로 보여줌 (추후 목록 필터링 등으로 고도화 가능)
+                    let msg = `${month+1}월 ${day}일 일정:\n`;
+                    dailySchedules.forEach(s => msg += `- ${s.plant} (${getTypeName(s.type)})\n`);
+                    alert(msg);
+                } else {
+                    // 일정이 없으면 바로 추가 모달 열기
+                    inputDate.value = dateStr;
+                    modal.classList.add('show');
+                }
+            });
+
+            gridEl.appendChild(btn);
+        }
+    }
+
+    // 5. 일정 목록 그리기 (빈 화면 처리 포함)
+    function renderScheduleList() {
+        scheduleListEl.innerHTML = '';
+        
+        const sortedDates = Object.keys(scheduleDataMap).sort();
+        const todayStr = new Date().toISOString().split('T')[0];
+        
+        let count = 0;
+        
+        sortedDates.forEach(dateStr => {
+            // 지난 일정은 숨기고, 오늘 이후 일정만 표시
+            if (dateStr >= todayStr) {
+                scheduleDataMap[dateStr].forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'schedule-card';
+
+                    let iconHtml = '';
+                    let bgClass = '';
+                    if(item.type === 'water') {
+                        iconHtml = '<i data-lucide="droplets"></i>';
+                        bgClass = 'bg-blue';
+                    } else if(item.type === 'repot') {
+                        iconHtml = '<i data-lucide="scissors"></i>';
+                        bgClass = 'bg-yellow';
+                    } else {
+                        iconHtml = '<i data-lucide="sprout"></i>';
+                        bgClass = 'bg-green';
+                    }
+
+                    card.innerHTML = `
+                        <div class="schedule-icon ${bgClass}">
+                            ${iconHtml}
+                        </div>
+                        <div class="schedule-main">
+                            <p>${item.plant} ${getTypeName(item.type)}</p>
+                            <span>${dateStr}</span>
+                        </div>
+                    `;
+                    scheduleListEl.appendChild(card);
+                    count++;
+                });
+            }
+        });
+        
+        // [수정됨] 일정이 하나도 없을 때 안내 문구 표시
+        if (count === 0) {
+            scheduleListEl.innerHTML = `
+                <div class="empty-state">
+                    <p>추가한 일정이 없습니다.</p>
+                </div>
+            `;
+        } else {
+            lucide.createIcons(); // 아이콘 렌더링
+        }
+    }
+
+    function getTypeName(type) {
+        if(type === 'water') return '물주기';
+        if(type === 'repot') return '분갈이';
+        if(type === 'fertilize') return '비료주기';
+        return type;
+    }
+
+    // --- 이벤트 리스너 ---
+    document.getElementById('prevMonthBtn').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+    });
+
+    document.getElementById('nextMonthBtn').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+    });
+
+    addBtn.addEventListener('click', () => {
+        const todayStr = new Date().toISOString().split('T')[0];
+        inputDate.value = todayStr;
+        modal.classList.add('show');
+    });
+    
+    closeBtn.addEventListener('click', () => {
+        modal.classList.remove('show');
+    });
+
+    // 일정 저장 버튼 (API 연동)
+    // 일정 저장 버튼 (API 연동)
+    saveBtn.addEventListener('click', async () => {
+        const date = inputDate.value;
+        const plantId = inputPlant.value;
+        const type = inputType.value;
+
+        // ✅ 디버깅: 값 확인
+        console.log('===== 일정 추가 데이터 확인 =====');
+        console.log('날짜:', date);
+        console.log('식물 ID:', plantId);
+        console.log('활동 종류:', type);
+        console.log('plantId 타입:', typeof plantId);
+        console.log('================================');
+
+        if(!date || !plantId || !type) {
+            alert('날짜, 식물, 활동 종류를 모두 선택해주세요.');
+            return;
+        }
+
+        try {
+
+            const requestData = {
+                // 왼쪽(키) 이름을 스네이크 표기법으로 변경
+                "next_due_date": date,   
+                "plant_id": Number(plantId),
+                "schedule_type": type
+            };
+
+            console.log('전송할 데이터:', requestData);
+            await addSchedule(requestData);
+
+            alert('일정이 추가되었습니다!');
+            modal.classList.remove('show');
+            
+            await fetchAndRenderCalendar();
+
+        } catch (error) {
+            console.error('일정 추가 실패:', error);
+            alert('일정 추가에 실패했습니다: ' + error.message);
+        }
+    });
+
+    init(); // 앱 시작
+  </script>
+  <script>
+    // 알람 벨 클릭 → 알람 페이지 이동
+    document.getElementById('notifications-btn').addEventListener('click', () => {
+        window.location.href = '/app/alarm/alarm.html';
+    });
+
+    // 프로필 버튼
+    document.getElementById('profileBtn').addEventListener('click', () => {
+        window.location.href = '/app/profile/profile.html';
+    });
+    lucide.createIcons();
+  </script>
+</body>
+</html>
