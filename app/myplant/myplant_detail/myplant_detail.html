@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>내 식물 상세정보</title>
+    <link rel="icon" href="../../../assets/images/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="myplant_detail.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div id="app-container">
+        
+        <div id="loading-spinner" class="loading-active">
+            <div class="spinner"></div>
+        </div>
+
+        <div id="plant-data-container" style="display: none;">
+            
+            <header class="header">
+                <button id="backBtn" class="icon-btn" onclick="history.back()">
+                    <i data-lucide="arrow-left"></i>
+                </button>
+                <h1 class="header-title" id="plant-nickname-header">상세 정보</h1>
+                <button class="icon-btn" style="opacity: 0; cursor: default;">
+                    <i data-lucide="more-vertical"></i> </button>
+            </header>
+
+            <main class="main-content">
+                
+                <section class="plant-hero-section">
+                    <img id="plant-image" src="https://placehold.co/400x400" alt="식물 이미지">
+                    
+                    <div class="input-wrapper">
+                        <input type="text" id="plant-nickname-input" placeholder="닉네임 (예: 초록이)">
+                        <button id="save-nickname-btn" class="save-btn">변경</button>
+                    </div>
+                </section>
+
+                <section class="info-card date-card">
+                    <div class="date-label">
+                        <i data-lucide="calendar-heart" size="20" color="#4A7C59"></i>
+                        <span>함께한 날</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="date" id="plant-adoption-date-input" style="border: 1px solid #ddd; padding: 4px; border-radius: 6px; font-size: 13px;">
+                        <button id="save-date-btn" class="save-btn" style="padding: 4px 10px; font-size: 12px;">저장</button>
+                    </div>
+                </section>
+
+                <section class="info-card intro-box">
+                    <div class="section-header">
+                        <i data-lucide="sprout" size="20" color="#064E3B"></i>
+                        <h3>식별 정보</h3>
+                    </div>
+                    
+                    <div class="dropdown-container">
+                        <label for="suggestions-dropdown" class="dropdown-label">AI 분석 결과</label>
+                        <select id="suggestions-dropdown"></select>
+                    </div>
+
+                    <div id="suggestion-detail">
+                        </div>
+                </section>
+
+                <section>
+                    <div class="section-header">
+                        <i data-lucide="stethoscope" size="20" color="#4A7C59"></i>
+                        <h3>건강 상태</h3>
+                    </div>
+                    <div class="info-card">
+                        <div id="disease-info">
+                            </div>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="section-header">
+                        <i data-lucide="clipboard-list" size="20" color="#4A7C59"></i>
+                        <h3>상세 분석</h3>
+                    </div>
+                    <div class="info-card">
+                        <div id="other-info">
+                            </div>
+                    </div>
+                </section>
+
+            </main> </div> </div>
+
+    <script type="module">
+        import { getMyPlantDetail } from '../../plant/plant_api.js';
+
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const dataContainer = document.getElementById('plant-data-container');
+        const headerTitle = document.getElementById('plant-nickname-header'); // 헤더 타이틀은 고정, 혹은 닉네임 연동 선택
+        const plantImage = document.getElementById('plant-image');
+        const plantNicknameInput = document.getElementById('plant-nickname-input');
+        const plantAdoptionDateInput = document.getElementById('plant-adoption-date-input');
+        
+        const suggestionsDropdown = document.getElementById('suggestions-dropdown');
+        const suggestionDetail = document.getElementById('suggestion-detail');
+        const diseaseInfoContainer = document.getElementById('disease-info');
+        const otherInfoContainer = document.getElementById('other-info');
+
+        let currentPlantId = null;
+
+        // 렌더링 함수
+        function renderBaseInfo(plant, firstSuggestionName) {
+            const imageUrl = plant.image_url || 'https://placehold.co/400x400';
+            const nickname = plant.nickname || '';
+            
+            // 닉네임 인풋에 값 채우기
+            plantNicknameInput.value = nickname;
+            plantImage.src = imageUrl;
+
+            const adoptionDate = plant.adoption_date || plant.adoptionDate;
+            if (adoptionDate) {
+                plantAdoptionDateInput.value = adoptionDate;
+            }
+        }
+
+        async function updatePlantNickname(plantId, newNickname) {
+            if (!newNickname || newNickname.trim() === '') {
+                alert('닉네임을 입력해주세요.');
+                return;
+            }
+            try {
+                const token = localStorage.getItem('accessToken');
+                const response = await fetch(`http://localhost:8080/api/v1/my-plants/${plantId}`, {
+                    method: 'PATCH',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ nickname: newNickname })
+                });
+                if (!response.ok) throw new Error('서버 응답 오류');
+                alert('닉네임이 변경되었습니다!');
+            } catch (error) {
+                console.error('닉네임 저장 실패:', error);
+                alert('저장에 실패했습니다.');
+            }
+        }
+
+        async function updatePlantAdoptionDate(plantId, newDate) {
+            if (!newDate) {
+                alert('날짜를 선택해주세요.');
+                return;
+            }
+            try {
+                const token = localStorage.getItem('accessToken');
+                const response = await fetch(`http://localhost:8080/api/v1/my-plants/${plantId}`, {
+                    method: 'PATCH',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ adoptionDate: newDate })
+                });
+                if (!response.ok) throw new Error('서버 응답 오류');
+                alert('입양일이 저장되었습니다!');
+            } catch (error) {
+                console.error('입양일 저장 실패:', error);
+                alert('저장에 실패했습니다.');
+            }
+        }
+
+        function renderSuggestions(suggestions) {
+            if (!suggestions || suggestions.length === 0) {
+                suggestionsDropdown.innerHTML = '<option value="">식별 정보 없음</option>';
+                suggestionsDropdown.disabled = true;
+                suggestionDetail.innerHTML = '<p class="empty-state">식별된 정보가 없습니다.</p>';
+                return;
+            }
+
+            suggestionsDropdown.innerHTML = '';
+            suggestionsDropdown.dataset.suggestions = JSON.stringify(suggestions);
+
+            suggestions.forEach((suggestion, index) => {
+                const percentage = (suggestion.probability * 100).toFixed(1);
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${suggestion.name} (${percentage}%)`;
+                suggestionsDropdown.appendChild(option);
+            });
+
+            suggestionsDropdown.addEventListener('change', (e) => {
+                const selectedIndex = e.target.value;
+                const selectedSuggestion = suggestions[selectedIndex];
+                renderSuggestionDetail(selectedSuggestion);
+            });
+
+            renderSuggestionDetail(suggestions[0]);
+        }
+
+        function renderSuggestionDetail(suggestion) {
+            const commonName = suggestion.common_name || suggestion.name || '이름 없음';
+            const scientificName = suggestion.scientific_name || suggestion.name || '';
+            const imageUrl = suggestion.image_url || suggestion.imageUrl;
+            const description = suggestion.description || '상세 설명이 없습니다.';
+            
+            let imageHtml = '';
+            if (imageUrl) {
+                imageHtml = `<img src="${imageUrl}" alt="${commonName}" style="width: 100%; border-radius: 8px; margin-top: 12px; height: 180px; object-fit: cover;">`;
+            }
+
+            suggestionDetail.innerHTML = `
+                <div class="suggestion-info">
+                    <div class="suggestion-header">
+                        <div class="plant-names">
+                            <h4>${commonName}</h4>
+                            <p>${scientificName}</p>
+                        </div>
+                    </div>
+                    ${imageHtml}
+                    <p class="suggestion-desc">${description}</p>
+                </div>
+            `;
+        }
+
+        async function loadPlantDetail() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const plantId = urlParams.get('id');
+
+                if (!plantId) throw new Error('식물 ID가 없습니다.');
+
+                currentPlantId = plantId;
+                const plantDetail = await getMyPlantDetail(plantId);
+                console.log("Data:", plantDetail);
+
+                let suggestions = plantDetail.identification_candidates 
+                            || plantDetail.identificationCandidates 
+                            || [];
+                
+                if (typeof suggestions === 'string') {
+                    try { suggestions = JSON.parse(suggestions); } 
+                    catch (e) { suggestions = []; }
+                }
+
+                const firstSuggestionName = suggestions.length > 0 ? suggestions[0].name : null;
+                renderBaseInfo(plantDetail, firstSuggestionName);
+                renderSuggestions(suggestions);
+
+                // 이벤트 리스너 연결
+                document.getElementById('save-nickname-btn').addEventListener('click', () => {
+                    const newNickname = plantNicknameInput.value.trim();
+                    updatePlantNickname(currentPlantId, newNickname);
+                });
+
+                document.getElementById('save-date-btn').addEventListener('click', () => {
+                    const newDate = plantAdoptionDateInput.value;
+                    updatePlantAdoptionDate(currentPlantId, newDate);
+                });
+                
+                if (diseaseInfoContainer) diseaseInfoContainer.innerHTML = '<p class="empty-state">건강 분석 데이터가 없습니다.</p>';
+                if (otherInfoContainer) otherInfoContainer.innerHTML = '<p class="empty-state">추가 분석 데이터가 없습니다.</p>';
+
+                loadingSpinner.classList.remove('loading-active');
+                dataContainer.style.display = 'block';
+                lucide.createIcons();
+
+            } catch (error) {
+                console.error('Error:', error);
+                loadingSpinner.classList.remove('loading-active');
+                dataContainer.innerHTML = `<div class="error-message">데이터를 불러오지 못했습니다.<br><span style="font-size:12px; color:#666;">${error.message}</span></div>`;
+                dataContainer.style.display = 'block';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPlantDetail);
+    </script>
+</body>
+</html>

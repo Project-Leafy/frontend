@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>식물 상세 - 성장 일지</title>
+    
+    <link rel="icon" href="../../../assets/images/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="myplant_diary.css">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+  <main class="screen">
+    <section id="top-image" class="plant-image-section">
+      <img id="plant-img" src="https://placehold.co/600x800" alt="식물 이미지" />
+      <div class="shadow-overlay"></div>
+
+      <button id="back-btn" class="icon-btn abs-left" onclick="location.href='/app/main/main.html'">
+        <i data-lucide="arrow-left"></i>
+      </button>
+
+      <button id="info-btn" class="icon-btn abs-right">
+        <i data-lucide="info"></i>
+      </button>
+
+      <div class="plant-title">
+        <h1 id="plant-nickname">로딩 중...</h1>
+        <p id="plant-name"></p>
+      </div>
+    </section>
+
+    <section class="info-container">
+      <div class="info-card">
+        <div>
+          <p class="label">함께한 지</p>
+          <p id="days-since" class="value">-일</p>
+        </div>
+        <div>
+          <p class="label">입양일</p>
+          <p id="adoption-date" class="value">-</p>
+        </div>
+      </div>
+
+      <div class="journal-header">
+        <h2>성장 일지</h2>
+        <button id="add-journal-btn" class="action-btn">
+          <i data-lucide="plus" width="16"></i>
+          기록 추가
+        </button>
+      </div>
+
+      <div class="journal-list" id="journal-list">
+         <div class="empty-message">
+             아직 작성된 성장 일지가 없어요.<br>
+         </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { getMyPlantDetail } from '../../plant/plant_api.js';
+    import { getGrowthJournals } from '../myplant_journal/myplant_journal_api.js'; 
+
+    const plantImg = document.getElementById('plant-img');
+    const plantNickname = document.getElementById('plant-nickname');
+    const plantName = document.getElementById('plant-name');
+    const daysSince = document.getElementById('days-since');
+    const adoptionDateEl = document.getElementById('adoption-date');
+    const addJournalBtn = document.getElementById('add-journal-btn');
+    const journalListContainer = document.getElementById('journal-list');
+
+    // D-Day 계산 함수
+    function calculateDaysSince(dateString) {
+        if (!dateString) return 0;
+        const start = new Date(dateString);
+        const today = new Date();
+        const diffTime = Math.abs(today - start);
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    }
+
+    // [수정됨] 날짜 포맷팅 함수 (2025-12-01 -> 12월 1일)
+    function formatDate(dateString) {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+    }
+
+    // 태그 HTML 생성 함수
+    function generateTagsHtml(journal) {
+        const tags = [];
+        // 백엔드 데이터가 snake_case일 수도 있고 camelCase일 수도 있으니 둘 다 체크
+        if (journal.watered) tags.push('#물주기');
+        if (journal.repotted) tags.push('#분갈이');
+        if (journal.pruned) tags.push('#가지치기');
+        if (journal.fertilized) tags.push('#비료');
+        
+        if (tags.length === 0) return '';
+        return tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+    }
+
+    // [핵심 수정] 일지 목록 불러오기 및 렌더링
+    async function loadJournals(plantId) {
+        try {
+            const journals = await getGrowthJournals(plantId);
+            
+            if (!journals || journals.length === 0) {
+                journalListContainer.innerHTML = `
+                    <div class="empty-message">
+                        아직 작성된 성장 일지가 없어요.<br>
+                    </div>`;
+                return;
+            }
+
+            journalListContainer.innerHTML = '';
+
+            journals.forEach(journal => {
+                // 1. 변수명 매핑 (Undefined 해결)
+                // 서버 설정이 SNAKE_CASE이므로 record_date로 올 가능성이 높음
+                const dateRaw = journal.record_date || journal.recordDate; 
+                let photoUrl = journal.photo_url || journal.photoUrl;
+                if (photoUrl === "null") photoUrl = null;
+
+                const memo = journal.memo || "";
+
+                // 2. 날짜 포맷팅
+                const datePretty = formatDate(dateRaw);
+
+                // 3. 이미지가 없으면 기본 아이콘이나 빈 공간 처리
+                // 이미지가 있으면 보여주고, 없으면 플레이스홀더 사용
+                const imageUrl = photoUrl ? photoUrl : 'https://placehold.co/100x100?text=No+Image';
+
+        
+                const card = document.createElement('div');
+                card.className = 'journal-card';
+                card.style.cursor = 'pointer';
+                
+                // 상세 페이지 이동 이벤트
+                card.onclick = () => {
+                    const recordId = journal.record_id || journal.recordId;
+                    const plantId = new URLSearchParams(window.location.search).get('id'); // 이거!!
+                    window.location.href = `../myplant_journal/myplant_journal_detail.html?recordId=${recordId}&plantId=${plantId}`;
+                };
+
+                // 4. HTML 조립 (디자인 반영: 좌측 썸네일, 우측 내용)
+                card.innerHTML = `
+                    <div class="journal-content">
+                        <div class="journal-thumb">
+                            <img src="${imageUrl}" alt="일지 사진" style="object-fit: cover; width: 100%; height: 100%;">
+                        </div>
+                        
+                        <div class="journal-meta">
+                            <div class="journal-date">${datePretty}</div>
+                            <p class="journal-text">${memo}</p>
+                            <div class="journal-tags">
+                                ${generateTagsHtml(journal)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                journalListContainer.appendChild(card);
+            });
+
+        } catch (error) {
+            console.error("일지 로드 실패:", error);
+        }
+    }
+
+    // 식물 상세 정보 로드
+    async function loadPlantDetail() {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const plantId = urlParams.get('id');
+
+            if (!plantId) {
+                alert('잘못된 접근입니다.');
+                window.location.href = '/app/main/main.html';
+                return;
+            }
+
+            const plant = await getMyPlantDetail(plantId);
+            
+            let suggestions = plant.identification_candidates || [];
+            if (typeof suggestions === 'string') {
+                try { suggestions = JSON.parse(suggestions); } catch (e) { suggestions = []; }
+            }
+            let speciesName = '식물 종류 미상';
+            if (suggestions.length > 0 && suggestions[0].name) speciesName = suggestions[0].name;
+            else if (plant.common_name) speciesName = plant.common_name;
+            else if (plant.plant_species_name) speciesName = plant.plant_species_name;
+
+            plantNickname.textContent = plant.nickname || '이름 없음';
+            plantName.textContent = speciesName;
+            plantImg.src = plant.image_url || 'https://placehold.co/600x800';
+
+            if (plant.adoption_date || plant.adoptionDate) {
+                const date = plant.adoption_date || plant.adoptionDate;
+                adoptionDateEl.textContent = date;
+                daysSince.textContent = `${calculateDaysSince(date)}일째`;
+            } else {
+                adoptionDateEl.textContent = '미등록';
+                daysSince.textContent = '-';
+            }
+
+            // 일지 목록 로드 호출
+            loadJournals(plantId);
+
+        } catch (error) {
+            console.error('데이터 로드 실패:', error);
+            alert('식물 정보를 불러오는데 실패했습니다.');
+        }
+    }
+
+    addJournalBtn.addEventListener('click', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const plantId = urlParams.get('id');
+        const nickname = document.getElementById('plant-nickname').textContent;
+        
+        if (!plantId) return;
+        window.location.href = `../myplant_journal/myplant_journal.html?plantId=${plantId}&nickname=${encodeURIComponent(nickname)}`;
+    });
+
+    document.getElementById('info-btn').addEventListener('click', () => {
+        const currentQuery = window.location.search; 
+        if (!currentQuery) return;
+        window.location.href = `/app/myplant/myplant_detail/myplant_detail.html${currentQuery}`;
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadPlantDetail();
+        lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

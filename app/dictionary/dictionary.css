@@ -1,0 +1,288 @@
+/* 폰트 로드 */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Pretendard', sans-serif;
+    background-color: #FAFAF8;
+    color: #333;
+}
+
+#app-container {
+    max-width: 448px;
+    margin: 0 auto;
+    background: #FAFAF8;
+    min-height: 100vh;
+    padding-bottom: 150px; /* 하단 내비게이션 여백 */
+    position: relative;
+}
+
+/* =========================================
+   헤더 & 검색창
+   ========================================= */
+.header-container {
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid #E5E5E0;
+    padding-bottom: 12px;
+}
+
+.header {
+    padding: 16px 24px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.header-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2C3E2F;
+    margin: 0 0 4px 0;
+}
+
+.subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: #6B7280;
+    line-height: 1.4;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.icon-btn:hover { background: #F5F5F3; }
+
+/* 검색창 영역 */
+.search-wrapper {
+    padding: 0 24px;
+    margin-top: 8px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background-color: #F5F5F3;
+    border-radius: 12px;
+    padding: 10px 14px;
+    gap: 10px;
+    border: 1px solid transparent;
+    transition: 0.2s;
+}
+
+.search-box:focus-within {
+    border-color: #4A7C59;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+}
+
+.search-icon {
+    color: #9CA3AF;
+    width: 20px;
+    height: 20px;
+}
+
+.search-input {
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    width: 100%;
+    outline: none;
+    color: #333;
+}
+
+.search-input::placeholder {
+    color: #9CA3AF;
+}
+
+/* =========================================
+   식물 리스트 영역
+   ========================================= */
+.content {
+    padding: 24px;
+}
+
+.result-count {
+    font-size: 13px;
+    color: #6B7280;
+    margin-bottom: 16px;
+}
+
+.dictionary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 식물 카드 스타일 */
+.plant-item {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #E5E5E0;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.plant-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.plant-thumb {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    object-fit: cover;
+    background-color: #f0f0f0;
+}
+
+.plant-info {
+    flex: 1;
+}
+
+.plant-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2C3E2F;
+    margin: 0 0 4px 0;
+}
+
+.plant-sci-name {
+    font-size: 12px;
+    color: #6B7280;
+    font-style: italic;
+    margin: 0 0 6px 0;
+}
+
+.plant-desc {
+    font-size: 12px;
+    color: #4B5563;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.arrow-icon {
+    color: #D1D5DB;
+}
+
+/* 검색 결과 없음 */
+.no-result {
+    text-align: center;
+    padding: 60px 0;
+    color: #9CA3AF;
+}
+
+.no-result i {
+    margin-bottom: 12px;
+    color: #E5E5E0;
+}
+
+/* =================================================================
+   [공통] 하단 내비게이션 (main.css와 동일)
+   ================================================================= */
+#bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 448px;
+    height: 85px;
+    background-color: white;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    border-top: 1px solid #f0f0f0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #9CA3AF;
+    font-size: 10px;
+    flex: 1;
+    height: 100%;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.nav-item.active { color: #4A7C59; }
+.nav-item i, .nav-item svg { width: 24px; height: 24px; margin-bottom: 6px; }
+
+.nav-item.center-item { flex: 0 0 140px; overflow: visible; }
+.center-circle-btn {
+    width: 64px; height: 64px;
+    background-color: #4A7C59;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    box-shadow: 0 8px 20px rgba(74, 124, 89, 0.4);
+    position: absolute; top: -35px; z-index: 20;
+    transition: transform 0.1s;
+}
+.center-circle-btn:active {
+    transform: scale(0.95);
+}
+
+.center-circle-btn i, .center-circle-btn svg {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0;
+}
+
+.tooltip-bubble {
+    position: absolute;
+    bottom: 12px; /* 바닥에서 12px */
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* 박스 디자인 */
+    background-color: white;
+    border: 1px solid #E5E5E0;
+    border-radius: 30px;
+    padding: 8px 16px;
+    width: max-content;
+    
+    /* 텍스트 스타일 */
+    color: #4B5563;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+    
+    /* 그림자 */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    
+    z-index: 10;
+    pointer-events: none;
+}
+
+.tooltip-bubble::after {
+    display: none;
+}

@@ -1,0 +1,313 @@
+/* 폰트 로드 (Pretendard) */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Pretendard', sans-serif;
+    background-color: #FAFAF8;
+    color: #333;
+}
+
+#app-container {
+    max-width: 448px; /* 모바일 표준 너비 */
+    margin: 0 auto;
+    background: #FAFAF8;
+    min-height: 100vh;
+    padding-bottom: 40px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.03); /* 전체 컨테이너 그림자 */
+}
+
+/* ========================================
+   로딩 스피너
+   ======================================== */
+#loading-spinner {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #FAFAF8;
+    position: absolute;
+    top: 0; left: 0; right: 0; z-index: 50;
+}
+
+#loading-spinner.loading-active {
+    display: flex;
+}
+
+.spinner {
+    border: 4px solid #E5E5E0;
+    border-top: 4px solid #4A7C59;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ========================================
+   헤더
+   ======================================== */
+.header {
+    background: white;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    /* 하단 그림자 살짝 */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
+}
+
+.icon-btn {
+    padding: 10px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    color: #4B5563;
+}
+
+.icon-btn:hover {
+    background: #F3F4F6;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1F2937;
+    margin: 0;
+}
+
+/* ========================================
+   메인 컨텐츠
+   ======================================== */
+.main-content {
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* --- 식물 프로필 섹션 --- */
+.plant-hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+#plant-image {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid white;
+    box-shadow: 0 8px 20px rgba(74, 124, 89, 0.15); /* 부드러운 그림자 */
+    margin-bottom: 20px;
+    transition: transform 0.3s;
+}
+
+#plant-image:hover {
+    transform: scale(1.05);
+}
+
+/* 입력 그룹 스타일 */
+.input-wrapper {
+    background: white;
+    border-radius: 12px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border: 1px solid #E5E7EB;
+    width: 100%;
+    max-width: 280px;
+    margin-bottom: 12px;
+}
+
+.input-wrapper input {
+    border: none;
+    outline: none;
+    padding: 10px 12px;
+    font-size: 15px;
+    flex: 1;
+    border-radius: 8px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.input-wrapper input::placeholder {
+    color: #9CA3AF;
+    font-weight: 400;
+}
+
+.save-btn {
+    background-color: #4A7C59;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-right: 4px;
+}
+
+.save-btn:hover {
+    background-color: #3D6549;
+}
+
+/* --- 섹션 타이틀 --- */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.section-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+/* --- 카드 디자인 (공통) --- */
+.info-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    border: 1px solid #F3F4F6;
+    transition: transform 0.2s;
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+}
+
+/* --- 식별 정보 박스 (강조) --- */
+.intro-box {
+    background: linear-gradient(135deg, #E8F4EC 0%, #F0FDF4 100%);
+    border: 1px solid #C6ECD8;
+}
+
+.dropdown-container {
+    margin-bottom: 16px;
+}
+
+.dropdown-label {
+    display: block;
+    font-size: 13px;
+    color: #4A7C59;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #D1FAE5;
+    background-color: white;
+    font-size: 14px;
+    color: #374151;
+    outline: none;
+    cursor: pointer;
+}
+
+/* 식별 후보 상세 */
+.suggestion-info {
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.8);
+}
+
+.suggestion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.plant-names h4 {
+    margin: 0;
+    font-size: 17px;
+    color: #064E3B;
+}
+
+.plant-names p {
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: #6B7280;
+    font-style: italic;
+}
+
+.suggestion-desc {
+    font-size: 14px;
+    color: #4B5563;
+    line-height: 1.6;
+    margin-top: 12px;
+}
+
+/* --- 입양일 카드 --- */
+.date-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.date-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.date-value {
+    font-size: 15px;
+    color: #4A7C59;
+    font-weight: 700;
+    background: #F0FDF4;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+/* --- 건강 분석 & 기타 --- */
+.empty-state {
+    text-align: center;
+    color: #9CA3AF;
+    font-size: 14px;
+    padding: 20px 0;
+}
+
+/* --- 에러 메시지 --- */
+.error-message {
+    text-align: center;
+    color: #EF4444;
+    padding: 2rem;
+    font-weight: 500;
+    background: #FEF2F2;
+    border-radius: 12px;
+    margin: 20px;
+}
