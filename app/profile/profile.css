@@ -21,7 +21,7 @@ body {
     max-width: 448px;
     background: #fafaf8;
     min-height: 100vh;
-    padding-bottom: 120px; /* 하단 네비게이션 공간 확보 */
+    padding-bottom: 150px; /* 하단 네비게이션 공간 확보 */
     position: relative;
 }
 
@@ -219,7 +219,6 @@ body {
     margin-bottom: 8px;
     font-size: 15px;
     color: #333;
-    /* 긴 이름 말줄임표 처리 */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -327,7 +326,7 @@ body {
     padding-bottom: 5px;
 }
 
-/* 활성화된 탭 스타일 (현재는 프로필 페이지라 active가 없지만 필요시 추가) */
+/* 활성화된 탭 스타일 */
 .nav-item.active {
     color: #4A7C59;
 }

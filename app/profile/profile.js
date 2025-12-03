@@ -1,40 +1,49 @@
-import { fetchApi } from '../../core/core_api.js';
-import { getMyPlants, deleteMyPlant } from '../plant/plant_api.js';
+import { fetchApi } from '../../assets/js/core_api.js';
+import { getMyPlants } from '../plant/plant_api.js';
 
-// 1. 페이지 로드 직후 정적 아이콘(헤더, 네비게이션 등) 렌더링
-lucide.createIcons();
+// 1. 페이지 로드 직후 정적 아이콘 렌더링 (안전장치)
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+}
 
 const userAvatar = document.getElementById('userAvatar');
 const userNickname = document.getElementById('userNickname');
 const togetherSince = document.getElementById('togetherSince');
 const plantCount = document.getElementById('plantCount');
-const plantListContainer = document.getElementById('plant-list');
+const myPlantsList = document.getElementById('myPlantsList');
 const healthyCount = document.getElementById('healthyCount');
 const warningCount = document.getElementById('warningCount');
 const noneCount = document.getElementById('noneCount');
 
-// 다이얼로그 관련 변수
-const deleteDialog = document.getElementById('deleteDialog');
-const dialogCancelBtn = document.getElementById('dialogCancel');
-const dialogConfirmBtn = document.getElementById('dialogConfirm');
-let plantIdToDelete = null; // 삭제할 식물 ID 저장용
-
 // 사용자 프로필 정보 로드
 async function loadUserProfile() {
     try {
+        console.log("🔵 프로필 정보 요청 시작...");
         const res = await fetchApi('/api/v1/users/me');
         const user = await res.json();
 
-        userNickname.value = user.kakaoNickname || user.nickname || 'Leafy 사용자';
+        console.log('🟢 User Data 응답:', user);
 
-        if (user.profileImage) {
-            userAvatar.src = user.profileImage;
+        const userData = user.data || user;
+
+        // 1. 닉네임 설정
+        const nickname = userData.kakaoNickname || userData.kakao_nickname || userData.nickname || 'Leafy 사용자';
+        userNickname.value = nickname;
+
+        // 2. 프로필 사진 설정 [수정된 부분]
+        if (userData.profileImage || userData.profile_image_url) {
+            // 서버에 저장된 프로필 이미지가 있으면 사용
+            userAvatar.src = userData.profileImage || userData.profile_image_url;
         } else {
-            userAvatar.src = `https://api.dicebear.com/7.x/initials/svg?seed=${userNickname.value}`;
+            // ✨ 프로필 이미지가 없으면 나뭇잎(favicon) 이미지를 기본으로 사용
+            // 경로가 맞는지 확인해주세요! (/assets/images/favicon.svg)
+            userAvatar.src = '/assets/images/favicon.svg';
         }
 
-        if (user.createdAt) {
-            const joinDate = new Date(user.createdAt);
+        // 3. 가입일 설정
+        const createdDate = userData.createdAt || userData.created_at;
+        if (createdDate) {
+            const joinDate = new Date(createdDate);
             const year = joinDate.getFullYear();
             const month = joinDate.getMonth() + 1;
             const day = joinDate.getDate();
@@ -44,66 +53,70 @@ async function loadUserProfile() {
         }
 
     } catch (e) {
-        console.error('사용자 정보 로드 실패', e);
-        userNickname.value = '정보 없음';
+        console.error('🔴 사용자 정보 로드 실패:', e);
+        userNickname.value = '정보 불러오기 실패';
+        // 에러 시에도 기본 나뭇잎 이미지 표시
+        userAvatar.src = '/assets/images/favicon.svg';
     }
 }
 
-// 내 식물 데이터 및 통계 로드
+// 내 식물 데이터 및 통계 로드 (기존 동일)
 async function loadMyPlantsData() {
     try {
-        const plants = await getMyPlants();
+        console.log("🔵 내 식물 목록 요청 시작...");
+        const response = await getMyPlants();
+        const plants = Array.isArray(response) ? response : (response.data || []);
+
+        console.log('🟢 내 식물 목록 응답:', plants);
+
         plantCount.textContent = `${plants.length}개`;
-        plantListContainer.innerHTML = '';
+        myPlantsList.innerHTML = '';
 
         let healthy = 0, warning = 0, none = 0;
 
-        if (plants.length === 0) {
-            plantListContainer.innerHTML = '<p style="text-align:center; color:#999; margin-top:40px;">등록된 식물이 없습니다.</p>';
+        if (!plants || plants.length === 0) {
+            myPlantsList.innerHTML = '<div class="empty-state">등록된 식물이 없어요 🌿</div>';
         } else {
             plants.forEach(plant => {
-                const result = plant.lastDiagnosisResult;
-                const hasDiagnosis = result && result !== 'NONE';
+                const result = plant.lastDiagnosisResult || plant.last_diagnosis_result;
+                const hasDiagnosis = result && result !== 'NONE' && result !== 'null';
 
                 let statusText = '진단 이력 없음';
-                let statusType = '진단 X';
+                let statusClass = 'none';
 
                 if (!hasDiagnosis) {
                     none++;
+                    statusText = '진단 이력 없음';
+                    statusClass = 'none';
                 } else {
-                    if (result.includes('주의') || result.includes('심각') || result.includes('disease')) {
+                    if (result.includes('주의') || result.includes('심각') || result.includes('disease') || result.includes('pest')) {
                         warning++;
-                        statusType = '주의';
+                        statusText = '주의 필요';
+                        statusClass = 'warning';
                     } else {
                         healthy++;
-                        statusType = '건강';
+                        statusText = '건강';
+                        statusClass = 'healthy';
                     }
                 }
-                
-                const plantCard = document.createElement('div');
-                plantCard.className = 'hs-card';
-                plantCard.setAttribute('data-my-plant-id', plant.my_plant_id);
 
-                const imageUrl = plant.image_url || 'https://placehold.co/400x250';
-                const nickname = plant.nickname || '이름 없음';
-                const speciesName = plant.plant_species_name || '종 정보 없음';
+                const card = document.createElement('div');
+                card.className = 'plant-card';
+                const imgUrl = plant.imageUrl || plant.image_url || 'https://placehold.co/200?text=Leafy';
+                const pId = plant.myPlantId || plant.my_plant_id || plant.id;
 
-                plantCard.innerHTML = `
-                    <img src="${imageUrl}" alt="${nickname}" class="hs-img">
-                    <button class="hs-delete-btn" data-my-plant-id="${plant.my_plant_id}">
-                        <i data-lucide="trash-2"></i>
-                    </button>
-                    <div class="hs-card-body">
-                        <div class="hs-topline">
-                            <span class="nickname">${nickname}</span>
-                            <span class="type">${speciesName}</span>
-                        </div>
-                        <div class="info">
-                            <span>최근 물주기: -</span> <span>상태: ${statusType}</span>
+                card.innerHTML = `
+                    <img src="${imgUrl}" alt="${plant.nickname}" onerror="this.src='https://placehold.co/200?text=No+Image'">
+                    <div class="plant-info">
+                        <div class="plant-nickname">${plant.nickname || '이름 없음'}</div>
+                        <div class="plant-status ${statusClass}">
+                            ${statusText}
                         </div>
                     </div>
                 `;
-                plantListContainer.appendChild(plantCard);
+                
+                card.onclick = () => location.href = `/app/myplant/myplant_diary/myplant_diary.html?id=${pId}`;
+                myPlantsList.appendChild(card);
             });
         }
 
@@ -111,15 +124,17 @@ async function loadMyPlantsData() {
         warningCount.textContent = warning;
         noneCount.textContent = none;
 
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
 
     } catch (e) {
-        console.error(e);
-        plantListContainer.innerHTML = '<p style="text-align:center; color:#999; margin-top:40px;">식물을 불러오지 못했어요.</p>';
+        console.error('🔴 식물 목록 로드 실패:', e);
+        myPlantsList.innerHTML = '<div class="empty-state">목록을 불러오지 못했어요 😢</div>';
     }
 }
 
-// 닉네임 수정 버튼 기능
+// 닉네임 수정 버튼 기능 (기존 동일)
 document.getElementById('editNicknameBtn').addEventListener('click', async () => {
     const input = userNickname;
     if (input.readOnly) {
@@ -137,55 +152,10 @@ document.getElementById('editNicknameBtn').addEventListener('click', async () =>
             alert('닉네임이 변경되었습니다!');
         } catch (e) {
             alert('변경 실패');
-            loadUserProfile(); // 실패 시 원래 값 복구
+            loadUserProfile();
         }
     }
 });
-
-// --- 삭제 관련 이벤트 핸들링 ---
-function closeDialog() {
-    deleteDialog.classList.add('hidden');
-    plantIdToDelete = null;
-}
-
-dialogCancelBtn.addEventListener('click', closeDialog);
-
-dialogConfirmBtn.addEventListener('click', async () => {
-    if (!plantIdToDelete) return;
-
-    try {
-        await deleteMyPlant(plantIdToDelete);
-        
-        alert('식물이 삭제되었습니다.');
-        closeDialog();
-        
-        // 목록 다시 로드
-        loadMyPlantsData();
-
-    } catch (error) {
-        console.error('식물 삭제 중 에러 발생:', error);
-        alert('식물 삭제에 실패했습니다.');
-        closeDialog();
-    }
-});
-
-plantListContainer.addEventListener('click', (event) => {
-    const target = event.target;
-    
-    const deleteBtn = target.closest('.hs-delete-btn');
-    const plantCard = target.closest('.hs-card');
-
-    if (deleteBtn) {
-        event.stopPropagation();
-        plantIdToDelete = deleteBtn.dataset.myPlantId;
-        deleteDialog.classList.remove('hidden');
-
-    } else if (plantCard) {
-        const myPlantId = plantCard.dataset.myPlantId;
-        window.location.href = `/app/myplant/myplant_diary/myplant_diary.html?id=${myPlantId}`;
-    }
-});
-
 
 // 실행
 loadUserProfile();
