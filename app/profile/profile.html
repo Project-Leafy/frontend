@@ -16,7 +16,8 @@
                     <i data-lucide="arrow-left"></i>
                 </button>
                 <h2>내 프로필</h2>
-                <div style="width: 42px;"></div> </div>
+                <div style="width: 42px;"></div> 
+            </div>
         </header>
 
         <div class="profile-top">
@@ -50,10 +51,8 @@
                 <i data-lucide="list" class="section-icon"></i>
                 <h3>내 식물 목록</h3>
             </div>
-            <div class="hs-container" style="padding: 0 24px 24px;">
-                <div id="plant-list" class="plant-list">
+            <div id="myPlantsList" class="plants-grid">
                 </div>
-            </div>
         </div>
 
         <div class="info-section">
@@ -80,20 +79,6 @@
             </div>
         </div>
 
-        <div id="deleteDialog" class="hs-dialog-backdrop hidden">
-            <div class="hs-dialog">
-                <h2 style="font-size:18px; font-weight:600; margin:0 0 8px 0;">식물을 삭제할까요?</h2>
-                <p style="margin:0; color:#6b7280; font-size:14px;">
-                    삭제하면 해당 식물과 모든 기록이 사라집니다.
-                </p>
-
-                <div class="hs-dialog-buttons">
-                    <button id="dialogCancel" class="hs-cancel">취소</button>
-                    <button id="dialogConfirm" class="hs-confirm">삭제</button>
-                </div>
-            </div>
-        </div>
-
         <nav id="bottom-nav">
             <a href="/app/main/main.html" class="nav-item">
                 <i data-lucide="home"></i>
@@ -112,16 +97,19 @@
             </a>
 
             <a href="/app/recommend/recommend.html" class="nav-item">
-                <i data-lucide="sparkles"></i>
-                <span>추천</span>
+                <i data-lucide="sparkles"></i> <span>추천</span>
             </a>
-            <a href="/app/calendar/calendar.html" class="nav-item active">
+            <a href="/app/calendar/calendar.html" class="nav-item">
                 <i data-lucide="calendar"></i>
                 <span>캘린더</span>
             </a>
         </nav>
-
     </div>
+
+    <script>
+        // 페이지 로드 시 즉시 아이콘 렌더링
+        lucide.createIcons();
+    </script>
 
     <script type="module" src="profile.js"></script>
 </body>
