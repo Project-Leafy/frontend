@@ -118,17 +118,7 @@ body {
     color: #333;
 }
 
-.edit-btn {
-    background: #4A7C59;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-}
+
 
 /* =========================================
    4. 정보 섹션 공통

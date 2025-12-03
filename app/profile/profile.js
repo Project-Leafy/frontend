@@ -1,7 +1,7 @@
 import { fetchApi } from '../../assets/js/core_api.js';
 import { getMyPlants } from '../plant/plant_api.js';
 
-// 1. 페이지 로드 직후 정적 아이콘 렌더링 (안전장치)
+// 1. 페이지 로드 직후 정적 아이콘 렌더링
 if (typeof lucide !== 'undefined') {
     lucide.createIcons();
 }
@@ -22,21 +22,17 @@ async function loadUserProfile() {
         const res = await fetchApi('/api/v1/users/me');
         const user = await res.json();
 
-        console.log('🟢 User Data 응답:', user);
-
+        // user 데이터 구조 안전하게 처리
         const userData = user.data || user;
 
         // 1. 닉네임 설정
         const nickname = userData.kakaoNickname || userData.kakao_nickname || userData.nickname || 'Leafy 사용자';
         userNickname.value = nickname;
 
-        // 2. 프로필 사진 설정 [수정된 부분]
+        // 2. 프로필 사진 설정 (없으면 나뭇잎 아이콘)
         if (userData.profileImage || userData.profile_image_url) {
-            // 서버에 저장된 프로필 이미지가 있으면 사용
             userAvatar.src = userData.profileImage || userData.profile_image_url;
         } else {
-            // ✨ 프로필 이미지가 없으면 나뭇잎(favicon) 이미지를 기본으로 사용
-            // 경로가 맞는지 확인해주세요! (/assets/images/favicon.svg)
             userAvatar.src = '/assets/images/favicon.svg';
         }
 
@@ -55,19 +51,16 @@ async function loadUserProfile() {
     } catch (e) {
         console.error('🔴 사용자 정보 로드 실패:', e);
         userNickname.value = '정보 불러오기 실패';
-        // 에러 시에도 기본 나뭇잎 이미지 표시
         userAvatar.src = '/assets/images/favicon.svg';
     }
 }
 
-// 내 식물 데이터 및 통계 로드 (기존 동일)
+// 내 식물 데이터 및 통계 로드
 async function loadMyPlantsData() {
     try {
         console.log("🔵 내 식물 목록 요청 시작...");
         const response = await getMyPlants();
         const plants = Array.isArray(response) ? response : (response.data || []);
-
-        console.log('🟢 내 식물 목록 응답:', plants);
 
         plantCount.textContent = `${plants.length}개`;
         myPlantsList.innerHTML = '';
@@ -102,7 +95,9 @@ async function loadMyPlantsData() {
 
                 const card = document.createElement('div');
                 card.className = 'plant-card';
+                // 이미지 필드명 체크
                 const imgUrl = plant.imageUrl || plant.image_url || 'https://placehold.co/200?text=Leafy';
+                // 식물 ID 필드명 체크
                 const pId = plant.myPlantId || plant.my_plant_id || plant.id;
 
                 card.innerHTML = `
@@ -133,29 +128,6 @@ async function loadMyPlantsData() {
         myPlantsList.innerHTML = '<div class="empty-state">목록을 불러오지 못했어요 😢</div>';
     }
 }
-
-// 닉네임 수정 버튼 기능 (기존 동일)
-document.getElementById('editNicknameBtn').addEventListener('click', async () => {
-    const input = userNickname;
-    if (input.readOnly) {
-        input.readOnly = false;
-        input.focus();
-        document.getElementById('editNicknameBtn').textContent = '저장';
-    } else {
-        input.readOnly = true;
-        document.getElementById('editNicknameBtn').textContent = '변경';
-        try {
-            await fetchApi('/api/v1/users/me/nickname', {
-                method: 'PATCH',
-                body: JSON.stringify({ nickname: input.value })
-            });
-            alert('닉네임이 변경되었습니다!');
-        } catch (e) {
-            alert('변경 실패');
-            loadUserProfile();
-        }
-    }
-});
 
 // 실행
 loadUserProfile();
