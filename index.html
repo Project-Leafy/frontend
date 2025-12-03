@@ -24,7 +24,7 @@
                 </p>
 
                 <!-- 여기만 바뀜! 클릭하면 바로 카카오 로그인 창 뜸 -->
-                <a href="#" id="kakao-login-btn" class="kakao-login-btn">
+                <a href="http://3.38.12.121/login/kakao" class="kakao-login-btn">
                     <span class="kakao-icon">
                         <svg data-lucide="message-circle"></svg>
                     </span>
@@ -43,19 +43,5 @@
         lucide.createIcons();
     </script>
 
-    <!-- ★★★★★ 여기가 핵심! 이 스크립트만 있으면 됨 ★★★★★ -->
-    <script>
-        // 당신 .env에 있던 정확한 키 그대로 사용
-        const KAKAO_REST_API_KEY = "026700dcec278b7ea3e9941b3c47ca75";
-        const REDIRECT_URI = "http://3.38.12.121/callback.html";
-
-        document.getElementById('kakao-login-btn').addEventListener('click', function(e) {
-            e.preventDefault();
-            const url = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=token`;
-            location.href = url;
-        });
-    </script>
-
-    <script src="/login/login.js"></script>
 </body>
 </html>
