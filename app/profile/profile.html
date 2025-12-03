@@ -22,11 +22,11 @@
 
         <div class="profile-top">
             <div class="profile-image-wrapper">
-                <img id="userAvatar" src="" alt="프로필 사진" onerror="this.src='https://placehold.co/200?text=Leafy'">
+                <img id="userAvatar" src="" alt="프로필 사진" onerror="this.src='/assets/images/favicon.svg'">
             </div>
+            
             <div class="nickname-wrapper">
                 <input type="text" id="userNickname" value="" readonly placeholder="로딩 중...">
-                <button id="editNicknameBtn" class="edit-btn">변경</button>
             </div>
         </div>
 
@@ -34,6 +34,7 @@
             <div class="info-item">
                 <i data-lucide="calendar-heart" class="info-icon"></i>
                 <span class="info-label">서비스 가입일</span>
+                
                 <span id="togetherSince" class="info-value">...</span>
             </div>
         </div>
@@ -107,10 +108,8 @@
     </div>
 
     <script>
-        // 페이지 로드 시 즉시 아이콘 렌더링
         lucide.createIcons();
     </script>
-
     <script type="module" src="profile.js"></script>
 </body>
 </html>
