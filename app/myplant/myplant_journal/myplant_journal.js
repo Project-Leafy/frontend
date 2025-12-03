@@ -222,7 +222,8 @@ async function handleSave() {
 
     } catch (error) {
         console.error(error);
-        alert('저장 중 오류가 발생했습니다: ' + error.message);
+        alert('저장 중 오류가 발생했습니다: 모든 내용을 꼭 추가해주세요.');
+
     }
 }
 

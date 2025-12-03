@@ -28,9 +28,14 @@
         <h1 class="header-title">🗓️ 관리 캘린더</h1>
         <p class="subtitle">식물 관리 일정을 확인하세요</p>
       </div>
-      <button id="profileBtn" class="icon-btn">
-        <i data-lucide="user"></i>
-      </button>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button id="notifications-btn" class="icon-btn">
+            <i data-lucide="bell"></i>
+        </button>
+        <button id="profileBtn" class="icon-btn">
+            <i data-lucide="user"></i>
+        </button>
+      </div>
     </div>
 
     <div class="month-box">
@@ -424,6 +429,18 @@
     });
 
     init(); // 앱 시작
+  </script>
+  <script>
+    // 알람 벨 클릭 → 알람 페이지 이동
+    document.getElementById('notifications-btn').addEventListener('click', () => {
+        window.location.href = '/app/alarm/alarm.html';
+    });
+
+    // 프로필 버튼
+    document.getElementById('profileBtn').addEventListener('click', () => {
+        window.location.href = '/app/profile/profile.html';
+    });
+    lucide.createIcons();
   </script>
 </body>
 </html>

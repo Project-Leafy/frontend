@@ -16,9 +16,14 @@
         <h1 class="header-title">🪴 맞춤 식물 추천</h1>
         <p class="subtitle">간단한 질문으로 나에게 맞는<br>식물을 찾아보세요</p>
       </div>
-      <button id="profileBtn" class="icon-btn">
-        <i data-lucide="user"></i>
-      </button>
+    <div style="display: flex; gap: 8px; align-items: center;">
+        <button id="notifications-btn" class="icon-btn">
+            <i data-lucide="bell"></i>
+        </button>
+        <button id="profileBtn" class="icon-btn">
+            <i data-lucide="user"></i>
+        </button>
+    </div>
     </div>
 
     <div class="content">
@@ -165,6 +170,18 @@
         alert("결과 페이지로 이동합니다!");
         // window.location.href = '결과페이지경로';
     });
+  </script>
+  <script>
+    // 알람 벨 클릭 → 알람 페이지 이동
+    document.getElementById('notifications-btn').addEventListener('click', () => {
+        window.location.href = '/app/alarm/alarm.html';
+    });
+
+    // 프로필 버튼
+    document.getElementById('profileBtn').addEventListener('click', () => {
+        window.location.href = '/app/profile/profile.html';
+    });
+    lucide.createIcons();
   </script>
 </body>
 </html>

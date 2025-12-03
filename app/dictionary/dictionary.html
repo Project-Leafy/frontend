@@ -19,9 +19,14 @@
                 <h1 class="header-title">📚 식물 백과사전</h1>
                 <p class="subtitle">궁금한 식물을 검색해보세요</p>
             </div>
-            <button id="profileBtn" class="icon-btn">
-                <i data-lucide="user"></i>
-            </button>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button id="notifications-btn" class="icon-btn">
+                    <i data-lucide="bell"></i>
+                </button>
+                <button id="profileBtn" class="icon-btn">
+                    <i data-lucide="user"></i>
+                </button>
+            </div>
         </div>
 
         <div class="search-wrapper">
@@ -224,6 +229,18 @@
     // 이벤트 리스너 등록
     searchInput.addEventListener('input', handleSearch);
 
+  </script>
+  <script>
+    // 알람 벨 클릭 → 알람 페이지 이동
+    document.getElementById('notifications-btn').addEventListener('click', () => {
+        window.location.href = '/app/alarm/alarm.html';
+    });
+
+    // 프로필 버튼
+    document.getElementById('profileBtn').addEventListener('click', () => {
+        window.location.href = '/app/profile/profile.html';
+    });
+    lucide.createIcons();
   </script>
 </body>
 </html>

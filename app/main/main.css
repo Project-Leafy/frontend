@@ -368,3 +368,9 @@ body {
 .hs-confirm:hover {
   background: #c8282b;
 }
+
+.hs-icon svg, .hs-icon i {
+  width: 24px;
+  height: 24px;
+  color: #6B7280;
+}

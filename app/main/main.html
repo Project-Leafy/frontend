@@ -223,6 +223,17 @@
             }
         });
 
+        // 알람 벨 클릭 → 알람 페이지 이동
+        document.getElementById('notifications-btn').addEventListener('click', () => {
+            window.location.href = '/app/alarm/alarm.html';
+        });
+
+        // 프로필 버튼
+        document.getElementById('profile-btn').addEventListener('click', () => {
+            window.location.href = '/app/profile/profile.html';
+        });
+
+
         // 초기 로드
         loadUserPlants();
     </script>
