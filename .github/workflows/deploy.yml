@@ -33,6 +33,6 @@ jobs:
           script: |
             mkdir -p /home/ubuntu/deploy
             cd /home/ubuntu/deploy
-            sudo docker-compose pull frontend
-            sudo docker-compose up -d --force-recreate frontend
+            sudo docker compose pull frontend
+            sudo docker compose up -d --force-recreate frontend
             sudo docker image prune -f
