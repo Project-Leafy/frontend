@@ -13,7 +13,7 @@ const BASE_URL = 'http://3.38.12.121:8080';
 export function logout() {
     localStorage.removeItem('accessToken');
     alert('로그아웃 되었습니다.');  // 나중에 UI 바꾸는게 좋을듯
-    window.location.href = '/login'; // 로그인 페이지로 리다이렉트
+    window.location.href = '/index.html';
 }
 
 
