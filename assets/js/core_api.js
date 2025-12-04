@@ -1,5 +1,4 @@
-const BASE_URL = 'http://3.38.12.121'; // 백엔드 서버 주소
-
+const BASE_URL = 'http://3.38.12.121:8080';
 /**
  * 백엔드 API에 요청을 보냅니다.
  * @param {string} path - API 경로 (예: '/home', '/api/v1/users/me')
