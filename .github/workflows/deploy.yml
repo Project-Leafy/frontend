@@ -11,6 +11,13 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
+      - name: Generate Image Tag
+        id: image_tag
+        run: |
+          # 리눅스 시간대를 서울로 설정 후 포맷팅
+          sudo timedatectl set-timezone Asia/Seoul
+          echo "TAG=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -22,7 +29,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/leafy-frontend:latest
+          tags: 
+            ${{ secrets.DOCKERHUB_USERNAME }}/leafy-frontend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/leafy-frontend:{TAG}
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
@@ -33,6 +42,7 @@ jobs:
           script: |
             mkdir -p /home/ubuntu/deploy
             cd /home/ubuntu/deploy
+            echo "TAG=${{ env.TAG }}" >> .env
             sudo docker compose pull frontend
             sudo docker compose up -d --force-recreate frontend
             sudo docker image prune -f
