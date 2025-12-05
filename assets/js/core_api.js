@@ -1,4 +1,4 @@
-const BASE_URL = 'http://3.38.12.121:8080';
+import { BACKEND_URL as BASE_URL } from './config.js';
 /**
  * 백엔드 API에 요청을 보냅니다.
  * @param {string} path - API 경로 (예: '/home', '/api/v1/users/me')

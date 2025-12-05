@@ -23,7 +23,7 @@
                     반려식물과 함께하는 특별한 성장 기록
                 </p>
 
-                <a href="http://3.38.12.121:8080/oauth2/authorization/kakao" class="kakao-login-btn">
+                <a id="kakao-login-link" href="#" class="kakao-login-btn">
                     <!-- 제발작동되어다오 -->
                     <span class="kakao-icon">
                         <svg data-lucide="message-circle"></svg>
@@ -42,6 +42,12 @@
     <script>
         lucide.createIcons();
     </script>
-    
+    <script type="module">
+        import { BACKEND_URL } from './assets/js/config.js';
+        const kakaoLoginLink = document.getElementById('kakao-login-link');
+        if (kakaoLoginLink) {
+            kakaoLoginLink.href = `${BACKEND_URL}/oauth2/authorization/kakao`;
+        }
+    </script>
     </body>
 </html>

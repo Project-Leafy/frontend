@@ -1,4 +1,6 @@
-const BASE_URL = 'http://localhost:8080/api/v1';
+import { BACKEND_URL } from '../../../assets/js/config.js';
+
+const BASE_URL = `${BACKEND_URL}/api/v1`;
 
 /**
  * 성장일지 생성 API 호출
@@ -80,7 +82,7 @@ export async function uploadImageFile(file) {
     try {
         // 2. 주소를 백엔드 포트(8080)까지 포함해서 정확히 적기
         // (ImageUploadController의 @RequestMapping("/api/images")와 맞춤)
-        const response = await fetch('http://localhost:8080/api/images/upload', {
+        const response = await fetch(`${BACKEND_URL}/api/images/upload`, {
             method: 'POST',
             headers: {
                 // 3. 인증 토큰 추가 (중요!)

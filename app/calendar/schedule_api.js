@@ -1,4 +1,6 @@
-const BASE_URL = 'http://localhost:8080/api/v1/schedules';
+import { BACKEND_URL } from '../../assets/js/config.js';
+
+const BASE_URL = `${BACKEND_URL}/api/v1/schedules`;
 
 // 1. 내 일정 전체 조회
 export async function getMySchedules() {

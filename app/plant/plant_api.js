@@ -27,7 +27,7 @@ export async function getMyPlantDetail(myPlantId) {
  */
 export async function identifyPlant(formData) {
     const token = localStorage.getItem('accessToken');
-    const response = await fetch('http://localhost:8080/api/v1/plants/identify', {
+    const response = await fetch(`${BACKEND_URL}/api/v1/plants/identify`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -101,7 +101,7 @@ export async function registerMyPlant(plantData) {
     const token = localStorage.getItem('accessToken');
     
     // ⭐️⭐️⭐️ 이 부분을 수정합니다: 백엔드 서버의 포트(8080)를 명시하여 절대 경로로 요청 ⭐️⭐️⭐️
-    const response = await fetch('http://localhost:8080/api/v1/my-plants', {
+    const response = await fetch(`${BACKEND_URL}/api/v1/my-plants`, {
     
         method: 'POST',
         headers: {
