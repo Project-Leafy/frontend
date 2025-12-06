@@ -220,6 +220,8 @@ body {
     justify-content: space-between; /* 양옆 균등 배분 */
     align-items: center;
     padding: 0 10px; /* 양옆 여백 */
+    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(85px + env(safe-area-inset-bottom)); /* 높이 자동 계산 */
 }
 
 /* 기본 네비게이션 아이템 */
@@ -315,5 +317,24 @@ body {
 }
 
 .tooltip-bubble::after {
-    display: none;
+}
+
+/* =========================================
+   [추가] 로딩 스피너 애니메이션
+   ========================================= */
+.loader {
+    border: 3px solid rgba(255, 255, 255, 0.3); /* 연한 흰색 테두리 */
+    border-radius: 50%;
+    border-top: 3px solid #ffffff; /* 진한 흰색 (돌아가는 부분) */
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 8px; /* 텍스트와 간격 */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

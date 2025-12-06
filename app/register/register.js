@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- 2단계 (register2.html) 로직 ---
-    // --- 2단계 (register2.html) 로직 ---
     const registerBtn = document.getElementById('register-btn');
     if (registerBtn) {
         // 2단계 DOM 요소 가져오기
