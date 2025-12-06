@@ -1,0 +1,53 @@
+name: Frontend Deploy to EC2
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Generate Image Tag
+        id: image_tag
+        run: |
+          sudo timedatectl set-timezone Asia/Seoul
+          echo "TAG=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/leafy-frontend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/leafy-frontend:${{ env.TAG }}
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            mkdir -p /home/ubuntu/deploy
+            cd /home/ubuntu/deploy
+            
+            # .env 파일이 없으면 생성
+            touch .env
+            # 1. 기존 FRONTEND_TAG 라인 삭제 (중복 방지)
+            sed -i '/^FRONTEND_TAG=/d' .env
+            # 2. 새 태그 추가
+            echo "FRONTEND_TAG=${{ env.TAG }}" >> .env
+            
+            # 실행 (docker compose 사용)
+            sudo docker compose pull frontend
+            sudo docker compose up -d frontend
+            sudo docker image prune -f
