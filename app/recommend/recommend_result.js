@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('notifications-btn').addEventListener('click', () => {
         window.location.href = '/app/alarm/alarm.html';
     });
-    document.getElementById('profileBtn').addEventListener('click', () => {
+    document.getElementById('profile-btn').addEventListener('click', () => {
         window.location.href = '/app/profile/profile.html';
     });
 

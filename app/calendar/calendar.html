@@ -93,6 +93,16 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <label>반복 주기</label>
+                <select id="inputRecurrence" class="input">
+                    <option value="NONE" selected>반복 안함</option>
+                    <option value="DAILY">매일</option>
+                    <option value="WEEKLY">매주</option>
+                    <option value="MONTHLY">매달</option>
+                </select>
+            </div>
+
             <div class="modal-buttons">
                 <button id="closeModalBtn" class="modal-btn cancel">취소</button>
                 <button id="saveScheduleBtn" class="modal-btn confirm">추가하기</button>
@@ -140,8 +150,9 @@
     const today = new Date();
     
     // DB 데이터를 날짜별로 저장할 객체
-    let scheduleDataMap = {}; 
-
+    let scheduleDataMap = {}; // 키: YYYY-MM-DD, 값: 해당 날짜의 스케줄 배열 (확장된 일정 포함)
+    let rawSchedules = []; // 백엔드에서 받아온 원본 스케줄 (반복 규칙 포함)
+    
     const gridEl = document.getElementById('calendarGrid');
     const monthYearEl = document.getElementById('currentMonthYear');
     const scheduleListEl = document.getElementById('scheduleList');
@@ -153,11 +164,14 @@
     const inputDate = document.getElementById('inputDate');
     const inputPlant = document.getElementById('inputPlant');
     const inputType = document.getElementById('inputType');
+    const inputRecurrence = document.getElementById('inputRecurrence'); // 새로 추가된 반복 주기 input
 
     // 1. 초기 실행
     async function init() {
         await loadPlantsIntoSelect();
         await fetchAndRenderCalendar();
+        setActiveNavItem(); // 하단 네비게이션 활성화
+        setupHeaderButtonListeners(); // 헤더 버튼 리스너 설정
     }
 
     async function loadPlantsIntoSelect() {
@@ -177,11 +191,11 @@
             
             plants.forEach(plant => {
                 const option = document.createElement('option');
-                option.value = plant.my_plant_id; 
+                option.value = plant.plantId; // plant.my_plant_id -> plant.plantId 백엔드 DTO에 맞춤
                 option.textContent = plant.nickname;
                 inputPlant.appendChild(option);
                 
-                console.log(`✅ 식물 추가: ${plant.nickname} (ID: ${plant.my_plant_id})`);
+                console.log(`✅ 식물 추가: ${plant.nickname} (ID: ${plant.plantId})`);
             });
             
             console.log('===== 식물 목록 로드 완료 =====');
@@ -191,27 +205,90 @@
         }
     }
 
+    // 2. 반복 일정을 개별 날짜로 확장하는 헬퍼 함수
+    // frequencyDays: null(반복안함), 1(매일), 7(매주), 30(매달-근사치)
+    function expandRecurrence(schedule, monthStartDate, monthEndDate) {
+        const expandedEvents = [];
+        let currentEventDate = new Date(schedule.nextDueDate); // 스케줄 시작일 (Date 객체)
+
+        // 현재 달력의 시작일 이전의 이벤트는 무시
+        if (currentEventDate > monthEndDate) {
+            return [];
+        }
+
+        while (currentEventDate <= monthEndDate) {
+            // 현재 달력 범위 내에 있고, 스케줄 시작일보다 크거나 같으면 추가
+            if (currentEventDate >= monthStartDate && currentEventDate <= monthEndDate) {
+                expandedEvents.push({
+                    ...schedule,
+                    displayDate: new Date(currentEventDate) // 캘린더 표시용 날짜 (Date 객체)
+                });
+            }
+
+            // 다음 반복 날짜 계산
+            if (schedule.frequencyDays === null) { // 반복 안함
+                break;
+            } else if (schedule.frequencyDays === 1) { // 매일
+                currentEventDate.setDate(currentEventDate.getDate() + 1);
+            } else if (schedule.frequencyDays === 7) { // 매주
+                currentEventDate.setDate(currentEventDate.getDate() + 7);
+            } else if (schedule.frequencyDays === 30) { // 매달 (30일 간격)
+                currentEventDate.setDate(currentEventDate.getDate() + 30);
+            } else {
+                // 정의되지 않은 frequencyDays 값은 반복 안함으로 처리
+                break;
+            }
+            
+            // Note: 백엔드에서 30일 간격으로 'MONTHLY'를 처리하므로, 여기도 30일 간격으로 처리됩니다.
+            // 더 정확한 월별 반복을 위해서는 백엔드에서 `recurrencePattern` 필드를 유지하고,
+            // 프론트에서 이에 맞춰 `currentEventDate.setMonth(currentEventDate.getMonth() + 1)`
+            // 로직을 구현하는 것이 좋습니다. (현재는 `frequencyDays`만 사용)
+        }
+        return expandedEvents;
+    }
 
 
     // 3. 스케줄 불러오기 및 화면 그리기
     async function fetchAndRenderCalendar() {
         try {
-            const schedules = await getMySchedules();
+            rawSchedules = await getMySchedules(); // 원본 데이터를 rawSchedules에 저장
             
-            // 데이터 초기화 및 그룹화
-            scheduleDataMap = {};
-            schedules.forEach(sch => {
-                const dateKey = sch.nextDueDate; // "YYYY-MM-DD"
-                if (!scheduleDataMap[dateKey]) {
-                    scheduleDataMap[dateKey] = [];
-                }
-                
-                scheduleDataMap[dateKey].push({
-                    type: sch.scheduleType.toLowerCase(),
-                    plant: sch.plantNickname || '알 수 없음',  // ✅ 백엔드 키 이름에 맞게 수정
-                    id: sch.scheduleId
-                });
+            // 현재 달력의 시작일과 종료일 계산 (Date 객체로 비교)
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const monthStartDate = new Date(year, month, 1);
+            const monthEndDate = new Date(year, month + 1, 0); // 그 달의 마지막 날
 
+            // 데이터 초기화 및 반복 일정 확장 후 그룹화
+            scheduleDataMap = {};
+            rawSchedules.forEach(sch => {
+                // 백엔드에서 넘어오는 nextDueDate가 String이므로 Date 객체로 변환
+                const baseSchedule = { 
+                    ...sch,
+                    nextDueDate: new Date(sch.nextDueDate) // nextDueDate를 Date 객체로 변환
+                };
+                
+                // 확장 함수 호출
+                const expanded = expandRecurrence(
+                    baseSchedule, 
+                    monthStartDate, 
+                    monthEndDate
+                );
+
+                expanded.forEach(expSch => {
+                    // displayDate는 이미 Date 객체
+                    const dateKey = `${expSch.displayDate.getFullYear()}-${String(expSch.displayDate.getMonth()+1).padStart(2, '0')}-${String(expSch.displayDate.getDate()).padStart(2, '0')}`;
+                    
+                    if (!scheduleDataMap[dateKey]) {
+                        scheduleDataMap[dateKey] = [];
+                    }
+                    scheduleDataMap[dateKey].push({
+                        type: expSch.scheduleType.toLowerCase(),
+                        plant: expSch.plantNickname || '알 수 없음',
+                        id: expSch.scheduleId,
+                        isRecurring: expSch.frequencyDays !== null && expSch.frequencyDays !== 0 // 반복 여부 플래그
+                    });
+                });
             });
 
             renderCalendar();
@@ -267,8 +344,7 @@
             const iconContainer = document.createElement('div');
             iconContainer.className = 'calendar-icons';
             
-            // 최대 3개까지만 점 표시
-            dailySchedules.slice(0, 3).forEach(sch => {
+            dailySchedules.slice(0, 3).forEach(sch => { // 최대 3개까지만 점 표시
                 const dot = document.createElement('div');
                 dot.style.width = '5px';
                 dot.style.height = '5px';
@@ -277,7 +353,8 @@
                 // 타입별 색상 지정
                 if(sch.type === 'water') dot.style.backgroundColor = '#3B82F6'; // 파랑
                 else if(sch.type === 'repot') dot.style.backgroundColor = '#F59E0B'; // 노랑
-                else dot.style.backgroundColor = '#4A7C59'; // 초록
+                else if(sch.type === 'fertilize') dot.style.backgroundColor = '#4A7C59'; // 초록
+                else dot.style.backgroundColor = '#6B7280'; // 기타 (회색)
 
                 iconContainer.appendChild(dot);
             });
@@ -285,13 +362,16 @@
 
             // 날짜 클릭 시 일정 추가 모달 열기 (편의 기능)
             btn.addEventListener('click', () => {
+                // ✅ 이 부분은 클릭한 날짜에 해당하는 expanded schedule만 보여주도록 변경 가능
+                // 현재는 alert로 모든 일정 다 보여줌
                 if(dailySchedules.length > 0) {
-                    // 일정이 있으면 alert로 보여줌 (추후 목록 필터링 등으로 고도화 가능)
                     let msg = `${month+1}월 ${day}일 일정:\n`;
-                    dailySchedules.forEach(s => msg += `- ${s.plant} (${getTypeName(s.type)})\n`);
+                    dailySchedules.forEach(s => {
+                        let recurrenceText = s.isRecurring ? ' (반복)' : '';
+                        msg += `- ${s.plant} ${getTypeName(s.type)}${recurrenceText}\n`
+                    });
                     alert(msg);
                 } else {
-                    // 일정이 없으면 바로 추가 모달 열기
                     inputDate.value = dateStr;
                     modal.classList.add('show');
                 }
@@ -305,47 +385,66 @@
     function renderScheduleList() {
         scheduleListEl.innerHTML = '';
         
-        const sortedDates = Object.keys(scheduleDataMap).sort();
-        const todayStr = new Date().toISOString().split('T')[0];
-        
-        let count = 0;
-        
-        sortedDates.forEach(dateStr => {
-            // 지난 일정은 숨기고, 오늘 이후 일정만 표시
-            if (dateStr >= todayStr) {
-                scheduleDataMap[dateStr].forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'schedule-card';
+        // 현재 월의 시작일과 종료일 기준 (upcoming은 오늘 이후이므로 조정)
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const firstDayOfCurrentMonth = new Date(year, month, 1);
 
-                    let iconHtml = '';
-                    let bgClass = '';
-                    if(item.type === 'water') {
-                        iconHtml = '<i data-lucide="droplets"></i>';
-                        bgClass = 'bg-blue';
-                    } else if(item.type === 'repot') {
-                        iconHtml = '<i data-lucide="scissors"></i>';
-                        bgClass = 'bg-yellow';
-                    } else {
-                        iconHtml = '<i data-lucide="sprout"></i>';
-                        bgClass = 'bg-green';
-                    }
-
-                    card.innerHTML = `
-                        <div class="schedule-icon ${bgClass}">
-                            ${iconHtml}
-                        </div>
-                        <div class="schedule-main">
-                            <p>${item.plant} ${getTypeName(item.type)}</p>
-                            <span>${dateStr}</span>
-                        </div>
-                    `;
-                    scheduleListEl.appendChild(card);
-                    count++;
+        const allSchedulesInMonth = [];
+        Object.keys(scheduleDataMap).forEach(dateKey => {
+            const scheduleDate = new Date(dateKey);
+            // 현재 달력의 월에 포함되고 오늘 날짜 이후의 일정만 리스트에 추가
+            if (scheduleDate >= today && scheduleDate.getMonth() === month && scheduleDate.getFullYear() === year) {
+                scheduleDataMap[dateKey].forEach(sch => {
+                    allSchedulesInMonth.push({
+                        ...sch,
+                        displayDate: scheduleDate // 정렬을 위한 Date 객체 추가
+                    });
                 });
             }
         });
+
+        // 다가오는 일정을 날짜 순으로 정렬
+        allSchedulesInMonth.sort((a, b) => a.displayDate - b.displayDate);
         
-        // [수정됨] 일정이 하나도 없을 때 안내 문구 표시
+        let count = 0;
+        
+        allSchedulesInMonth.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'schedule-card';
+
+            let iconHtml = '';
+            let bgClass = '';
+            if(item.type === 'water') {
+                iconHtml = '<i data-lucide="droplets"></i>';
+                bgClass = 'bg-blue';
+            } else if(item.type === 'repot') {
+                iconHtml = '<i data-lucide="scissors"></i>';
+                bgClass = 'bg-yellow';
+            } else if(item.type === 'fertilize') {
+                iconHtml = '<i data-lucide="sprout"></i>';
+                bgClass = 'bg-green';
+            } else {
+                iconHtml = '<i data-lucide="bookmark"></i>'; // 기본 아이콘
+                bgClass = 'bg-gray'; // 기본 색상
+            }
+
+            const dateStr = `${item.displayDate.getFullYear()}-${String(item.displayDate.getMonth()+1).padStart(2, '0')}-${String(item.displayDate.getDate()).padStart(2, '0')}`;
+            let recurrenceText = item.isRecurring ? ' (반복)' : '';
+
+            card.innerHTML = `
+                <div class="schedule-icon ${bgClass}">
+                    ${iconHtml}
+                </div>
+                <div class="schedule-main">
+                    <p>${item.plant} ${getTypeName(item.type)}${recurrenceText}</p>
+                    <span>${dateStr}</span>
+                </div>
+            `;
+            scheduleListEl.appendChild(card);
+            count++;
+        });
+        
         if (count === 0) {
             scheduleListEl.innerHTML = `
                 <div class="empty-state">
@@ -353,7 +452,7 @@
                 </div>
             `;
         } else {
-            lucide.createIcons(); // 아이콘 렌더링
+            lucide.createIcons();
         }
     }
 
@@ -367,17 +466,19 @@
     // --- 이벤트 리스너 ---
     document.getElementById('prevMonthBtn').addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
-        renderCalendar();
+        fetchAndRenderCalendar(); // 캘린더 다시 로드
     });
 
     document.getElementById('nextMonthBtn').addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
-        renderCalendar();
+        fetchAndRenderCalendar(); // 캘린더 다시 로드
     });
 
     addBtn.addEventListener('click', () => {
         const todayStr = new Date().toISOString().split('T')[0];
         inputDate.value = todayStr;
+        // 모달 열 때 반복 주기 기본값 초기화
+        inputRecurrence.value = 'NONE'; 
         modal.classList.add('show');
     });
     
@@ -386,18 +487,17 @@
     });
 
     // 일정 저장 버튼 (API 연동)
-    // 일정 저장 버튼 (API 연동)
     saveBtn.addEventListener('click', async () => {
         const date = inputDate.value;
         const plantId = inputPlant.value;
         const type = inputType.value;
+        const recurrence = inputRecurrence.value; // 반복 주기 값 가져오기
 
-        // ✅ 디버깅: 값 확인
         console.log('===== 일정 추가 데이터 확인 =====');
         console.log('날짜:', date);
         console.log('식물 ID:', plantId);
         console.log('활동 종류:', type);
-        console.log('plantId 타입:', typeof plantId);
+        console.log('반복 주기:', recurrence);
         console.log('================================');
 
         if(!date || !plantId || !type) {
@@ -406,12 +506,11 @@
         }
 
         try {
-
             const requestData = {
-                // 왼쪽(키) 이름을 스네이크 표기법으로 변경
                 "next_due_date": date,   
                 "plant_id": Number(plantId),
-                "schedule_type": type
+                "schedule_type": type,
+                "recurrence_pattern": recurrence // 반복 주기 추가
             };
 
             console.log('전송할 데이터:', requestData);
@@ -420,7 +519,7 @@
             alert('일정이 추가되었습니다!');
             modal.classList.remove('show');
             
-            await fetchAndRenderCalendar();
+            await fetchAndRenderCalendar(); // 일정 추가 후 캘린더 새로고침
 
         } catch (error) {
             console.error('일정 추가 실패:', error);
@@ -428,19 +527,30 @@
         }
     });
 
-    init(); // 앱 시작
-  </script>
-  <script>
-    // 알람 벨 클릭 → 알람 페이지 이동
-    document.getElementById('notifications-btn').addEventListener('click', () => {
-        window.location.href = '/app/alarm/alarm.html';
-    });
+    // 하단 네비게이션 활성화 로직
+    function setActiveNavItem() {
+        const navItems = document.querySelectorAll('#bottom-nav .nav-item');
+        const currentPath = window.location.pathname;
 
-    // 프로필 버튼
-    document.getElementById('profileBtn').addEventListener('click', () => {
-        window.location.href = '/app/profile/profile.html';
-    });
-    lucide.createIcons();
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('href') === currentPath) {
+                item.classList.add('active');
+            }
+        });
+    }
+
+    // 헤더 알림/프로필 버튼 이벤트 리스너 설정
+    function setupHeaderButtonListeners() {
+        document.getElementById('notifications-btn').addEventListener('click', () => {
+            window.location.href = '/app/alarm/alarm.html';
+        });
+        document.getElementById('profileBtn').addEventListener('click', () => {
+            window.location.href = '/app/profile/profile.html';
+        });
+    }
+
+    init(); // 앱 시작
   </script>
 </body>
 </html>

@@ -15,7 +15,7 @@
             <h1 class="header-title">🪴 맞춤 식물 추천 결과</h1>
             <div style="display: flex; gap: 8px; align-items: center;">
                 <button id="notifications-btn" class="icon-btn"><i data-lucide="bell"></i></button>
-                <button id="profileBtn" class="icon-btn"><i data-lucide="user"></i></button>
+                <button id="profile-btn" class="icon-btn"><i data-lucide="user"></i></button>
             </div>
         </div>
 
@@ -28,17 +28,24 @@
                 <i data-lucide="home"></i>
                 <span>홈</span>
             </a>
-            <a href="/app/diary/diary.html" class="nav-item">
-                <i data-lucide="book-open"></i>
-                <span>다이어리</span>
-            </a>
-            <a href="/app/recommend/recommend.html" class="nav-item">
-                <i data-lucide="sparkles"></i>
-                <span>추천</span>
-            </a>
             <a href="/app/dictionary/dictionary.html" class="nav-item">
-                <i data-lucide="search"></i>
-                <span>사전</span>
+                <i data-lucide="book-open"></i>
+                <span>백과사전</span>
+            </a>
+            
+            <a href="/app/diagnosis/diagnosis.html" class="nav-item center-item">
+                <div class="center-circle-btn">
+                    <i data-lucide="camera" style="width: 28px; height: 28px;"></i>
+                </div>
+                <div class="tooltip-bubble">아픈 식물을 진단하세요</div>
+            </a>
+
+            <a href="/app/recommend/recommend.html" class="nav-item">
+                <i data-lucide="sparkles"></i> <span>추천</span>
+            </a>
+            <a href="/app/calendar/calendar.html" class="nav-item">
+                <i data-lucide="calendar"></i>
+                <span>캘린더</span>
             </a>
         </nav>
     </div>
