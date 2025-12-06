@@ -198,33 +198,29 @@ body {
 
 
 /* =================================================================
-   [공통] 하단 내비게이션 (main.css와 동일하게 적용)
-   ================================================================= */
+   하단 내비게이션 (main.css와 완전 동일)
+================================================================= */
 #bottom-nav {
     position: fixed;
     bottom: 0;
     width: 100%;
     max-width: 448px;
-    height: 85px; /* 높이 85px */
+    height: 85px;
     
     background-color: white;
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
     
-    /* 상단 그림자 */
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
     border-top: 1px solid #f0f0f0;
 
     z-index: 50;
     display: flex;
-    justify-content: space-between; /* 양옆 균등 배분 */
+    justify-content: space-between;
     align-items: center;
-    padding: 0 10px; /* 양옆 여백 */
-    padding-bottom: env(safe-area-inset-bottom);
-    height: calc(85px + env(safe-area-inset-bottom)); /* 높이 자동 계산 */
+    padding: 0 10px;
 }
 
-/* 기본 네비게이션 아이템 */
 .nav-item {
     display: flex;
     flex-direction: column;
@@ -236,7 +232,7 @@ body {
     flex: 1;
     height: 100%;
     position: relative;
-    padding-bottom: 5px; /* 텍스트와 하단 간격 */
+    padding-bottom: 5px;
 }
 
 .nav-item.active {
@@ -249,15 +245,11 @@ body {
     margin-bottom: 6px;
 }
 
-/* --------------------------------------
-   가운데 아이템 영역 (공간 확보용)
--------------------------------------- */
 .nav-item.center-item {
-    flex: 0 0 140px; /* 가운데 공간 확보 */
+    flex: 0 0 140px;
     overflow: visible;
 }
 
-/* 1. 초록색 카메라 버튼 (위로 올림) */
 .center-circle-btn {
     width: 64px;
     height: 64px;
@@ -272,7 +264,7 @@ body {
     box-shadow: 0 8px 20px rgba(74, 124, 89, 0.4);
     
     position: absolute;
-    top: -35px; /* 위로 35px 올림 */
+    top: -35px;
     z-index: 20;
     
     transition: transform 0.1s;
@@ -288,28 +280,24 @@ body {
     margin-bottom: 0;
 }
 
-/* 2. 캡슐 모양 텍스트 박스 (버튼 아래 배치) */
 .tooltip-bubble {
     position: absolute;
-    bottom: 12px; /* 바닥에서 12px */
+    bottom: 12px;
     left: 50%;
     transform: translateX(-50%);
     
-    /* 박스 디자인 */
     background-color: white;
     border: 1px solid #E5E5E0;
     border-radius: 30px;
     padding: 8px 16px;
     width: max-content;
     
-    /* 텍스트 스타일 */
     color: #4B5563;
     font-size: 13px;
     font-weight: 600;
     letter-spacing: -0.3px;
     white-space: nowrap;
     
-    /* 그림자 */
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     
     z-index: 10;
@@ -317,7 +305,8 @@ body {
 }
 
 .tooltip-bubble::after {
-}
+    display: none;
+} 
 
 /* =========================================
    [추가] 로딩 스피너 애니메이션
