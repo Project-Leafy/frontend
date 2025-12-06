@@ -142,11 +142,34 @@
             renderSuggestionDetail(suggestions[0]);
         }
 
+                // [보강됨] 식별 상세 정보 렌더링 함수 (null 안전 처리)
         function renderSuggestionDetail(suggestion) {
-            const commonName = suggestion.common_name || suggestion.name || '이름 없음';
-            const scientificName = suggestion.scientific_name || '';
-            const description = suggestion.details?.description?.value || '상세 설명이 없습니다.';
+            // 1. suggestion 객체가 아예 없는 경우 방어
+            if (!suggestion) {
+                suggestionDetail.innerHTML = '<p class="empty-state">선택된 식별 정보가 없습니다.</p>';
+                return;
+            }
+
+            // 2. 필드별 안전 처리 (null, undefined, 비문자열 방지)
             
+            // A. 이름 (common_name 우선, 없으면 name, 둘 다 없으면 기본값)
+            const rawCommonName = suggestion.common_name || suggestion.name;
+            const commonName = rawCommonName ? String(rawCommonName).trim() : '이름 없음';
+
+            // B. 학명 (scientific_name)
+            const scientificName = suggestion.scientific_name ? String(suggestion.scientific_name).trim() : '';
+
+            // C. 상세 설명 (details.description.value 처럼 깊은 객체 접근 시 안전하게 처리)
+            let description = '상세 설명이 없습니다.';
+            // 옵셔널 체이닝(?.)을 사용하여 중간에 값이 없어도 에러가 나지 않도록 함
+            if (suggestion.details?.description?.value) {
+                description = String(suggestion.details.description.value).trim();
+            } else if (suggestion.description) {
+                // API 버전에 따라 구조가 다를 수 있어 1차원 description도 체크
+                description = String(suggestion.description).trim();
+            }
+
+            // 3. HTML 렌더링
             suggestionDetail.innerHTML = `
                 <div class="suggestion-info">
                     <div class="suggestion-header">
@@ -160,31 +183,61 @@
             `;
         }
         
-        // [신규] 진단 기록 렌더링 함수
+        // [보강됨] 진단 기록 렌더링 함수 (모든 필드 null 안전 처리)
         function renderDiagnosisHistory(records) {
-            if (!records || records.length === 0) {
+            // 1. records 배열 자체가 없거나 비어있는 경우 처리
+            if (!records || !Array.isArray(records) || records.length === 0) {
                 diseaseInfoContainer.innerHTML = '<p class="empty-state">아직 진단 기록이 없습니다.</p>';
                 return;
             }
 
-            diseaseInfoContainer.innerHTML = ''; // 기존 내용 비우기
+            // 2. 내용 비우기
+            diseaseInfoContainer.innerHTML = ''; 
+            
             records.forEach(record => {
+                // --- [안전 처리 로직 시작] ---
+
+                // A. 날짜 처리 (데이터가 없거나 날짜 변환 실패 시 대비)
+                let diagnosisDateStr = '-';
+                if (record.diagnosisDatetime) {
+                    try {
+                        diagnosisDateStr = new Date(record.diagnosisDatetime).toLocaleDateString('ko-KR');
+                    } catch (e) {
+                        console.warn('날짜 변환 오류:', e);
+                        diagnosisDateStr = '날짜 오류';
+                    }
+                }
+
+                // B. 질병 이름 처리 (null, undefined 방지)
+                // 값이 없으면 빈 문자열('')로 변환하여 toLowerCase() 오류 방지
+                const rawName = record.diseaseName ? String(record.diseaseName) : '';
+                const isHealthy = rawName.toLowerCase() === 'healthy';
+                
+                // 화면에 보여줄 이름 설정 (값이 없으면 '판독 불가' 출력)
+                const displayName = isHealthy ? '건강함' : (rawName || '판독 불가');
+
+                // C. 정확도(확률) 처리 (null이거나 숫자가 아닐 경우 0으로 처리)
+                let probabilityStr = '0';
+                if (record.diseaseProbability !== null && record.diseaseProbability !== undefined) {
+                    // 숫자로 변환 후 % 계산
+                    probabilityStr = (Number(record.diseaseProbability) * 100).toFixed(0);
+                }
+
+                // --- [안전 처리 로직 끝] ---
+
+                // HTML 생성
                 const recordEl = document.createElement('div');
                 recordEl.className = 'diagnosis-record';
                 
-                const diagnosisDate = new Date(record.diagnosisDatetime).toLocaleDateString('ko-KR');
-                const probability = (record.diseaseProbability * 100).toFixed(0);
-                const isHealthy = record.diseaseName.toLowerCase() === 'healthy';
-
                 recordEl.innerHTML = `
                     <div class="record-header">
-                        <span class="record-date">${diagnosisDate}</span>
+                        <span class="record-date">${diagnosisDateStr}</span>
                         <span class="record-status ${isHealthy ? 'healthy' : 'disease'}">
-                            ${isHealthy ? '건강함' : record.diseaseName}
+                            ${displayName}
                         </span>
                     </div>
                     <div class="record-body">
-                        정확도: ${probability}%
+                        정확도: ${probabilityStr}%
                     </div>
                 `;
                 diseaseInfoContainer.appendChild(recordEl);
