@@ -89,15 +89,15 @@
 
     <script type="module">
         import { getMyPlantDetail } from '../../plant/plant_api.js';
-        import { fetchApi } from '../../assets/js/core_api.js';
+        import { fetchApi } from '/assets/js/core_api.js'; // 경로 수정
+        import { getDiagnosisHistory } from '../../diagnosis/diagnosis_api.js'; // 새로 추가
 
+        // --- DOM Elements ---
         const loadingSpinner = document.getElementById('loading-spinner');
         const dataContainer = document.getElementById('plant-data-container');
-        const headerTitle = document.getElementById('plant-nickname-header'); // 헤더 타이틀은 고정, 혹은 닉네임 연동 선택
         const plantImage = document.getElementById('plant-image');
         const plantNicknameInput = document.getElementById('plant-nickname-input');
         const plantAdoptionDateInput = document.getElementById('plant-adoption-date-input');
-        
         const suggestionsDropdown = document.getElementById('suggestions-dropdown');
         const suggestionDetail = document.getElementById('suggestion-detail');
         const diseaseInfoContainer = document.getElementById('disease-info');
@@ -105,54 +105,14 @@
 
         let currentPlantId = null;
 
-        // 렌더링 함수
-        function renderBaseInfo(plant, firstSuggestionName) {
-            const imageUrl = plant.image_url || 'https://placehold.co/400x400';
-            const nickname = plant.nickname || '';
-            
-            // 닉네임 인풋에 값 채우기
-            plantNicknameInput.value = nickname;
-            plantImage.src = imageUrl;
-
+        // --- Render Functions ---
+        
+        function renderBaseInfo(plant) {
+            plantNicknameInput.value = plant.nickname || '';
+            plantImage.src = plant.image_url || 'https://placehold.co/400x400';
             const adoptionDate = plant.adoption_date || plant.adoptionDate;
             if (adoptionDate) {
                 plantAdoptionDateInput.value = adoptionDate;
-            }
-        }
-
-        async function updatePlantNickname(plantId, newNickname) {
-            if (!newNickname || newNickname.trim() === '') {
-                alert('닉네임을 입력해주세요.');
-                return;
-            }
-            try {
-                const response = await fetchApi(`/api/v1/my-plants/${plantId}`, {
-                    method: 'PATCH',
-                    body: JSON.stringify({ nickname: newNickname })
-                });
-                if (!response.ok) throw new Error('서버 응답 오류');
-                alert('닉네임이 변경되었습니다!');
-            } catch (error) {
-                console.error('닉네임 저장 실패:', error);
-                alert('저장에 실패했습니다.');
-            }
-        }
-
-        async function updatePlantAdoptionDate(plantId, newDate) {
-            if (!newDate) {
-                alert('날짜를 선택해주세요.');
-                return;
-            }
-            try {
-                const response = await fetchApi(`/api/v1/my-plants/${plantId}`, {
-                    method: 'PATCH',
-                    body: JSON.stringify({ adoptionDate: newDate })
-                });
-                if (!response.ok) throw new Error('서버 응답 오류');
-                alert('입양일이 저장되었습니다!');
-            } catch (error) {
-                console.error('입양일 저장 실패:', error);
-                alert('저장에 실패했습니다.');
             }
         }
 
@@ -160,7 +120,7 @@
             if (!suggestions || suggestions.length === 0) {
                 suggestionsDropdown.innerHTML = '<option value="">식별 정보 없음</option>';
                 suggestionsDropdown.disabled = true;
-                suggestionDetail.innerHTML = '<p class="empty-state">식별된 정보가 없습니다.</p>';
+                suggestionDetail.innerHTML = '<p class="empty-state">AI 식별 정보가 없습니다.</p>';
                 return;
             }
 
@@ -177,24 +137,16 @@
 
             suggestionsDropdown.addEventListener('change', (e) => {
                 const selectedIndex = e.target.value;
-                const selectedSuggestion = suggestions[selectedIndex];
-                renderSuggestionDetail(selectedSuggestion);
+                renderSuggestionDetail(suggestions[selectedIndex]);
             });
-
             renderSuggestionDetail(suggestions[0]);
         }
 
         function renderSuggestionDetail(suggestion) {
             const commonName = suggestion.common_name || suggestion.name || '이름 없음';
-            const scientificName = suggestion.scientific_name || suggestion.name || '';
-            const imageUrl = suggestion.image_url || suggestion.imageUrl;
-            const description = suggestion.description || '상세 설명이 없습니다.';
+            const scientificName = suggestion.scientific_name || '';
+            const description = suggestion.details?.description?.value || '상세 설명이 없습니다.';
             
-            let imageHtml = '';
-            if (imageUrl) {
-                imageHtml = `<img src="${imageUrl}" alt="${commonName}" style="width: 100%; border-radius: 8px; margin-top: 12px; height: 180px; object-fit: cover;">`;
-            }
-
             suggestionDetail.innerHTML = `
                 <div class="suggestion-info">
                     <div class="suggestion-header">
@@ -203,62 +155,127 @@
                             <p>${scientificName}</p>
                         </div>
                     </div>
-                    ${imageHtml}
                     <p class="suggestion-desc">${description}</p>
                 </div>
             `;
         }
+        
+        // [신규] 진단 기록 렌더링 함수
+        function renderDiagnosisHistory(records) {
+            if (!records || records.length === 0) {
+                diseaseInfoContainer.innerHTML = '<p class="empty-state">아직 진단 기록이 없습니다.</p>';
+                return;
+            }
 
+            diseaseInfoContainer.innerHTML = ''; // 기존 내용 비우기
+            records.forEach(record => {
+                const recordEl = document.createElement('div');
+                recordEl.className = 'diagnosis-record';
+                
+                const diagnosisDate = new Date(record.diagnosisDatetime).toLocaleDateString('ko-KR');
+                const probability = (record.diseaseProbability * 100).toFixed(0);
+                const isHealthy = record.diseaseName.toLowerCase() === 'healthy';
+
+                recordEl.innerHTML = `
+                    <div class="record-header">
+                        <span class="record-date">${diagnosisDate}</span>
+                        <span class="record-status ${isHealthy ? 'healthy' : 'disease'}">
+                            ${isHealthy ? '건강함' : record.diseaseName}
+                        </span>
+                    </div>
+                    <div class="record-body">
+                        정확도: ${probability}%
+                    </div>
+                `;
+                diseaseInfoContainer.appendChild(recordEl);
+            });
+        }
+
+        // --- Data Fetching Functions ---
+
+        // [신규] 진단 기록 불러오기
+        async function loadDiagnosisHistory(plantId) {
+            try {
+                const records = await getDiagnosisHistory(plantId);
+                renderDiagnosisHistory(records);
+            } catch (error) {
+                console.error("진단 기록 로드 실패:", error);
+                diseaseInfoContainer.innerHTML = '<p class="empty-state" style="color: #EF4444;">기록을 불러오는 중 오류가 발생했습니다.</p>';
+            }
+        }
+        
         async function loadPlantDetail() {
             try {
                 const urlParams = new URLSearchParams(window.location.search);
                 const plantId = urlParams.get('id');
-
                 if (!plantId) throw new Error('식물 ID가 없습니다.');
 
                 currentPlantId = plantId;
                 const plantDetail = await getMyPlantDetail(plantId);
-                console.log("Data:", plantDetail);
-
-                let suggestions = plantDetail.identification_candidates 
-                            || plantDetail.identificationCandidates 
-                            || [];
                 
+                let suggestions = plantDetail.identificationCandidates || [];
                 if (typeof suggestions === 'string') {
-                    try { suggestions = JSON.parse(suggestions); } 
-                    catch (e) { suggestions = []; }
+                    try { suggestions = JSON.parse(suggestions); } catch (e) { suggestions = []; }
                 }
 
-                const firstSuggestionName = suggestions.length > 0 ? suggestions[0].name : null;
-                renderBaseInfo(plantDetail, firstSuggestionName);
+                renderBaseInfo(plantDetail);
                 renderSuggestions(suggestions);
-
-                // 이벤트 리스너 연결
-                document.getElementById('save-nickname-btn').addEventListener('click', () => {
-                    const newNickname = plantNicknameInput.value.trim();
-                    updatePlantNickname(currentPlantId, newNickname);
-                });
-
-                document.getElementById('save-date-btn').addEventListener('click', () => {
-                    const newDate = plantAdoptionDateInput.value;
-                    updatePlantAdoptionDate(currentPlantId, newDate);
-                });
                 
-                if (diseaseInfoContainer) diseaseInfoContainer.innerHTML = '<p class="empty-state">건강 분석 데이터가 없습니다.</p>';
-                if (otherInfoContainer) otherInfoContainer.innerHTML = '<p class="empty-state">추가 분석 데이터가 없습니다.</p>';
+                // [신규] 진단 기록 로드 호출
+                await loadDiagnosisHistory(plantId);
 
-                loadingSpinner.classList.remove('loading-active');
-                dataContainer.style.display = 'block';
-                lucide.createIcons();
+                if (otherInfoContainer) otherInfoContainer.innerHTML = '<p class="empty-state">추가 분석 데이터가 없습니다.</p>';
 
             } catch (error) {
                 console.error('Error:', error);
-                loadingSpinner.classList.remove('loading-active');
                 dataContainer.innerHTML = `<div class="error-message">데이터를 불러오지 못했습니다.<br><span style="font-size:12px; color:#666;">${error.message}</span></div>`;
+            } finally {
+                loadingSpinner.classList.remove('loading-active');
                 dataContainer.style.display = 'block';
+                lucide.createIcons();
             }
         }
 
+        // --- Event Listeners ---
+
+        async function updatePlantData(plantId, payload) {
+            try {
+                const response = await fetchApi(`/api/v1/my-plants/${plantId}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error('서버 응답 오류');
+                return true;
+            } catch (error) {
+                console.error('데이터 업데이트 실패:', error);
+                alert('저장에 실패했습니다.');
+                return false;
+            }
+        }
+
+        document.getElementById('save-nickname-btn').addEventListener('click', async () => {
+            const newNickname = plantNicknameInput.value.trim();
+            if (!newNickname) {
+                alert('닉네임을 입력해주세요.');
+                return;
+            }
+            if (await updatePlantData(currentPlantId, { nickname: newNickname })) {
+                alert('닉네임이 변경되었습니다!');
+            }
+        });
+
+        document.getElementById('save-date-btn').addEventListener('click', async () => {
+            const newDate = plantAdoptionDateInput.value;
+            if (!newDate) {
+                alert('날짜를 선택해주세요.');
+                return;
+            }
+            if (await updatePlantData(currentPlantId, { adoptionDate: newDate })) {
+                alert('입양일이 저장되었습니다!');
+            }
+        });
+
+        // --- Initialization ---
         document.addEventListener('DOMContentLoaded', loadPlantDetail);
     </script>
 </body>

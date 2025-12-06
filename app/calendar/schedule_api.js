@@ -1,4 +1,4 @@
-import { BACKEND_URL } from '../../assets/js/config.js';
+import { BACKEND_URL } from '/assets/js/config.js';
 
 const BASE_URL = `${BACKEND_URL}/api/v1/schedules`;
 

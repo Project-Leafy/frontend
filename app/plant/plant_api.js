@@ -1,4 +1,4 @@
-import { fetchApi } from '../../assets/js/core_api.js';
+import { fetchApi } from '/assets/js/core_api.js';
 
 /**
  * [추가] 백엔드 API로부터 특정 '내 식물'의 상세 정보를 가져옵니다.

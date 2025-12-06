@@ -99,3 +99,26 @@ export async function deleteJournal(recordId) {
         throw error;
     }
 }
+/**
+ * [NEW] 성장일지 수정 API 호출
+ * PATCH /api/v1/journal/{recordId}
+ */
+export async function updateGrowthJournal(recordId, updateData) {
+    try {
+        const response = await fetchApi(`/api/v1/journal/${recordId}`, {
+            method: "PATCH",
+            body: JSON.stringify(updateData),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "일지 수정에 실패했습니다.");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error updating journal:", error);
+        throw error;
+    }
+}
+

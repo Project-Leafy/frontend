@@ -199,6 +199,38 @@
             background: #EF4444;
             color: white;
         }
+
+        /* --- Edit Mode Styles --- */
+        .custom-textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 12px;
+            border: 1px solid #D1D5DB;
+            resize: vertical;
+            min-height: 120px;
+            line-height: 1.6;
+            font-family: inherit;
+        }
+
+        .tag-edit-btn {
+            background: #F3F4F6;
+            color: #4B5563;
+            border: 1px solid #E5E7EB;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .tag-edit-btn[data-active="true"] {
+            background: #D1FAE5;
+            color: #064E3B;
+            border-color: #A7F3D0;
+            font-weight: 600;
+        }
     </style>
 
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -210,9 +242,14 @@
                 <i data-lucide="arrow-left" color="#6B7280" size="22"></i>
             </button>
             <h1 class="header-title">성장 기록</h1>
-            <button id="deleteBtn">
-                <i data-lucide="trash-2" color="#EF4444" size="20"></i>
-            </button>
+            <div>
+                <button id="editBtn">
+                    <i data-lucide="edit" color="#6B7280" size="20"></i>
+                </button>
+                <button id="deleteBtn">
+                    <i data-lucide="trash-2" color="#EF4444" size="20"></i>
+                </button>
+            </div>
         </header>
 
         <main class="detail-content">
@@ -242,12 +279,16 @@
     </div>
 
     <script type="module">
-        import { getGrowthJournals, deleteJournal } from './myplant_journal_api.js';
+        import { getJournalDetail, deleteJournal, updateGrowthJournal } from './myplant_journal_api.js';
 
+        // --- DOM Elements ---
         const urlParams = new URLSearchParams(window.location.search);
         const recordId = urlParams.get('recordId');
-        const plantId = urlParams.get('plantId');
-
+        
+        const backBtn = document.getElementById('backBtn');
+        const editBtn = document.getElementById('editBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        
         const plantNicknameEl = document.getElementById('plantNickname');
         const recordDateEl = document.getElementById('recordDate');
         const imageGalleryEl = document.getElementById('imageGallery');
@@ -255,69 +296,159 @@
         const memoTextEl = document.getElementById('memoText');
         const deleteModal = document.getElementById('deleteModal');
 
+        // --- State ---
+        let isEditMode = false;
+        let currentJournal = null;
+
+        // --- Render Functions ---
         function formatDate(dateString) {
             if (!dateString) return '';
             const date = new Date(dateString);
             const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
             return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${weekDays[date.getDay()]})`;
         }
+        
+        function renderViewMode() {
+            if (!currentJournal) return;
+            
+            // 데이터 채우기
+            plantNicknameEl.textContent = "나의 반려식물"; // 닉네임은 상세조회에 없으므로 고정
+            recordDateEl.textContent = formatDate(currentJournal.recordDate);
+            
+            // 이미지 렌더링
+            imageGalleryEl.innerHTML = '';
+            if (currentJournal.photoUrl) {
+                const div = document.createElement('div');
+                div.className = 'image-wrapper';
+                div.innerHTML = `<img src="${currentJournal.photoUrl}" onerror="this.style.display='none'">`;
+                imageGalleryEl.appendChild(div);
+            }
+            
+            // 태그 및 메모 렌더링 (수정 모드에서 사용된 input 제거)
+            tagContainerEl.innerHTML = `
+                ${currentJournal.watered ? '<span class="tag-badge">#물주기</span>' : ''}
+                ${currentJournal.repotted ? '<span class="tag-badge">#분갈이</span>' : ''}
+                ${currentJournal.pruned ? '<span class="tag-badge">#가지치기</span>' : ''}
+                ${currentJournal.fertilized ? '<span class="tag-badge">#비료</span>' : ''}
+            `;
+            memoTextEl.innerHTML = `<p class="memo-text">${currentJournal.memo || "기록된 메모가 없습니다."}</p>`;
 
-        function renderTags(journal) {
-            const tags = [];
-            if (journal.watered) tags.push('물주기');
-            if (journal.repotted) tags.push('분갈이');
-            if (journal.pruned) tags.push('가지치기');
-            if (journal.fertilized) tags.push('비료');
-
-            tagContainerEl.innerHTML = tags.map(tag => 
-                `<span class="tag-badge">#${tag}</span>`
-            ).join('');
+            // 버튼 아이콘 및 기능 설정
+            editBtn.innerHTML = `<i data-lucide="edit" color="#6B7280" size="20"></i>`;
+            deleteBtn.innerHTML = `<i data-lucide="trash-2" color="#EF4444" size="20"></i>`;
+            deleteBtn.style.display = 'block'; // 삭제 버튼 보이기
+            lucide.createIcons();
         }
 
+        function renderEditMode() {
+            // 메모 수정용 textarea
+            memoTextEl.innerHTML = `<textarea id="memoEdit" class="custom-textarea" style="height: 150px;">${currentJournal.memo || ''}</textarea>`;
+
+            // 태그 수정용 버튼
+            const allTags = [
+                { key: 'watered', name: '물주기' },
+                { key: 'repotted', name: '분갈이' },
+                { key: 'pruned', name: '가지치기' },
+                { key: 'fertilized', name: '비료' }
+            ];
+            tagContainerEl.innerHTML = allTags.map(tag => `
+                <button class="tag-edit-btn" data-tag="${tag.key}" data-active="${currentJournal[tag.key]}">
+                    #${tag.name}
+                </button>
+            `).join('');
+
+            // 버튼 아이콘 변경
+            editBtn.innerHTML = `<i data-lucide="save" color="#4A7C59" size="20"></i>`; // 저장 아이콘
+            deleteBtn.innerHTML = `<i data-lucide="x" color="#6B7280" size="22"></i>`; // 취소(X) 아이콘
+            lucide.createIcons();
+        }
+
+        // --- Event Handlers & Logic ---
+        function toggleEditMode(forceState) {
+            isEditMode = (forceState !== undefined) ? forceState : !isEditMode;
+            
+            if (isEditMode) {
+                renderEditMode();
+            } else {
+                renderViewMode();
+            }
+        }
+        
         async function loadDetail() {
             if (!recordId) return history.back();
-
             try {
-                const journals = await getGrowthJournals(plantId);
-                const journal = journals.find(j => String(j.record_id || j.recordId || j.id) === recordId);
-
-                if (!journal) return history.back();
-
-                plantNicknameEl.textContent = journal.plant_nickname || journal.plantNickname || "나의 반려식물";
-                recordDateEl.textContent = formatDate(journal.record_date || journal.recordDate);
-                memoTextEl.textContent = journal.memo || "작성된 메모가 없습니다.";
-                renderTags(journal);
-
-                imageGalleryEl.innerHTML = '';
-                let images = [];
-                if (journal.images && Array.isArray(journal.images)) images = journal.images;
-                else if (journal.photo_url || journal.photoUrl) images = [journal.photo_url || journal.photoUrl];
-
-                images.forEach(src => {
-                    const div = document.createElement('div');
-                    div.className = 'image-wrapper';
-                    div.innerHTML = `<img src="${src}" onerror="this.src='https://placehold.co/600x600?text=No+Image'">`;
-                    imageGalleryEl.appendChild(div);
-                });
-
+                const journal = await getJournalDetail(recordId);
+                currentJournal = journal; // 원본 데이터 저장
+                renderViewMode();
             } catch (error) {
                 console.error(error);
+                alert('일지 정보를 불러오는데 실패했습니다.');
                 history.back();
             }
         }
-
-        document.getElementById('backBtn').onclick = () => history.back();
-        document.getElementById('deleteBtn').onclick = () => deleteModal.style.display = 'flex';
-        document.getElementById('modalCancel').onclick = () => deleteModal.style.display = 'none';
         
+        async function handleSave() {
+            const memo = document.getElementById('memoEdit').value;
+            const activeTags = {};
+            document.querySelectorAll('.tag-edit-btn').forEach(btn => {
+                const key = btn.dataset.tag;
+                activeTags[key] = btn.dataset.active === 'true';
+            });
+            
+            const updateData = {
+                memo: memo,
+                ...activeTags
+                // 날짜, 사진 등 다른 필드는 수정하지 않음
+            };
+
+            try {
+                await updateGrowthJournal(recordId, updateData);
+                alert('수정되었습니다.');
+                await loadDetail(); // 데이터 새로고침
+                toggleEditMode(false); // 뷰 모드로 전환
+            } catch (error) {
+                alert('수정 실패: ' + error.message);
+            }
+        }
+
+        // --- Initial Setup ---
+        backBtn.onclick = () => history.back();
+        
+        editBtn.addEventListener('click', () => {
+            if (isEditMode) {
+                handleSave();
+            } else {
+                toggleEditMode(true);
+            }
+        });
+        
+        deleteBtn.addEventListener('click', () => {
+            if (isEditMode) {
+                toggleEditMode(false); // 수정 취소
+            } else {
+                deleteModal.style.display = 'flex'; // 삭제 모달 열기
+            }
+        });
+
+        // 삭제 모달 관련 이벤트
+        document.getElementById('modalCancel').onclick = () => deleteModal.style.display = 'none';
         document.getElementById('modalConfirm').addEventListener('click', async () => {
             try {
-                await deleteJournal(recordId);  // 여기! plantId 완전 제거
+                await deleteJournal(recordId);
                 alert('삭제되었습니다.');
-                history.back();
+                window.location.href = `../myplant_diary/myplant_diary.html?id=${plantId}`; // 다이어리 목록으로 이동
             } catch (e) {
                 alert('삭제 실패: ' + e.message);
                 deleteModal.style.display = 'none';
+            }
+        });
+        
+        // 태그 수정 버튼 이벤트 위임
+        tagContainerEl.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tag-edit-btn')) {
+                const btn = e.target;
+                const isActive = btn.dataset.active === 'true';
+                btn.dataset.active = !isActive; // 상태 토글
             }
         });
 
