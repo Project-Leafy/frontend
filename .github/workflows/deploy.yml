@@ -30,6 +30,7 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/leafy-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/leafy-frontend:${{ env.TAG }}
+            
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
