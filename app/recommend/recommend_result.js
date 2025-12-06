@@ -78,4 +78,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('profileBtn').addEventListener('click', () => {
         window.location.href = '/app/profile/profile.html';
     });
+
+    // Function to set the active navigation item based on the current URL
+    function setActiveNavItem() {
+        const navItems = document.querySelectorAll('#bottom-nav .nav-item');
+        const currentPath = window.location.pathname;
+
+        navItems.forEach(item => {
+            item.classList.remove('active'); // Remove active from all first
+            
+            // Special handling for recommendation pages
+            if (currentPath.includes('/app/recommend/')) {
+                if (item.getAttribute('href') === '/app/recommend/recommend.html') {
+                    item.classList.add('active');
+                }
+            } else if (item.getAttribute('href') === currentPath) {
+                item.classList.add('active');
+            }
+        });
+    }
+
+    // Call setActiveNavItem on page load
+    setActiveNavItem();
 });

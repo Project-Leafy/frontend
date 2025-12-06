@@ -91,4 +91,22 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = false;
         }
     });
+
+    // Function to set the active navigation item based on the current URL
+    function setActiveNavItem() {
+        const navItems = document.querySelectorAll('#bottom-nav .nav-item');
+        const currentPath = window.location.pathname;
+
+        navItems.forEach(item => {
+            item.classList.remove('active'); // Remove active from all first
+            // Compare the href with the current path
+            // Adjust comparison for base path if necessary, e.g., if application is not at root
+            if (item.getAttribute('href') === currentPath) {
+                item.classList.add('active');
+            }
+        });
+    }
+
+    // Call setActiveNavItem on page load
+    setActiveNavItem();
 });
