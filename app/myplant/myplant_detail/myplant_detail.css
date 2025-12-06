@@ -311,3 +311,52 @@ select {
     border-radius: 12px;
     margin: 20px;
 }
+/* --- [New] Diagnosis History Styles --- */
+.diagnosis-record {
+    padding: 16px 0;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.diagnosis-record:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.diagnosis-record:first-child {
+    padding-top: 0;
+}
+
+.record-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.record-date {
+    font-size: 13px;
+    color: #6B7280;
+}
+
+.record-status {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.record-status.healthy {
+    background-color: #E8F4EC;
+    color: #4A7C59;
+}
+
+.record-status.disease {
+    background-color: #FEF2F2;
+    color: #EF4444;
+}
+
+.record-body {
+    font-size: 14px;
+    color: #4B5563;
+}
+
