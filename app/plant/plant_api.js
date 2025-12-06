@@ -26,13 +26,8 @@ export async function getMyPlantDetail(myPlantId) {
  * @returns {Promise<any>} 식별 결과 데이터 Promise
  */
 export async function identifyPlant(formData) {
-    const token = localStorage.getItem('accessToken');
-    const response = await fetch(`${BACKEND_URL}/api/v1/plants/identify`, {
+    const response = await fetchApi('/api/v1/plants/identify', {
         method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`
-            // Content-Type은 브라우저가 자동으로 설정하므로 생략합니다.
-        },
         body: formData
     });
 
@@ -98,16 +93,8 @@ export async function getPlantById(plantId) {
  * @returns {Promise<any>} 등록된 식물 정보 데이터 Promise
  */
 export async function registerMyPlant(plantData) {
-    const token = localStorage.getItem('accessToken');
-    
-    // ⭐️⭐️⭐️ 이 부분을 수정합니다: 백엔드 서버의 포트(8080)를 명시하여 절대 경로로 요청 ⭐️⭐️⭐️
-    const response = await fetch(`${BACKEND_URL}/api/v1/my-plants`, {
-    
+    const response = await fetchApi('/api/v1/my-plants', {
         method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
         body: JSON.stringify(plantData)
     });
 

@@ -1,29 +1,13 @@
-import { BACKEND_URL } from '../../../assets/js/config.js';
-
-const BASE_URL = `${BACKEND_URL}/api/v1`;
+import { fetchApi } from '../../../assets/js/core_api.js';
 
 /**
  * 성장일지 생성 API 호출
  * POST /api/v1/plants/{plantId}/journal
  */
 export async function createGrowthRecord(plantId, data) {
-    const token = localStorage.getItem('accessToken');
-    
-    if (!token) {
-        alert('로그인이 필요합니다.');
-        // 로그인 페이지 경로는 프로젝트 구조에 맞게 수정하세요
-        window.location.href = '/login/login.html'; 
-        return;
-    }
-
-
     try {
-        const response = await fetch(`${BASE_URL}/plants/${plantId}/journal`, {
+        const response = await fetchApi(`/api/v1/plants/${plantId}/journal`, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify(data)
         });
 
@@ -38,24 +22,15 @@ export async function createGrowthRecord(plantId, data) {
         throw error;
     }
 }
-// ... 기존 createGrowthRecord 함수 아래에 추가 ...
 
 /**
  * 성장일지 목록 조회 API 호출
  * GET /api/v1/plants/{plantId}/journal
  */
 export async function getGrowthJournals(plantId) {
-    const token = localStorage.getItem('accessToken');
-    
-    if (!token) return [];
-
     try {
-        const response = await fetch(`${BASE_URL}/plants/${plantId}/journal`, {
+        const response = await fetchApi(`/api/v1/plants/${plantId}/journal`, {
             method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            }
         });
 
         if (!response.ok) {
@@ -69,26 +44,14 @@ export async function getGrowthJournals(plantId) {
     }
 }
 
-// myplant_journal_api.js 파일 내부에 추가
-
 // [NEW] 이미지 파일만 서버(S3)로 보내고 URL을 받아오는 함수
 export async function uploadImageFile(file) {
     const formData = new FormData();
     formData.append("file", file);
 
-    // 1. 토큰 가져오기
-    const token = localStorage.getItem('accessToken');
-    
     try {
-        // 2. 주소를 백엔드 포트(8080)까지 포함해서 정확히 적기
-        // (ImageUploadController의 @RequestMapping("/api/images")와 맞춤)
-        const response = await fetch(`${BACKEND_URL}/api/images/upload`, {
+        const response = await fetchApi('/api/images/upload', {
             method: 'POST',
-            headers: {
-                // 3. 인증 토큰 추가 (중요!)
-                // 주의: Content-Type은 적지 않는다 (브라우저가 자동으로 boundary 설정함)
-                'Authorization': `Bearer ${token}` 
-            },
             body: formData
         });
 
@@ -97,7 +60,7 @@ export async function uploadImageFile(file) {
         }
 
         const data = await response.json();
-        return data.imageUrl; 
+        return data.imageUrl;
     } catch (error) {
         console.error("Upload error:", error);
         throw error;
@@ -108,34 +71,22 @@ export async function uploadImageFile(file) {
  * 성장일지 상세 조회 API 호출 (정확한 경로로 수정!)
  */
 export async function getJournalDetail(recordId) {
-    const token = localStorage.getItem('accessToken');
-    if (!token) throw new Error('로그인 필요');
-
-    const response = await fetch(`${BASE_URL}/journal/${recordId}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
+    const response = await fetchApi(`/api/v1/journal/${recordId}`, {
+        method: 'GET'
     });
 
     if (!response.ok) throw new Error('상세 조회 실패');
     return await response.json();
 }
+
 /**
  * 성장일지 삭제 API 호출 (백엔드 정확한 경로!)
  * DELETE /api/v1/journal/{recordId}
  */
 export async function deleteJournal(recordId) {
-    const token = localStorage.getItem('accessToken');
-    if (!token) throw new Error('로그인 필요');
-
     try {
-        const response = await fetch(`${BASE_URL}/journal/${recordId}`, {  // 여기! plants/ 없애고 journal/만
+        const response = await fetchApi(`/api/v1/journal/${recordId}`, {
             method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
         });
 
         if (!response.ok) {

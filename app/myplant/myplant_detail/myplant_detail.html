@@ -89,6 +89,7 @@
 
     <script type="module">
         import { getMyPlantDetail } from '../../plant/plant_api.js';
+        import { fetchApi } from '../../assets/js/core_api.js';
 
         const loadingSpinner = document.getElementById('loading-spinner');
         const dataContainer = document.getElementById('plant-data-container');
@@ -125,13 +126,8 @@
                 return;
             }
             try {
-                const token = localStorage.getItem('accessToken');
-                const response = await fetch(`${BACKEND_URL}/api/v1/my-plants/${plantId}`, {
+                const response = await fetchApi(`/api/v1/my-plants/${plantId}`, {
                     method: 'PATCH',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
                     body: JSON.stringify({ nickname: newNickname })
                 });
                 if (!response.ok) throw new Error('서버 응답 오류');
@@ -148,13 +144,8 @@
                 return;
             }
             try {
-                const token = localStorage.getItem('accessToken');
-                const response = await fetch(`${BACKEND_URL}/api/v1/my-plants/${plantId}`, {
+                const response = await fetchApi(`/api/v1/my-plants/${plantId}`, {
                     method: 'PATCH',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
                     body: JSON.stringify({ adoptionDate: newDate })
                 });
                 if (!response.ok) throw new Error('서버 응답 오류');
