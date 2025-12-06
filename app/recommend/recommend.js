@@ -75,7 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('recommendationResults', JSON.stringify(recommendations));
                 
                 // 결과 페이지로 이동
-                window.location.href = '/app/recommend/result.html'; 
+
+                window.location.href = '/app/recommend/recommend_result.html'; 
             } else {
                 const errorData = await response.json();
                 alert(`추천 실패: ${errorData.message || '알 수 없는 오류가 발생했습니다.'}`);
