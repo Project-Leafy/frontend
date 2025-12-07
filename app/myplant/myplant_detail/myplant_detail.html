@@ -183,49 +183,45 @@
             `;
         }
         
-        // [보강됨] 진단 기록 렌더링 함수 (모든 필드 null 안전 처리)
+        // [수정됨] 진단 기록 렌더링 함수
         function renderDiagnosisHistory(records) {
-            // 1. records 배열 자체가 없거나 비어있는 경우 처리
             if (!records || !Array.isArray(records) || records.length === 0) {
                 diseaseInfoContainer.innerHTML = '<p class="empty-state">아직 진단 기록이 없습니다.</p>';
                 return;
             }
 
-            // 2. 내용 비우기
-            diseaseInfoContainer.innerHTML = ''; 
+            diseaseInfoContainer.innerHTML = '';
             
             records.forEach(record => {
-                // --- [안전 처리 로직 시작] ---
+                // --- [수정] 변수명을 스네이크 케이스로 변경 ---
 
-                // A. 날짜 처리 (데이터가 없거나 날짜 변환 실패 시 대비)
+                // A. 날짜 처리
                 let diagnosisDateStr = '-';
-                if (record.diagnosisDatetime) {
+                // record.diagnosisDatetime -> record.diagnosis_datetime
+                if (record.diagnosis_datetime) { 
                     try {
-                        diagnosisDateStr = new Date(record.diagnosisDatetime).toLocaleDateString('ko-KR');
+                        diagnosisDateStr = new Date(record.diagnosis_datetime).toLocaleDateString('ko-KR');
                     } catch (e) {
                         console.warn('날짜 변환 오류:', e);
                         diagnosisDateStr = '날짜 오류';
                     }
                 }
 
-                // B. 질병 이름 처리 (null, undefined 방지)
-                // 값이 없으면 빈 문자열('')로 변환하여 toLowerCase() 오류 방지
-                const rawName = record.diseaseName ? String(record.diseaseName) : '';
+                // B. 질병 이름 처리
+                // record.diseaseName -> record.disease_name
+                const rawName = record.disease_name ? String(record.disease_name) : '';
                 const isHealthy = rawName.toLowerCase() === 'healthy';
                 
-                // 화면에 보여줄 이름 설정 (값이 없으면 '판독 불가' 출력)
                 const displayName = isHealthy ? '건강함' : (rawName || '판독 불가');
 
-                // C. 정확도(확률) 처리 (null이거나 숫자가 아닐 경우 0으로 처리)
+                // C. 정확도(확률) 처리
                 let probabilityStr = '0';
-                if (record.diseaseProbability !== null && record.diseaseProbability !== undefined) {
-                    // 숫자로 변환 후 % 계산
-                    probabilityStr = (Number(record.diseaseProbability) * 100).toFixed(0);
+                // record.diseaseProbability -> record.disease_probability
+                if (record.disease_probability !== null && record.disease_probability !== undefined) {
+                    probabilityStr = (Number(record.disease_probability) * 100).toFixed(0);
                 }
 
-                // --- [안전 처리 로직 끝] ---
-
-                // HTML 생성
+                // HTML 생성 (여기는 변경 없음)
                 const recordEl = document.createElement('div');
                 recordEl.className = 'diagnosis-record';
                 
@@ -266,10 +262,8 @@
                 currentPlantId = plantId;
                 const plantDetail = await getMyPlantDetail(plantId);
                 
-                let suggestions = plantDetail.identificationCandidates || [];
-                if (typeof suggestions === 'string') {
-                    try { suggestions = JSON.parse(suggestions); } catch (e) { suggestions = []; }
-                }
+                // ✅ 백엔드가 DTO에서 이미 List로 변환해서 줍니다. 바로 쓰면 됩니다.
+                let suggestions = plantDetail.identification_candidates || []; // DTO 변수명(identification_candidates) 확인
 
                 renderBaseInfo(plantDetail);
                 renderSuggestions(suggestions);
@@ -323,7 +317,8 @@
                 alert('날짜를 선택해주세요.');
                 return;
             }
-            if (await updatePlantData(currentPlantId, { adoptionDate: newDate })) {
+            // 🚨 [수정] adoptionDate -> adoption_date (백엔드 DTO가 snake_case를 기다림)
+            if (await updatePlantData(currentPlantId, { adoption_date: newDate })) { 
                 alert('입양일이 저장되었습니다!');
             }
         });

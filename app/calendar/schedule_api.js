@@ -27,7 +27,6 @@ export async function getMySchedules() {
 }
 
 // 2. 일정 추가
-// 2. 일정 추가
 export async function addSchedule(scheduleData) {
     const token = localStorage.getItem('accessToken');
     
