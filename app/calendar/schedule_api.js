@@ -31,18 +31,16 @@ export async function getMySchedules() {
 export async function addSchedule(scheduleData) {
     const token = localStorage.getItem('accessToken');
     
-    // ✅ 명시적으로 숫자로 변환
-    // ▼▼▼ 여기를 수정하세요! (키 이름을 밑줄로 변경) ▼▼▼
     const payload = {
         plant_id: scheduleData.plant_id,
         schedule_type: scheduleData.schedule_type,
         next_due_date: scheduleData.next_due_date,
-        recurrence_pattern: scheduleData.recurrence_pattern
+        frequency_days: scheduleData.frequency_days
     };
 
     console.log('최종 전송 데이터:', payload); // ✅ 디버깅용
     console.log('plant_id 타입:', typeof payload.plant_id);
-    console.log('recurrence_pattern 타입:', typeof payload.recurrence_pattern); // ✅ 디버깅용
+    console.log('frequency_days 타입:', typeof payload.frequency_days); // ✅ 디버깅용
 
     try {
         const response = await fetch(BASE_URL, {
