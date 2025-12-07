@@ -311,17 +311,28 @@
         function renderViewMode() {
             if (!currentJournal) return;
             
-            // 데이터 채우기
-            plantNicknameEl.textContent = "나의 반려식물"; // 닉네임은 상세조회에 없으므로 고정
-            recordDateEl.textContent = formatDate(currentJournal.recordDate);
+            // ✅ [수정] 식물 닉네임 연결 (백엔드에서 받은 값 사용)
+            // (만약 백엔드 수정 전이라 값이 없으면 '이름 없음' 표시)
+            const nickname = currentJournal.plant_nickname || currentJournal.plantNickname || "이름 없음";
+            plantNicknameEl.textContent = nickname;
+
+
+            // 날짜 연결
+            recordDateEl.textContent = formatDate(currentJournal.record_date || currentJournal.recordDate);
             
-            // 이미지 렌더링
+            // ✅ [수정] 이미지 렌더링 (photo_url 확인)
             imageGalleryEl.innerHTML = '';
-            if (currentJournal.photoUrl) {
+            const photoUrl = currentJournal.photo_url || currentJournal.photoUrl; // 스네이크/카멜 케이스 모두 대응
+
+            if (photoUrl) {
                 const div = document.createElement('div');
                 div.className = 'image-wrapper';
-                div.innerHTML = `<img src="${currentJournal.photoUrl}" onerror="this.style.display='none'">`;
+                // 이미지 클릭 시 원본 보기 기능(선택사항) 등을 넣을 수 있음
+                div.innerHTML = `<img src="${photoUrl}" alt="성장 기록 사진" onerror="this.style.display='none'">`;
                 imageGalleryEl.appendChild(div);
+            } else {
+                // 사진이 없을 때 안내 문구를 넣고 싶다면 아래 주석 해제
+                // imageGalleryEl.innerHTML = '<p style="color:#999; font-size:13px; text-align:center; padding:20px;">등록된 사진이 없습니다.</p>';
             }
             
             // 태그 및 메모 렌더링 (수정 모드에서 사용된 input 제거)
@@ -436,7 +447,17 @@
             try {
                 await deleteJournal(recordId);
                 alert('삭제되었습니다.');
-                window.location.href = `../myplant_diary/myplant_diary.html?id=${plantId}`; // 다이어리 목록으로 이동
+                
+                // ✅ [수정] 현재 보고 있던 식물의 ID를 사용하여 목록 페이지로 이동
+                // currentJournal 객체에 plant_id가 들어있어야 합니다. (DTO 수정 덕분)
+                const targetPlantId = currentJournal.plant_id || currentJournal.plantId;
+                
+                if (targetPlantId) {
+                    window.location.href = `../myplant_diary/myplant_diary.html?id=${targetPlantId}`;
+                } else {
+                    // ID를 모르면 그냥 뒤로 가기
+                    history.back();
+                }
             } catch (e) {
                 alert('삭제 실패: ' + e.message);
                 deleteModal.style.display = 'none';

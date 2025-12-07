@@ -191,7 +191,7 @@
             
             plants.forEach(plant => {
                 const option = document.createElement('option');
-                option.value = plant.plantId; // plant.my_plant_id -> plant.plantId 백엔드 DTO에 맞춤
+                option.value = plant.my_plant_id;                
                 option.textContent = plant.nickname;
                 inputPlant.appendChild(option);
                 
