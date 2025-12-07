@@ -110,6 +110,19 @@
         </div>
     </div>
 
+    <div id="viewScheduleModal" class="modal">
+        <div class="modal-content">
+            <h2 id="viewModalDate">날짜</h2>
+            <p class="modal-desc">등록된 일정 목록입니다.</p>
+            
+            <div id="viewScheduleList" class="schedule-list-container"></div>
+
+            <div class="modal-buttons">
+                <button id="closeViewModalBtn" class="modal-btn cancel" style="width: 100%;">닫기</button>
+            </div>
+        </div>
+    </div>
+
     <nav id="bottom-nav">
         <a href="/app/main/main.html" class="nav-item">
             <i data-lucide="home"></i>
@@ -141,8 +154,8 @@
 
   <script type="module">
     // 경로에 주의하세요 (식물 조회 API, 일정 API)
+    import { getMySchedules, addSchedule, deleteSchedule } from './schedule_api.js';
     import { getMyPlants } from '../plant/plant_api.js';
-    import { getMySchedules, addSchedule } from './schedule_api.js';
 
     lucide.createIcons();
 
@@ -363,17 +376,13 @@
 
             // 날짜 클릭 시 일정 추가 모달 열기 (편의 기능)
             btn.addEventListener('click', () => {
-                // ✅ 이 부분은 클릭한 날짜에 해당하는 expanded schedule만 보여주도록 변경 가능
-                // 현재는 alert로 모든 일정 다 보여줌
+                // 일정이 있으면 -> 목록/삭제 모달 열기
                 if(dailySchedules.length > 0) {
-                    let msg = `${month+1}월 ${day}일 일정:\n`;
-                    dailySchedules.forEach(s => {
-                        let recurrenceText = s.isRecurring ? ' (반복)' : '';
-                        msg += `- ${s.plant} ${getTypeName(s.type)}${recurrenceText}\n`
-                    });
-                    alert(msg);
+                    openViewModal(dateStr, dailySchedules);
                 } else {
+                    // 일정이 없으면 -> 바로 추가 모달 열기 (기존 유지)
                     inputDate.value = dateStr;
+                    inputRecurrence.value = 'NONE'; 
                     modal.classList.add('show');
                 }
             });
@@ -558,6 +567,63 @@
         });
         document.getElementById('profileBtn').addEventListener('click', () => {
             window.location.href = '/app/profile/profile.html';
+        });
+    }
+    // [NEW] 일정 목록/삭제 모달 열기 함수
+    const viewModal = document.getElementById('viewScheduleModal');
+    const viewListEl = document.getElementById('viewScheduleList');
+    const viewDateEl = document.getElementById('viewModalDate');
+    const closeViewBtn = document.getElementById('closeViewModalBtn');
+
+    function openViewModal(dateStr, schedules) {
+        viewDateEl.textContent = dateStr; // 날짜 표시
+        viewListEl.innerHTML = ''; // 기존 목록 초기화
+
+        schedules.forEach(sch => {
+            const item = document.createElement('div');
+            item.className = 'schedule-item';
+            
+            // 타입 한글 변환
+            const typeName = getTypeName(sch.type);
+            const recurrenceBadge = sch.isRecurring ? '<span style="font-size:11px; color:#6B7280; margin-left:4px;">(반복)</span>' : '';
+
+            item.innerHTML = `
+                <div class="schedule-info">
+                    <strong>${sch.plant}</strong>
+                    <span>${typeName}</span>
+                    ${recurrenceBadge}
+                </div>
+                <button class="delete-btn" data-id="${sch.id}">
+                    <i data-lucide="trash-2" width="16" height="16"></i>
+                </button>
+            `;
+            
+            // 삭제 버튼 이벤트
+            const delBtn = item.querySelector('.delete-btn');
+            delBtn.addEventListener('click', async () => {
+                if(confirm('정말 이 일정을 삭제하시겠습니까?')) {
+                    try {
+                        await deleteSchedule(sch.id);
+                        alert('삭제되었습니다.');
+                        viewModal.classList.remove('show'); // 모달 닫기
+                        await fetchAndRenderCalendar(); // 캘린더 새로고침
+                    } catch (e) {
+                        alert('삭제 실패: ' + e.message);
+                    }
+                }
+            });
+
+            viewListEl.appendChild(item);
+        });
+
+        lucide.createIcons(); // 아이콘 렌더링
+        viewModal.classList.add('show');
+    }
+
+    // 목록 모달 닫기 버튼
+    if (closeViewBtn) {
+        closeViewBtn.addEventListener('click', () => {
+            viewModal.classList.remove('show');
         });
     }
 
