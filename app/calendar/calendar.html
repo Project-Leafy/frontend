@@ -507,11 +507,21 @@
         }
 
         try {
+            // `recurrence` 문자열을 숫자로 변환 (frequency_days)
+            let frequencyDays = null;
+            if (recurrence === 'DAILY') {
+                frequencyDays = 1;
+            } else if (recurrence === 'WEEKLY') {
+                frequencyDays = 7;
+            } else if (recurrence === 'MONTHLY') {
+                frequencyDays = 30;
+            }
+
             const requestData = {
                 "next_due_date": date,   
                 "plant_id": Number(plantId),
                 "schedule_type": type,
-                "recurrence_pattern": recurrence // 반복 주기 추가
+                "frequency_days": frequencyDays // 숫자 값으로 변경
             };
 
             console.log('전송할 데이터:', requestData);
