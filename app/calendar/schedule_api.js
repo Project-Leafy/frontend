@@ -61,3 +61,23 @@ export async function addSchedule(scheduleData) {
         throw error;
     }
 }
+export async function deleteSchedule(scheduleId) {
+    const token = localStorage.getItem('accessToken');
+    
+    try {
+        const response = await fetch(`${BASE_URL}/${scheduleId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('일정 삭제 실패');
+        }
+        return true;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
