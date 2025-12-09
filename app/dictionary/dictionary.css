@@ -139,6 +139,8 @@ body {
     gap: 16px;
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
+    text-decoration: none;
+    color: inherit;
 }
 
 .plant-item:hover {
@@ -152,10 +154,12 @@ body {
     border-radius: 12px;
     object-fit: cover;
     background-color: #f0f0f0;
+    flex-shrink: 0;
 }
 
 .plant-info {
     flex: 1;
+    overflow: hidden;
 }
 
 .plant-name {
@@ -179,10 +183,12 @@ body {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .arrow-icon {
     color: #D1D5DB;
+    flex-shrink: 0;
 }
 
 /* 검색 결과 없음 */

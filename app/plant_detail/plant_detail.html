@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>식물 상세 정보</title>
+    <link rel="stylesheet" href="plant_detail.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div id="app-container">
+        
+        <div class="detail-header">
+            <button class="back-btn" onclick="history.back()">
+                <i data-lucide="arrow-left"></i>
+            </button>
+            <span class="header-title">상세 정보</span>
+            <div style="width: 40px;"></div>
+        </div>
+
+        <div class="image-container">
+            <img id="d_img" src="" alt="식물 이미지">
+        </div>
+
+        <div class="content-body">
+            
+            <div class="title-section">
+                <h1 id="d_korName" class="plant-name">이름 로딩중...</h1>
+                <p id="d_sciName" class="scientific-name">Scientific Name</p>
+                <div class="tags" id="d_tags"></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="section-card">
+                <div class="card-header">
+                    <i data-lucide="info" class="header-icon"></i>
+                    <h3>식물 상세 정보</h3>
+                </div>
+                <p id="d_desc" class="card-text">설명</p>
+            </div>
+
+            <div class="section-card">
+                <div class="card-header">
+                    <i data-lucide="flower-2" class="header-icon"></i>
+                    <h3>특징 (꽃/열매/잎)</h3>
+                </div>
+                <p id="d_feature" class="card-text">특징</p>
+            </div>
+
+            <div class="section-title-row">
+                <h3>🌱 관리 방법</h3>
+            </div>
+            <div class="divider" style="margin-top: 12px; margin-bottom: 24px;"></div>
+            
+            <div class="care-list">
+                
+                <div class="care-card">
+                    <div class="care-top">
+                        <div class="icon-box level"><i data-lucide="medal"></i></div>
+                        <div class="care-info">
+                            <span class="care-label">난이도</span>
+                            <strong id="c_difficulty" class="care-main-val">-</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="care-card">
+                    <div class="care-top">
+                        <div class="icon-box water"><i data-lucide="droplets"></i></div>
+                        <div class="care-info">
+                            <span class="care-label">물주기</span>
+                        </div>
+                    </div>
+                    <div class="season-grid">
+                        <div class="season-item">
+                            <span class="season-name">봄</span>
+                            <strong id="c_water_spring">-</strong>
+                        </div>
+                        <div class="season-item">
+                            <span class="season-name">여름</span>
+                            <strong id="c_water_summer">-</strong>
+                        </div>
+                        <div class="season-item">
+                            <span class="season-name">가을</span>
+                            <strong id="c_water_autumn">-</strong>
+                        </div>
+                        <div class="season-item">
+                            <span class="season-name">겨울</span>
+                            <strong id="c_water_winter">-</strong>
+                        </div>
+                    </div>
+                    <p id="c_water_tip" class="care-tip-box">-</p>
+                </div>
+
+                <div class="care-card">
+                    <div class="care-top">
+                        <div class="icon-box sun"><i data-lucide="sun"></i></div>
+                        <div class="care-info">
+                            <span class="care-label">햇빛 (광도)</span>
+                            <strong id="c_sun" class="care-main-val">-</strong>
+                        </div>
+                    </div>
+                    <p id="c_sun_tip" class="care-tip-box">-</p>
+                </div>
+
+                <div class="care-card">
+                    <div class="care-top">
+                        <div class="icon-box temp"><i data-lucide="thermometer"></i></div>
+                        <div class="care-info">
+                            <span class="care-label">최적 온도</span>
+                            <strong id="c_temp" class="care-main-val">-</strong>
+                        </div>
+                    </div>
+                    <p id="c_temp_tip" class="care-tip-box">-</p>
+                </div>
+
+                <div class="care-card">
+                    <div class="care-top">
+                        <div class="icon-box humid"><i data-lucide="wind"></i></div>
+                        <div class="care-info">
+                            <span class="care-label">습도</span>
+                            <strong id="c_humid" class="care-main-val">-</strong>
+                        </div>
+                    </div>
+                    <p id="c_humid_tip" class="care-tip-box">-</p>
+                </div>
+
+                <div class="care-card">
+                    <div class="care-top">
+                        <div class="icon-box fert"><i data-lucide="leaf"></i></div>
+                        <div class="care-info">
+                            <span class="care-label">비료</span>
+                            <strong id="c_fert" class="care-main-val">-</strong>
+                        </div>
+                    </div>
+                    <p id="c_fert_tip" class="care-tip-box">-</p>
+                </div>
+
+                <div class="care-card">
+                    <div class="care-top">
+                        <div class="icon-box repot"><i data-lucide="shovel"></i></div>
+                        <div class="care-info">
+                            <span class="care-label">분갈이</span>
+                            <strong id="c_repot" class="care-main-val">-</strong>
+                        </div>
+                    </div>
+                    <p id="c_repot_tip" class="care-tip-box">-</p>
+                </div>
+
+                <div class="care-card">
+                    <div class="care-top">
+                        <div class="icon-box soil"><i data-lucide="mountain"></i></div>
+                        <div class="care-info">
+                            <span class="care-label">토양</span>
+                            <strong id="c_soil" class="care-main-val">-</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="care-card">
+                    <div class="care-top">
+                        <div class="icon-box air"><i data-lucide="wind"></i></div>
+                        <div class="care-info">
+                            <span class="care-label">공기정화</span>
+                            <strong id="c_air" class="care-main-val">-</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="care-card warning-border">
+                    <div class="care-top">
+                        <div class="icon-box toxic"><i data-lucide="skull"></i></div>
+                        <div class="care-info">
+                            <span class="care-label toxic-label">독성 정보</span>
+                            <strong id="c_toxic" class="care-main-val">-</strong>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="tip-section">
+                <div class="tip-header-row">
+                    <i data-lucide="check-circle-2"></i>
+                    <span>Check Point</span>
+                </div>
+                <ul id="d_tips" class="check-list"></ul>
+            </div>
+            
+            <div style="height: 80px;"></div>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="../home/home.html" class="nav-item">
+                <i data-lucide="home"></i>
+                <span>홈</span>
+            </a>
+            <a href="../dictionary/dictionary.html" class="nav-item">
+                <i data-lucide="book-open"></i>
+                <span>백과사전</span>
+            </a>
+            <div class="nav-item center-item">
+                <button class="center-circle-btn" onclick="location.href='../diagnosis/diagnosis.html'">
+                    <i data-lucide="camera"></i>
+                </button>
+                <div style="height: 20px;"></div> 
+                <span>진단</span>
+            </div>
+            <a href="../recommend/recommend.html" class="nav-item">
+                <i data-lucide="sparkles"></i>
+                <span>추천</span>
+            </a>
+            <a href="../calendar/calendar.html" class="nav-item">
+                <i data-lucide="calendar"></i>
+                <span>캘린더</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="plant_detail.js"></script>
+</body>
+</html>
