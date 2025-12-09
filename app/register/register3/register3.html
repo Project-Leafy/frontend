@@ -4,28 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>식물 등록 - 3단계</title>
-    <!-- Lucide 아이콘 -->
     <script src="https://unpkg.com/lucide@latest/dist/lucide.min.js"></script>
-    <!-- CSS 파일 -->
     <link rel="stylesheet" href="../registerglobal.css">
     <link rel="stylesheet" href="register3.css">
     <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
-
+    
 </head>
 <body>
 
-    <!-- 3단계: 정보 입력 -->
     <div id="step-3" class="step-screen active">
         <div class="header">
             <a href="/app/main/main.html" class="icon-button">
-                <img src="https://img.icons8.com/?size=100&id=99284&format=png&color=000000" alt="뒤로가기 버튼" class="camera-icon back-btn">
+                <i data-lucide="arrow-left" style="color: black;"></i>
             </a>
             <div>
                 <h1 class="header-title">식물 등록</h1>
                 <p class="header-subtitle">3/3 단계</p>
             </div>
         </div>
-
 
         <div class="content-scroll">
             <div class="image-wrapper-wide">
@@ -45,10 +41,9 @@
             <div class="form-group">
                 <div class="form-field">
                     <label for="species" class="form-label">식물 종류</label>
-                    <input type="text" id="species" class="form-input" value="몬스테라 델리시오사" readonly />
+                    <input type="text" id="species" class="form-input" readonly />
                 </div>
                 
-
                 <div class="form-field">
                     <label for="nickname" class="form-label">
                         애칭 <span class="form-label-optional">(선택)</span>
@@ -60,7 +55,6 @@
                     <label for="adoptionDate" class="form-label">입양일</label>
                     <input type="date" id="adoptionDate" class="form-input" />
                 </div>
-
             </div>
         </div>
 
@@ -107,7 +101,6 @@
         </div>
     </div>
 
-    <!-- JS 파일 -->
     <script>
         lucide.createIcons();
     </script>
