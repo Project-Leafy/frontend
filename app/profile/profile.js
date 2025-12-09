@@ -1,32 +1,45 @@
 import { fetchApi } from '../../assets/js/core_api.js';
 import { getMyPlants } from '../plant/plant_api.js';
+// [추가] 진단 기록 API 가져오기
+import { getDiagnosisHistory } from '../diagnosis/diagnosis_api.js';
 
-// 1. 페이지 로드 직후 정적 아이콘 렌더링
-if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-}
+// 1. 페이지 로드 직후 실행
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+    // 데이터 로드 실행
+    loadUserProfile();
+    loadMyPlantsData();
+});
 
 const userAvatar = document.getElementById('userAvatar');
 const userNickname = document.getElementById('userNickname');
 const togetherSince = document.getElementById('togetherSince');
 const plantCount = document.getElementById('plantCount');
 const myPlantsList = document.getElementById('myPlantsList');
+
+// 통계 카운트 요소
 const healthyCount = document.getElementById('healthyCount');
 const warningCount = document.getElementById('warningCount');
 const noneCount = document.getElementById('noneCount');
 
+// 로그아웃 버튼 이벤트 리스너
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', handleLogout);
+}
+
+// -----------------------------------------------------------
 // 사용자 프로필 정보 로드
+// -----------------------------------------------------------
 async function loadUserProfile() {
     try {
-        console.log("🔵 프로필 정보 요청 시작...");
         const res = await fetchApi('/api/v1/users/me');
         const user = await res.json();
-
-        // 데이터 구조 방어 코드 (data 안에 있을수도, 바로 있을수도 있음)
         const userData = user.data || user;
-        console.log('🟢 User Data:', userData);
 
-        // 1. 닉네임 설정
+        // 1. 닉네임
         const nickname = userData.kakaoNickname || userData.kakao_nickname || userData.nickname || 'Leafy 사용자';
         userNickname.value = nickname;
 
@@ -37,136 +50,149 @@ async function loadUserProfile() {
             userAvatar.src = '/assets/images/favicon.svg';
         }
 
-        // ⭐️ [변경됨] 3. 가입일 대신 "함께한 지 N일째" 표시
-        // 백엔드 필드명이 createdAt, created_at, joinDate 중 무엇인지 몰라도 다 체크
+        // 3. 함께한 날짜 계산
         const dateString = userData.createdAt || userData.created_at || userData.joinDate;
-        
         if (dateString) {
             const joinDate = new Date(dateString);
             const today = new Date();
-            
-            // 시간 차이 계산 (밀리초 단위)
             const diffTime = Math.abs(today - joinDate);
-            // 일(Day) 단위로 변환
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
             
-            // 화면에 표시 (예: 함께한 지 100일째)
             togetherSince.textContent = `함께한 지 ${diffDays}일째`;
-            togetherSince.style.color = '#4A7C59'; // 초록색 강조
+            togetherSince.style.color = '#4A7C59';
             togetherSince.style.fontWeight = 'bold';
         } else {
-            // 날짜 데이터가 아예 없으면 "오늘부터 1일"로 표시
             togetherSince.textContent = '오늘부터 1일 🍃';
         }
 
     } catch (e) {
-        console.error('🔴 사용자 정보 로드 실패:', e);
+        console.error('사용자 정보 로드 실패:', e);
         userNickname.value = '정보 없음';
-        // 에러 나면 기본값
-        togetherSince.textContent = '오늘부터 1일';
+        togetherSince.textContent = '-';
     }
 }
-// 내 식물 데이터 및 통계 로드
+
+// -----------------------------------------------------------
+// [핵심] 내 식물 데이터 및 건강 통계 로드
+// -----------------------------------------------------------
 async function loadMyPlantsData() {
     try {
-        console.log("🔵 내 식물 목록 요청 시작...");
-        const response = await getMyPlants();
-        const plants = Array.isArray(response) ? response : (response.data || []);
+        // 1. 식물 목록 가져오기
+        const plants = await getMyPlants();
+        const plantList = Array.isArray(plants) ? plants : (plants.data || []);
 
-        plantCount.textContent = `${plants.length}개`;
+        plantCount.textContent = `${plantList.length}개`;
         myPlantsList.innerHTML = '';
 
-        let healthy = 0, warning = 0, none = 0;
-
-        if (!plants || plants.length === 0) {
+        if (plantList.length === 0) {
             myPlantsList.innerHTML = '<div class="empty-state">등록된 식물이 없어요 🌿</div>';
-        } else {
-            plants.forEach(plant => {
-                const result = plant.lastDiagnosisResult || plant.last_diagnosis_result;
-                const hasDiagnosis = result && result !== 'NONE' && result !== 'null';
-
-                let statusText = '진단 이력 없음';
-                let statusClass = 'none';
-
-                if (!hasDiagnosis) {
-                    none++;
-                    statusText = '진단 이력 없음';
-                    statusClass = 'none';
-                } else {
-                    if (result.includes('주의') || result.includes('심각') || result.includes('disease') || result.includes('pest')) {
-                        warning++;
-                        statusText = '주의 필요';
-                        statusClass = 'warning';
-                    } else {
-                        healthy++;
-                        statusText = '건강';
-                        statusClass = 'healthy';
-                    }
-                }
-
-                const card = document.createElement('div');
-                card.className = 'plant-card';
-                // 이미지 필드명 체크
-                const imgUrl = plant.imageUrl || plant.image_url || 'https://placehold.co/200?text=Leafy';
-                // 식물 ID 필드명 체크
-                const pId = plant.myPlantId || plant.my_plant_id || plant.id;
-
-                card.innerHTML = `
-                    <img src="${imgUrl}" alt="${plant.nickname}" onerror="this.src='https://placehold.co/200?text=No+Image'">
-                    <div class="plant-info">
-                        <div class="plant-nickname">${plant.nickname || '이름 없음'}</div>
-                        <div class="plant-status ${statusClass}">
-                            ${statusText}
-                        </div>
-                    </div>
-                `;
-                
-                card.onclick = () => location.href = `/app/myplant/myplant_diary/myplant_diary.html?id=${pId}`;
-                myPlantsList.appendChild(card);
-            });
+            updateHealthCounts(0, 0, 0); // 0으로 초기화
+            return;
         }
 
-        healthyCount.textContent = healthy;
-        warningCount.textContent = warning;
-        noneCount.textContent = none;
+        // 2. 각 식물별 진단 상태 병렬 조회
+        let hCount = 0; // 건강
+        let wCount = 0; // 주의
+        let nCount = 0; // 없음
+
+        // Promise.all로 병렬 처리하여 속도 최적화
+        const plantsWithStatus = await Promise.all(plantList.map(async (plant) => {
+            let statusClass = 'none';
+            let statusText = '진단 이력 없음';
+
+            try {
+                // 진단 기록 조회 API 호출
+                const history = await getDiagnosisHistory(plant.my_plant_id);
+                
+                if (history && history.length > 0) {
+                    // 최신 기록 확인 (0번 인덱스 가정)
+                    const latest = history[0];
+                    
+                    // [판별 로직] 정확도 60% (0.6) 이상이면 '주의 필요'
+                    if (latest.disease_probability >= 0.6) {
+                        statusClass = 'warning';
+                        statusText = '주의 필요';
+                        wCount++;
+                    } else {
+                        statusClass = 'healthy';
+                        statusText = '건강한 식물';
+                        hCount++;
+                    }
+                } else {
+                    // 기록 없음
+                    nCount++;
+                }
+            } catch (e) {
+                console.warn(`ID ${plant.my_plant_id} 진단 기록 조회 실패`, e);
+                nCount++; // 에러 시 '없음'으로 처리
+            }
+
+            return { ...plant, statusClass, statusText };
+        }));
+
+        // 3. 통계 UI 업데이트
+        updateHealthCounts(hCount, wCount, nCount);
+
+        // 4. 식물 카드 렌더링
+        plantsWithStatus.forEach(plant => {
+            const card = document.createElement('div');
+            card.className = 'plant-card';
+            
+            const imgUrl = plant.image_url || plant.imageUrl || 'https://placehold.co/200?text=Leafy';
+            // 닉네임이 없으면 식물 종 이름 사용
+            const displayName = plant.nickname || plant.plant_species_name || '이름 없음'; 
+            const pId = plant.my_plant_id || plant.myPlantId || plant.id;
+
+            card.innerHTML = `
+                <img src="${imgUrl}" alt="${displayName}" onerror="this.src='https://placehold.co/200?text=No+Image'">
+                <div class="plant-info">
+                    <div class="plant-nickname">${displayName}</div>
+                    <div class="plant-status ${plant.statusClass}">
+                        ${plant.statusText}
+                    </div>
+                </div>
+            `;
+            
+            // 클릭 시 상세 페이지 이동
+            card.onclick = () => location.href = `/app/myplant/myplant_diary/myplant_diary.html?id=${pId}`;
+            myPlantsList.appendChild(card);
+        });
 
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
 
     } catch (e) {
-        console.error('🔴 식물 목록 로드 실패:', e);
+        console.error('식물 목록 로드 실패:', e);
         myPlantsList.innerHTML = '<div class="empty-state">목록을 불러오지 못했어요 😢</div>';
     }
 }
 
-// profile.js 파일의 init() 함수나 하단에 추가하면 돼
+// 통계 숫자 업데이트 함수
+function updateHealthCounts(healthy, warning, none) {
+    if(healthyCount) healthyCount.textContent = healthy;
+    if(warningCount) warningCount.textContent = warning;
+    if(noneCount) noneCount.textContent = none;
+}
 
-document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-
+// -----------------------------------------------------------
+// 로그아웃 함수
+// -----------------------------------------------------------
 function handleLogout() {
-    // 1. 사용자에게 확인 (실수 방지)
     if (!confirm('정말 로그아웃 하시겠습니까?')) {
         return;
     }
-
     try {
-        // 2. 저장된 토큰 및 사용자 정보 삭제
-        // (프로젝트에서 사용하는 키 이름에 맞춰서 삭제해야 해)
-        localStorage.removeItem('access_token');
+        // 토큰 삭제 (프로젝트 설정에 따라 키 이름 확인: accessToken vs access_token)
+        localStorage.removeItem('access_token'); 
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('user_id');
         localStorage.removeItem('user_nickname');
         
-        // 3. 로그인 페이지(또는 랜딩 페이지)로 리다이렉트
         alert('로그아웃 되었습니다.');
-        window.location.href = '/index.html'; // 경로 확인 필요
-
+        window.location.href = '/index.html'; 
     } catch (error) {
-        console.error('로그아웃 처리 중 오류:', error);
+        console.error('로그아웃 오류:', error);
         alert('로그아웃 중 문제가 발생했습니다.');
     }
 }
-// 실행
-loadUserProfile();
-loadMyPlantsData();
