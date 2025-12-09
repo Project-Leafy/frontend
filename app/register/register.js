@@ -259,15 +259,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 sessionStorage.removeItem('identificationResult');
 
-                // 🔴 [수정 포인트] 성공 시 바로 이동하지 않고 모달을 띄웁니다!
+                // ▼▼▼▼▼▼▼▼▼▼ [디버깅 코드 시작] ▼▼▼▼▼▼▼▼▼▼
+                console.log('1. scheduleModal 요소 확인:', scheduleModal); 
+
                 if(scheduleModal) {
+                    console.log('2. 모달 띄우기 로직 진입함'); 
+                    
                     if(modalDate) modalDate.value = new Date().toISOString().split('T')[0]; // 오늘 날짜 기본값
-                    scheduleModal.classList.add('show'); // 팝업 띄우기
+                    
+                    // 클래스 추가
+                    scheduleModal.classList.add('show');
+                    
+                    console.log('3. show 클래스 추가 직후 클래스 목록:', scheduleModal.className); 
+                    
+                    // 강제로 스타일이 먹혔는지 확인 (선택사항)
+                    const computedStyle = window.getComputedStyle(scheduleModal);
+                    console.log('4. 실제 적용된 display 속성:', computedStyle.display);
+
                 } else {
-                    // 모달이 없는 페이지(예: register2)라면 그냥 이동
+                    // 모달이 없는 페이지라면 그냥 이동
+                    console.warn('scheduleModal을 찾을 수 없음 (null)');
                     alert(`${newPlant.nickname} 등록 완료!`);
                     window.location.href = '/app/main/main.html';
                 }
+                // ▲▲▲▲▲▲▲▲▲▲ [디버깅 코드 끝] ▲▲▲▲▲▲▲▲▲▲
 
             } catch (error) {
                 console.error('등록 실패:', error);

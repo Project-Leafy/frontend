@@ -105,7 +105,7 @@
 }
 
 /* ============================================================
-   3. 알림 설정 모달 (Modal)
+   3. 알림 설정 모달 (Modal) - 수정됨
 ============================================================ */
 .modal {
     position: fixed;
@@ -114,18 +114,28 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    display: flex;
+    
+    /* ★ 수정: 기본적으로 display: none으로 설정하여 아예 렌더링에서 제외 */
+    display: none; 
+    
+    /* 정렬 설정 */
     align-items: center;
     justify-content: center;
     z-index: 9999;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s;
 }
 
+/* ★ 수정: .show 클래스가 붙으면 display: flex로 변경되어 나타남 */
 .modal.show {
-    opacity: 1;
-    visibility: visible;
+    display: flex;
+    
+    /* (선택사항) 나타날 때 부드럽게 올라오는 애니메이션 추가 */
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* 애니메이션 정의 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .modal-content {
@@ -137,6 +147,7 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* ... 나머지 스타일(h2, .modal-desc 등)은 기존 그대로 유지 ... */
 .modal h2 {
     margin: 0 0 8px 0;
     color: #2C3E2F;
@@ -159,6 +170,7 @@
     font-size: 14px;
     box-sizing: border-box;
     background-color: #fff;
+    margin-bottom: 10px; /* 간격 추가 */
 }
 
 .modal-input:focus {
@@ -188,15 +200,7 @@
     color: #4B5563;
 }
 
-.btn-cancel:hover {
-    background: #E5E7EB;
-}
-
 .btn-confirm {
     background: #4A7C59;
     color: white;
-}
-
-.btn-confirm:hover {
-    background: #3D6549;
 }
