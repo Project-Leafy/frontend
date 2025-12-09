@@ -1,6 +1,6 @@
 // [수정됨] 1. registerMyPlant 함수 임포트 추가
 import { identifyPlant, registerMyPlant } from "../plant/plant_api.js";
-
+import { addSchedule } from "../calendar/schedule_api.js";
 // ⭐️⭐️⭐️ 모든 코드를 DOMContentLoaded 리스너 안에 넣습니다 ⭐️⭐️⭐️
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -253,6 +253,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 registerBtn.disabled = false;
                 registerBtn.textContent = '이 식물 등록하기';
             }
+        });
+
+        
+        // 4. 모달 [일정 추가] 버튼 클릭
+        saveScheduleBtn.addEventListener('click', async () => {
+            if (!registeredPlantId) {
+                alert('식물 정보 오류입니다.');
+                window.location.href = '/app/main/main.html';
+                return;
+            }
+            
+            const type = modalType.value;
+            const date = modalDate.value;
+            const freqStr = modalFreq.value;
+
+            if (!date) { alert('날짜를 선택하세요'); return; }
+
+            let frequencyDays = null;
+            if (freqStr === 'DAILY') frequencyDays = 1;
+            else if (freqStr === 'WEEKLY') frequencyDays = 7;
+            else if (freqStr === 'MONTHLY') frequencyDays = 30;
+
+            const scheduleData = {
+                "next_due_date": date,
+                "plant_id": Number(registeredPlantId),
+                "schedule_type": type,
+                "frequency_days": frequencyDays
+            };
+
+            try {
+                saveScheduleBtn.textContent = '저장 중...';
+                await addSchedule(scheduleData);
+                alert('식물과 일정이 모두 등록되었습니다!');
+                window.location.href = '/app/main/main.html';
+            } catch (error) {
+                console.error('일정 등록 실패', error);
+                alert('식물은 등록되었으나, 일정 추가에 실패했습니다.');
+                window.location.href = '/app/main/main.html';
+            }
+        });
+
+        // 5. 모달 [나중에 하기] 버튼 클릭
+        skipScheduleBtn.addEventListener('click', () => {
+            alert('식물 등록이 완료되었습니다.');
+            window.location.href = '/app/main/main.html';
         });
     }
 });
