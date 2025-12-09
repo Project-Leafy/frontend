@@ -1,3 +1,5 @@
+import { fetchApi } from '../../assets/js/core_api.js';
+
 document.addEventListener('DOMContentLoaded', async () => {
     // =========================================
     // 1. DOM 요소 선택
@@ -6,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const resultCount = document.querySelector('.result-count');      //
     const searchInput = document.querySelector('.search-box input');  //
 
-    let allPlants = []; // 서버에서 가져온 전체 식물 데이터를 저장할 변수
+    let allPlants = [];
 
     // =========================================
     // 2. 데이터 로드 함수 (백엔드 -> S3 -> JSON)
@@ -17,8 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             listContainer.innerHTML = '<div style="text-align:center; padding:40px; color:#999;">데이터를 불러오는 중입니다...</div>';
 
             // 1. 백엔드에게 S3 파일 주소 요청
-            // (DictionaryController의 /api/dictionary/url 엔드포인트 호출)
-            const urlRes = await fetch('/api/dictionary/url');
+            const urlRes = await fetchApi('/api/dictionary/url', { method: 'GET' });
             if (!urlRes.ok) throw new Error("서버 통신 실패");
             
             const jsonUrl = await urlRes.text(); // 예: https://s3.../final_plants.json

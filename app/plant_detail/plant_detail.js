@@ -1,4 +1,5 @@
-lucide.createIcons();
+import { fetchApi } from '../../assets/js/core_api.js';
+if (window.lucide) window.lucide.createIcons();
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. URL에서 식물 ID 가져오기 (예: plant_detail.html?id=52)
@@ -12,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         // 2. 백엔드에게 JSON 데이터 주소 물어보기
-        const urlResponse = await fetch('/api/dictionary/url');
+        const urlResponse = await fetchApi('/api/dictionary/url', { method: 'GET' });
         if (!urlResponse.ok) throw new Error("서버 통신 실패");
         
         const jsonUrl = await urlResponse.text(); // 예: https://s3.../final_plants.json
