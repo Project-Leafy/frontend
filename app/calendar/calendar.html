@@ -18,6 +18,7 @@
             border-radius: 12px;
             border: 1px dashed #E5E5E0;
         }
+
     </style>
 </head>
 <body>
@@ -311,32 +312,58 @@
         }
     }
 
+
     function renderScheduleList() {
         scheduleListEl.innerHTML = '';
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
         const allSchedulesInMonth = [];
 
+        // 현재 월에 해당하는 일정만 수집
         Object.keys(scheduleDataMap).forEach(dateKey => {
             const scheduleDate = new Date(dateKey);
-            if (scheduleDate >= today && scheduleDate.getMonth() === month && scheduleDate.getFullYear() === year) {
+            // 날짜 필터링 (필요에 따라 조건 수정 가능)
+            if (scheduleDate >= today || (scheduleDate.getMonth() === month && scheduleDate.getFullYear() === year)) {
                 scheduleDataMap[dateKey].forEach(sch => {
-                    allSchedulesInMonth.push({ ...sch, displayDate: scheduleDate });
+                    // 오늘 이후의 일정만 보여주거나, 이번달 전체를 보여주거나 정책에 따라 조정
+                    if(new Date(dateKey) >= new Date(today.setHours(0,0,0,0))) {
+                        allSchedulesInMonth.push({ ...sch, displayDate: scheduleDate });
+                    }
                 });
             }
         });
 
+        // 날짜순 정렬
         allSchedulesInMonth.sort((a, b) => a.displayDate - b.displayDate);
 
+        // 최대 5개까지만 표시 (너무 길어지지 않게)
+        const schedulesToShow = allSchedulesInMonth.slice(0, 10); 
+
         let count = 0;
-        allSchedulesInMonth.forEach(item => {
+        schedulesToShow.forEach(item => {
             const card = document.createElement('div');
             card.className = 'schedule-card';
+            
             let iconHtml = '', bgClass = '';
-            if(item.type === 'water') { iconHtml = '<i data-lucide="droplets"></i>'; bgClass = 'bg-blue'; }
-            else if(item.type === 'repot') { iconHtml = '<i data-lucide="scissors"></i>'; bgClass = 'bg-yellow'; }
-            else if(item.type === 'fertilize') { iconHtml = '<i data-lucide="sprout"></i>'; bgClass = 'bg-green'; }
-            else { iconHtml = '<i data-lucide="bookmark"></i>'; bgClass = 'bg-gray'; }
+            
+            // ★ 종류별 아이콘 및 색상 클래스 분기 처리 ★
+            // 데이터베이스에 저장된 타입(item.type)에 따라 디자인 결정
+            if(item.type === 'water') { 
+                iconHtml = '<i data-lucide="droplet"></i>'; // 물방울 아이콘
+                bgClass = 'bg-blue'; 
+            }
+            else if(item.type === 'repot') { 
+                iconHtml = '<i data-lucide="scissors"></i>'; // 가위 아이콘
+                bgClass = 'bg-yellow'; 
+            }
+            else if(item.type === 'fertilize') { 
+                iconHtml = '<i data-lucide="sprout"></i>'; // 새싹 아이콘
+                bgClass = 'bg-green'; 
+            }
+            else { 
+                iconHtml = '<i data-lucide="calendar"></i>'; // 기본 아이콘
+                bgClass = 'bg-gray'; 
+            }
 
             const dateStr = `${item.displayDate.getFullYear()}-${String(item.displayDate.getMonth()+1).padStart(2,'0')}-${String(item.displayDate.getDate()).padStart(2,'0')}`;
             let recurrenceText = item.isRecurring ? ' (반복)' : '';
@@ -344,18 +371,24 @@
             card.innerHTML = `
                 <div class="schedule-icon ${bgClass}">${iconHtml}</div>
                 <div class="schedule-main">
-                    <p>${item.plant} ${getTypeName(item.type)}${recurrenceText}</p>
-                    <span>${dateStr}</span>
+                    <p>${item.plant} - ${getTypeName(item.type)}${recurrenceText}</p>
+                    <span>${dateStr} 예정</span>
                 </div>
             `;
+            
+            // 카드 클릭 시 삭제/확인 모달 띄우기 (옵션)
+            card.addEventListener('click', () => {
+                 openViewModal(dateStr, [item]); 
+            });
+
             scheduleListEl.appendChild(card);
             count++;
         });
 
         if (count === 0) {
-            scheduleListEl.innerHTML = `<div class="empty-state"><p>추가한 일정이 없습니다.</p></div>`;
+            scheduleListEl.innerHTML = `<div class="empty-state"><p>다가오는 일정이 없습니다.</p></div>`;
         } else {
-            lucide.createIcons();
+            lucide.createIcons(); // 아이콘 렌더링 실행
         }
     }
 
@@ -481,4 +514,3 @@
     init();
   </script>
 </body>
-</html>

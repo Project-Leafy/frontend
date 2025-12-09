@@ -140,6 +140,33 @@ async function loadMyPlantsData() {
     }
 }
 
+// profile.js 파일의 init() 함수나 하단에 추가하면 돼
+
+document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+function handleLogout() {
+    // 1. 사용자에게 확인 (실수 방지)
+    if (!confirm('정말 로그아웃 하시겠습니까?')) {
+        return;
+    }
+
+    try {
+        // 2. 저장된 토큰 및 사용자 정보 삭제
+        // (프로젝트에서 사용하는 키 이름에 맞춰서 삭제해야 해)
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user_id');
+        localStorage.removeItem('user_nickname');
+        
+        // 3. 로그인 페이지(또는 랜딩 페이지)로 리다이렉트
+        alert('로그아웃 되었습니다.');
+        window.location.href = '/index.html'; // 경로 확인 필요
+
+    } catch (error) {
+        console.error('로그아웃 처리 중 오류:', error);
+        alert('로그아웃 중 문제가 발생했습니다.');
+    }
+}
 // 실행
 loadUserProfile();
 loadMyPlantsData();
