@@ -9,6 +9,7 @@
     <!-- CSS 파일 -->
     <link rel="stylesheet" href="../registerglobal.css">
     <link rel="stylesheet" href="register2.css">
+    <link rel="stylesheet" href="../register3/register3.css">
     <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
 </head>
 <body>
@@ -80,6 +81,41 @@
     </div>
 
     
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <h2>알림 설정</h2>
+            <p class="modal-desc">등록된 식물의 관리 일정을 지금 추가하시겠습니까?</p>
+            
+            <div class="form-group">
+                <label>활동 종류</label>
+                <select id="modalType" class="modal-input">
+                    <option value="WATER" selected>물주기</option>
+                    <option value="REPOT">분갈이</option>
+                    <option value="FERTILIZE">비료주기</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>시작 날짜</label>
+                <input type="date" id="modalDate" class="modal-input">
+            </div>
+
+            <div class="form-group">
+                <label>반복 주기</label>
+                <select id="modalFreq" class="modal-input">
+                    <option value="NONE">반복 안함</option>
+                    <option value="DAILY">매일</option>
+                    <option value="WEEKLY" selected>매주</option>
+                    <option value="MONTHLY">매달</option>
+                </select>
+            </div>
+
+            <div class="modal-buttons">
+                <button id="skipScheduleBtn" class="modal-btn btn-cancel">나중에 하기</button>
+                <button id="saveScheduleBtn" class="modal-btn btn-confirm">일정 추가</button>
+            </div>
+        </div>
+    </div>
     <!-- 4. 스크립트 모듈로 연결 -->
     <script type="module" src="../register.js"></script>
 </body>
