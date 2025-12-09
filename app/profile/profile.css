@@ -418,3 +418,9 @@ body {
 .tooltip-bubble::after {
     display: none;
 }
+
+/* 로그아웃 아이콘에 마우스를 올리면 빨간색으로 변하게 설정 */
+#logoutBtn:hover {
+    color: #EF4444; /* 빨간색 */
+    background: #FEE2E2; /* 연한 빨강 배경 */
+}
