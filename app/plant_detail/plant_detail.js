@@ -87,17 +87,8 @@ function renderPlantDetail(plant) {
     document.getElementById('c_water_winter').textContent = `${plant.waterWinter}일에 1번`;
     document.getElementById('c_water_tip').textContent = plant.waterTip;
 
-    // 독성 처리
-    const toxicEl = document.getElementById('c_toxic');
-    if (plant.isToxic) {
-        toxicEl.textContent = "주의 필요";
-        toxicEl.className = "care-main-val text-danger"; // CSS에 빨간색 스타일 필요
-        // 상세 정보가 있으면 툴팁이나 별도 공간에 보여줘도 됨 (plant.toxicityInfo)
-    } else {
-        toxicEl.textContent = "안전함";
-        toxicEl.className = "care-main-val";
-        toxicEl.style.color = "#059669";
-    }
+    // 독성 정보
+    document.getElementById('c_toxic').textContent = plant.toxicityInfo;
 
     // 체크 포인트 리스트
     const tipContainer = document.getElementById('d_tips');
