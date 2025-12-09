@@ -18,12 +18,11 @@
             border-radius: 12px;
             border: 1px dashed #E5E5E0;
         }
-
     </style>
 </head>
 <body>
   <div id="app-container">
-   
+    
     <div class="header">
       <div>
         <h1 class="header-title">관리 캘린더</h1>
@@ -66,12 +65,12 @@
         <div class="modal-content">
             <h2>일정 추가</h2>
             <p class="modal-desc">새로운 관리 일정을 추가하세요</p>
-           
+            
             <div class="form-group">
                 <label>날짜</label>
                 <input type="date" id="inputDate" class="input">
             </div>
-           
+            
             <div class="form-group">
                 <label>식물</label>
                 <select id="inputPlant" class="input">
@@ -142,18 +141,18 @@
   <script type="module">
     import { getMySchedules, addSchedule, deleteSchedule } from './schedule_api.js';
     import { getMyPlants } from '../plant/plant_api.js';
-   
+    
     lucide.createIcons();
     let currentDate = new Date();
     const today = new Date();
-   
+    
     let scheduleDataMap = {};
     let rawSchedules = [];
-   
+    
     const gridEl = document.getElementById('calendarGrid');
     const monthYearEl = document.getElementById('currentMonthYear');
     const scheduleListEl = document.getElementById('scheduleList');
-   
+    
     const modal = document.getElementById('addModal');
     const addBtn = document.getElementById('addScheduleBtn');
     const closeBtn = document.getElementById('closeModalBtn');
@@ -163,14 +162,20 @@
     const inputType = document.getElementById('inputType');
     const inputRecurrence = document.getElementById('inputRecurrence');
 
-    // ★★★★★ 여기만 추가됨! 정확히 한 번만 정의 ★★★★★
     function getTypeName(type) {
         if(type === 'water') return '물주기';
         if(type === 'repot') return '분갈이';
         if(type === 'fertilize') return '비료주기';
         return type;
     }
-    // ★★★★★ 여기까지 ★★★★★
+
+    // ★ 추가된 함수: 반복 주기 숫자를 텍스트로 변환
+    function getRecurrenceLabel(days) {
+        if (days === 1) return '(매일)';
+        if (days === 7) return '(매주)';
+        if (days === 30) return '(매달)';
+        return '';
+    }
 
     async function init() {
         await loadPlantsIntoSelect();
@@ -202,7 +207,8 @@
     function expandRecurrence(schedule, monthStartDate, monthEndDate) {
         const expandedEvents = [];
         let currentEventDate = new Date(schedule.nextDueDate);
-        if (currentEventDate > monthEndDate) return [];
+        // 이미 지나간 일정이라도 이번 달에 포함되면 표시하기 위해 시작일 조정 로직은 API 데이터에 의존
+        // 여기서는 display 용으로 달력에 점을 찍기 위한 용도
 
         while (currentEventDate <= monthEndDate) {
             if (currentEventDate >= monthStartDate && currentEventDate <= monthEndDate) {
@@ -211,11 +217,13 @@
                     displayDate: new Date(currentEventDate)
                 });
             }
-            if (schedule.frequencyDays === null) break;
-            else if (schedule.frequencyDays === 1) currentEventDate.setDate(currentEventDate.getDate() + 1);
-            else if (schedule.frequencyDays === 7) currentEventDate.setDate(currentEventDate.getDate() + 7);
-            else if (schedule.frequencyDays === 30) currentEventDate.setDate(currentEventDate.getDate() + 30);
-            else break;
+            if (!schedule.frequencyDays) break; // 반복 없으면 1회만
+            
+            // 날짜 더하기
+            currentEventDate.setDate(currentEventDate.getDate() + schedule.frequencyDays);
+            
+            // 무한 루프 방지 (혹시 모를 오류 대비)
+            if (schedule.frequencyDays <= 0) break;
         }
         return expandedEvents;
     }
@@ -229,6 +237,8 @@
             const monthEndDate = new Date(year, month + 1, 0);
 
             scheduleDataMap = {};
+            
+            // 달력 그리기용 데이터 가공 (점 찍기 위해 전개)
             rawSchedules.forEach(sch => {
                 const baseSchedule = {
                     ...sch,
@@ -242,12 +252,12 @@
                         type: expSch.scheduleType.toLowerCase(),
                         plant: expSch.plantNickname || '알 수 없음',
                         id: expSch.scheduleId,
-                        isRecurring: expSch.frequencyDays !== null && expSch.frequencyDays !== 0
+                        isRecurring: !!expSch.frequencyDays
                     });
                 });
             });
             renderCalendar();
-            renderScheduleList();
+            renderScheduleList(); // 리스트 렌더링 호출
         } catch (error) {
             console.error("스케줄 로드 실패", error);
         }
@@ -312,83 +322,64 @@
         }
     }
 
-
+    // ★★★ 수정된 함수: 리스트 렌더링 (중복 제거 및 반복 표시) ★★★
     function renderScheduleList() {
         scheduleListEl.innerHTML = '';
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        const allSchedulesInMonth = [];
-
-        // 현재 월에 해당하는 일정만 수집
-        Object.keys(scheduleDataMap).forEach(dateKey => {
-            const scheduleDate = new Date(dateKey);
-            // 날짜 필터링 (필요에 따라 조건 수정 가능)
-            if (scheduleDate >= today || (scheduleDate.getMonth() === month && scheduleDate.getFullYear() === year)) {
-                scheduleDataMap[dateKey].forEach(sch => {
-                    // 오늘 이후의 일정만 보여주거나, 이번달 전체를 보여주거나 정책에 따라 조정
-                    if(new Date(dateKey) >= new Date(today.setHours(0,0,0,0))) {
-                        allSchedulesInMonth.push({ ...sch, displayDate: scheduleDate });
-                    }
-                });
-            }
-        });
-
-        // 날짜순 정렬
-        allSchedulesInMonth.sort((a, b) => a.displayDate - b.displayDate);
-
-        // 최대 5개까지만 표시 (너무 길어지지 않게)
-        const schedulesToShow = allSchedulesInMonth.slice(0, 10); 
+        
+        // 원본 스케줄(rawSchedules)을 사용하여 목록 생성 (중복 제거 효과)
+        // 날짜순 정렬 (다음 예정일 기준)
+        const sortedSchedules = [...rawSchedules].sort((a, b) => new Date(a.nextDueDate) - new Date(b.nextDueDate));
 
         let count = 0;
-        schedulesToShow.forEach(item => {
+        sortedSchedules.forEach(item => {
             const card = document.createElement('div');
             card.className = 'schedule-card';
             
+            const typeLower = item.scheduleType.toLowerCase();
             let iconHtml = '', bgClass = '';
             
-            // ★ 종류별 아이콘 및 색상 클래스 분기 처리 ★
-            // 데이터베이스에 저장된 타입(item.type)에 따라 디자인 결정
-            if(item.type === 'water') { 
-                iconHtml = '<i data-lucide="droplet"></i>'; // 물방울 아이콘
+            if(typeLower === 'water') { 
+                iconHtml = '<i data-lucide="droplet"></i>'; 
                 bgClass = 'bg-blue'; 
             }
-            else if(item.type === 'repot') { 
-                iconHtml = '<i data-lucide="scissors"></i>'; // 가위 아이콘
+            else if(typeLower === 'repot') { 
+                iconHtml = '<i data-lucide="scissors"></i>'; 
                 bgClass = 'bg-yellow'; 
             }
-            else if(item.type === 'fertilize') { 
-                iconHtml = '<i data-lucide="sprout"></i>'; // 새싹 아이콘
+            else if(typeLower === 'fertilize') { 
+                iconHtml = '<i data-lucide="sprout"></i>'; 
                 bgClass = 'bg-green'; 
             }
             else { 
-                iconHtml = '<i data-lucide="calendar"></i>'; // 기본 아이콘
+                iconHtml = '<i data-lucide="calendar"></i>'; 
                 bgClass = 'bg-gray'; 
             }
 
-            const dateStr = `${item.displayDate.getFullYear()}-${String(item.displayDate.getMonth()+1).padStart(2,'0')}-${String(item.displayDate.getDate()).padStart(2,'0')}`;
-            let recurrenceText = item.isRecurring ? ' (반복)' : '';
+            const d = new Date(item.nextDueDate);
+            const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+            
+            // 반복 텍스트 생성 (매일, 매주, 매달)
+            const recurrenceLabel = getRecurrenceLabel(item.frequencyDays); 
 
             card.innerHTML = `
                 <div class="schedule-icon ${bgClass}">${iconHtml}</div>
                 <div class="schedule-main">
-                    <p>${item.plant} - ${getTypeName(item.type)}${recurrenceText}</p>
+                    <p>${item.plantNickname} - ${getTypeName(typeLower)} ${recurrenceLabel}</p>
                     <span>${dateStr} 예정</span>
                 </div>
             `;
             
-            // 카드 클릭 시 삭제/확인 모달 띄우기 (옵션)
-            card.addEventListener('click', () => {
-                 openViewModal(dateStr, [item]); 
-            });
-
+            // 리스트 클릭 시 해당 일정을 삭제할 수 있는 모달을 띄우려면 여기에도 이벤트 추가 가능
+            // 현재는 캘린더 날짜 클릭 시에만 삭제 모달이 뜸
+            
             scheduleListEl.appendChild(card);
             count++;
         });
 
         if (count === 0) {
-            scheduleListEl.innerHTML = `<div class="empty-state"><p>다가오는 일정이 없습니다.</p></div>`;
+            scheduleListEl.innerHTML = `<div class="empty-state"><p>등록된 일정이 없습니다.</p></div>`;
         } else {
-            lucide.createIcons(); // 아이콘 렌더링 실행
+            lucide.createIcons();
         }
     }
 
@@ -409,6 +400,7 @@
 
     closeBtn.addEventListener('click', () => modal.classList.remove('show'));
 
+    // ★★★ 수정된 저장 버튼 이벤트 (중복 체크 추가) ★★★
     saveBtn.addEventListener('click', async () => {
         const date = inputDate.value;
         const plantId = inputPlant.value;
@@ -417,6 +409,19 @@
 
         if(!date || !plantId || !type) {
             alert('날짜, 식물, 활동 종류를 모두 선택해주세요.');
+            return;
+        }
+
+        // 1. 중복 체크 로직
+        // 이미 같은 식물(plantId)에 같은 종류(type)의 스케줄이 있는지 확인
+        const typeName = getTypeName(type.toLowerCase());
+        const isDuplicate = rawSchedules.some(sch => 
+            sch.plantId === Number(plantId) && 
+            sch.scheduleType === type
+        );
+
+        if (isDuplicate) {
+            alert(`이미 존재하는 ${typeName}입니다!`);
             return;
         }
 
@@ -439,6 +444,7 @@
             await fetchAndRenderCalendar();
         } catch (error) {
             console.error('일정 추가 실패:', error);
+            // 에러 메시지 그대로 출력 (원래대로)
             alert('일정 추가에 실패했습니다: ' + error.message);
         }
     });
@@ -514,3 +520,4 @@
     init();
   </script>
 </body>
+</html>
