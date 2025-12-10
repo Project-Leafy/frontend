@@ -81,14 +81,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. 헤더 버튼 이벤트 리스너
-    document.getElementById('notifications-btn').addEventListener('click', () => {
-        window.location.href = '/app/alarm/alarm.html';
-    });
+    // 헤더 버튼 이벤트 리스너 (요소 존재 여부 확인 후 등록)
+    const notificationsBtn = document.getElementById('notifications-btn');
+    const profileBtn = document.getElementById('profileBtn'); // HTML에서는 'profileBtn'입니다.
 
-    document.getElementById('profile-btn').addEventListener('click', () => {
-        window.location.href = '/app/profile/profile.html';
-    });
+    if (notificationsBtn) {
+        notificationsBtn.addEventListener('click', () => {
+            window.location.href = '/app/alarm/alarm.html';
+        });
+    }
+    if (profileBtn) {
+        profileBtn.addEventListener('click', () => {
+            window.location.href = '/app/profile/profile.html';
+        });
+    }
 
     // 3. 하단 네비게이션 활성화 로직
     function setActiveNavItem() {
