@@ -1,3 +1,5 @@
+import { fetchApi } from '../../assets/js/core_api.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
 
@@ -15,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { name: 'sunlight', element: document.querySelector('input[name="sunlight"]'), title: '햇빛 환경' },
             { name: 'watering', element: document.querySelector('input[name="watering"]'), title: '물주기 선호도' },
             { name: 'experience', element: document.querySelector('input[name="experience"]'), title: '식물 키우기 경험' },
-            { name: 'size', element: document.querySelector('input[name="size"]'), title: '선호하는 크기' },
+            { name: 'growth', element: document.querySelector('input[name="growth"]'), title: '식물성장속도' },
             { name: 'pet', element: document.querySelector('input[name="pet"]'), title: '반려동물 여부' }
         ];
 
@@ -47,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             preferredLight: document.querySelector('input[name="sunlight"]:checked').value,
             preferredWater: document.querySelector('input[name="watering"]:checked').value,
             userSkill: document.querySelector('input[name="experience"]:checked').value,
-            preferredSize: document.querySelector('input[name="size"]:checked').value,
+            growthSpeed: document.querySelector('input[name="growth"]:checked').value,
             hasPet: (document.querySelector('input[name="pet"]:checked').value === 'true')
         };
 
@@ -56,19 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
 
         try {
-            const token = localStorage.getItem('accessToken');
-            if (!token) {
-                alert("로그인이 필요합니다.");
-                window.location.href = '/index.html'; // 로그인 페이지로 이동
-                return;
-            }
-
-            const response = await fetch('/api/v1/recommendations', {
+            const response = await fetchApi('/api/v1/recommendations', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
                 body: JSON.stringify(requestData)
             });
 
@@ -90,14 +81,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. 헤더 버튼 이벤트 리스너
-    document.getElementById('notifications-btn').addEventListener('click', () => {
-        window.location.href = '/app/alarm/alarm.html';
-    });
+    // 헤더 버튼 이벤트 리스너 (요소 존재 여부 확인 후 등록)
+    const notificationsBtn = document.getElementById('notifications-btn');
+    const profileBtn = document.getElementById('profileBtn'); // HTML에서는 'profileBtn'입니다.
 
-    document.getElementById('profile-btn').addEventListener('click', () => {
-        window.location.href = '/app/profile/profile.html';
-    });
+    if (notificationsBtn) {
+        notificationsBtn.addEventListener('click', () => {
+            window.location.href = '/app/alarm/alarm.html';
+        });
+    }
+    if (profileBtn) {
+        profileBtn.addEventListener('click', () => {
+            window.location.href = '/app/profile/profile.html';
+        });
+    }
 
     // 3. 하단 네비게이션 활성화 로직
     function setActiveNavItem() {

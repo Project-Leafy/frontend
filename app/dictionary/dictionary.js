@@ -141,4 +141,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (window.lucide) {
         lucide.createIcons();
     }
+    // 3. 하단 네비게이션 활성화 로직
+    function setActiveNavItem() {
+        const navItems = document.querySelectorAll('#bottom-nav .nav-item');
+        const currentPath = window.location.pathname;
+
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('href') === currentPath) {
+                item.classList.add('active');
+            }
+        });
+    }
+
+    setActiveNavItem();
 });
