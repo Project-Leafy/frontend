@@ -60,41 +60,98 @@ body {
 }
 
 
-.result-card {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
+/* =========================================
+   식물 리스트 영역
+   ========================================= */
+   .content {
+    padding: 24px;
+}
+
+.result-count {
+    font-size: 13px;
+    color: #6B7280;
+    margin-bottom: 16px;
+}
+
+.recommend-list {
     display: flex;
     flex-direction: column;
+    gap: 16px;
+}
+
+/* 식물 카드 스타일 */
+.plant-item {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #E5E5E0;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
-    transition: transform 0.2s ease-in-out;
+    text-decoration: none;
+    color: inherit;
 }
 
-.result-card:hover {
-    transform: translateY(-5px);
+.plant-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-.result-card .plant-image {
-    width: 100%;
-    aspect-ratio: 16 / 10;
+.plant-thumb {
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
     object-fit: cover;
+    background-color: #f0f0f0;
+    flex-shrink: 0;
 }
 
-.result-card .plant-info {
-    padding: 16px;
+.plant-info {
+    flex: 1;
+    overflow: hidden;
 }
 
-.result-card .plant-name {
-    font-size: 1.1rem;
+.plant-name {
+    font-size: 16px;
     font-weight: 600;
-    margin: 0 0 8px 0;
+    color: #2C3E2F;
+    margin: 0 0 4px 0;
 }
 
-.result-card .plant-description {
-    font-size: 0.9rem;
+.plant-sci-name {
+    font-size: 12px;
     color: #6B7280;
-    margin: 0;
+    font-style: italic;
+    margin: 0 0 6px 0;
+}
+
+.plant-desc {
+    font-size: 12px;
+    color: #4B5563;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.arrow-icon {
+    color: #D1D5DB;
+    flex-shrink: 0;
+}
+
+/* 검색 결과 없음 */
+.no-result {
+    text-align: center;
+    padding: 60px 0;
+    color: #9CA3AF;
+}
+
+.no-result i {
+    margin-bottom: 12px;
+    color: #E5E5E0;
 }
 
 /* Copied from main.css */

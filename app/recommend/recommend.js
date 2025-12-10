@@ -1,3 +1,5 @@
+import { fetchApi } from '../../assets/js/core_api.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
 
@@ -56,19 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
 
         try {
-            const token = localStorage.getItem('accessToken');
-            if (!token) {
-                alert("로그인이 필요합니다.");
-                window.location.href = '/index.html'; // 로그인 페이지로 이동
-                return;
-            }
-
-            const response = await fetch('/api/v1/recommendations', {
+            const response = await fetchApi('/api/v1/recommendations', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
                 body: JSON.stringify(requestData)
             });
 

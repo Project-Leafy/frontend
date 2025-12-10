@@ -40,29 +40,31 @@ document.addEventListener('DOMContentLoaded', () => {
         displayNoResults();
     }
 
+// API 응답 스키마와 dictionary.html의 카드 구조를 기반으로 한 카드 생성 함수
     function createPlantCard(plant) {
-        // 백엔드에서 오는 데이터 필드명을 기반으로 카드 생성
-        // 예시: plant.plantName, plant.description, plant.imageUrl
-        const plantName = plant.plantName || '이름 정보 없음';
-        const description = plant.message || '설명 정보 없음'; // DTO에 따라 필드명 확인 필요
-        const imageUrl = plant.imageUrl || '/assets/images/placeholder.png'; // 기본 이미지
-        const plantId = plant.plantId;
+        const koreanName = plant.koreanName || '이름 정보 없음';
+        const scientificName = plant.scientificName || '학명 정보 없음';
+        const description = plant.description || '설명 정보 없음';
+        const imageUrl = plant.officialImageUrl || '/assets/images/placeholder.png'; // 공식 이미지 URL 사용
+        const speciesId = plant.speciesId;
 
-        if (!plantId) return null;
+        if (!speciesId) return null;
 
         const card = document.createElement('div');
-        card.className = 'result-card';
+        card.className = 'plant-item'; // 사전 목록과 동일한 클래스 사용
         card.addEventListener('click', () => {
-            // 식물 사전 상세 페이지로 이동 (plantId 활용)
-            window.location.href = `/app/dictionary/dictionary_detail.html?plantId=${plantId}`;
+        // 사전 상세 페이지로 이동 (speciesId 활용)
+            window.location.href = `/app/plant_detail/plant_detail.html?id=${speciesId}`;
         });
 
         card.innerHTML = `
-            <img src="${imageUrl}" alt="${plantName}" class="plant-image">
+            <img src="${imageUrl}" class="plant-thumb" alt="${koreanName}" loading="lazy">
             <div class="plant-info">
-                <h3 class="plant-name">${plantName}</h3>
-                <p class="plant-description">${description}</p>
+                <h3 class="plant-name">${koreanName}</h3>
+                <p class="plant-sci-name">${scientificName}</p>
+                <p class="plant-desc">${description}</p>
             </div>
+            <i data-lucide="chevron-right" class="arrow-icon"></i>
         `;
         return card;
     }
@@ -79,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = '/app/profile/profile.html';
     });
 
-    // Function to set the active navigation item based on the current URL
+    // 하단 네비게이션 활성화 상태 설정 함수
     function setActiveNavItem() {
         const navItems = document.querySelectorAll('#bottom-nav .nav-item');
         const currentPath = window.location.pathname;
@@ -87,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
         navItems.forEach(item => {
             item.classList.remove('active'); // Remove active from all first
             
-            // Special handling for recommendation pages
             if (currentPath.includes('/app/recommend/')) {
                 if (item.getAttribute('href') === '/app/recommend/recommend.html') {
                     item.classList.add('active');
