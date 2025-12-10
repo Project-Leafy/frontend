@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { name: 'sunlight', element: document.querySelector('input[name="sunlight"]'), title: '햇빛 환경' },
             { name: 'watering', element: document.querySelector('input[name="watering"]'), title: '물주기 선호도' },
             { name: 'experience', element: document.querySelector('input[name="experience"]'), title: '식물 키우기 경험' },
-            { name: 'size', element: document.querySelector('input[name="size"]'), title: '선호하는 크기' },
+            { name: 'growth', element: document.querySelector('input[name="growth"]'), title: '식물성장속도' },
             { name: 'pet', element: document.querySelector('input[name="pet"]'), title: '반려동물 여부' }
         ];
 
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             preferredLight: document.querySelector('input[name="sunlight"]:checked').value,
             preferredWater: document.querySelector('input[name="watering"]:checked').value,
             userSkill: document.querySelector('input[name="experience"]:checked').value,
-            preferredSize: document.querySelector('input[name="size"]:checked').value,
+            growthSpeed: document.querySelector('input[name="growth"]:checked').value,
             hasPet: (document.querySelector('input[name="pet"]:checked').value === 'true')
         };
 

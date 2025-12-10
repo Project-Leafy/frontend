@@ -72,6 +72,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayNoResults(message = '추천 결과를 찾을 수 없습니다.') {
         resultContainer.innerHTML = `<p style="text-align: center; color: #6B7280;">${message}</p>`;
     }
+
+    // 다시 설문조사 버튼 이벤트 리스너
+    const retakeSurveyBtn = document.getElementById('retake-survey-btn');
+
+    if (retakeSurveyBtn) {
+        retakeSurveyBtn.addEventListener('click', () => {
+            // 설문 페이지로 이동
+            window.location.href = '/app/recommend/recommend.html';
+        });
+    }
     
     // 네비게이션 버튼 이벤트 리스너 (필요 시 추가)
     document.getElementById('notifications-btn').addEventListener('click', () => {
