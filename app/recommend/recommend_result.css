@@ -263,3 +263,27 @@ body {
 .center-circle-btn i, .center-circle-btn svg { width: 32px; height: 32px; margin-bottom: 0; }
 .tooltip-bubble { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); background-color: white; border: 1px solid #E5E5E0; border-radius: 30px; padding: 8px 16px; width: max-content; color: #4B5563; font-size: 13px; font-weight: 600; letter-spacing: -0.3px; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.05); z-index: 10; pointer-events: none; }
 .tooltip-bubble::after { display: none; }
+
+/* nearby-store-btn 스타일 추가 */
+.nearby-store-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 24px; /* recommend-list와의 간격 */
+    background-color: #28a745; /* Green color */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+}
+.nearby-store-btn:hover {
+    background-color: #218838;
+}
