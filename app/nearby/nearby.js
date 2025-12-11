@@ -180,6 +180,14 @@ function initMapFeature() {
         const distance = currentUserPosition ? 
             `<span class="place-dist">${Math.round(place.distance)}m</span>` : '';
 
+        // 경로 URL 생성
+        let routeUrl;
+        if (currentUserPosition) {
+            routeUrl = `https://map.kakao.com/link/route/${place.place_name},${place.y},${place.x}/내 위치,${currentUserPosition.getLat()},${currentUserPosition.getLng()}`;
+        } else {
+            routeUrl = `https://map.kakao.com/link/to/${place.place_name},${place.y},${place.x}`;
+        }
+
         li.innerHTML = `
             <div class="item-header">
                 <h3 class="place-name">${place.place_name}</h3>
@@ -188,12 +196,10 @@ function initMapFeature() {
             <p class="place-category">${place.category_name.split(' > ').pop()}</p>
             <p class="place-address">${place.road_address_name || place.address_name}</p>
             <div class="place-actions">
-                <a href="https://map.kakao.com/link/to/${place.place_name},${place.y},${place.x}" 
-                   target="_blank" class="action-btn route">
+                <a href="${routeUrl}" target="_blank" class="action-btn route">
                    <i data-lucide="map"></i> 경로 보기
                 </a>
-                <a href="https://map.kakao.com/link/share/${place.id}" 
-                   target="_blank" class="action-btn share">
+                <a href="https://map.kakao.com/link/share/${place.id}" target="_blank" class="action-btn share">
                    <i data-lucide="share-2"></i> 공유
                 </a>
             </div>
@@ -207,10 +213,18 @@ function initMapFeature() {
 
     // 인포윈도우 콘텐츠 생성
     function generateInfoWindowContent(place) {
+        // 경로 URL 생성
+        let routeUrl;
+        if (currentUserPosition) {
+            routeUrl = `https://map.kakao.com/link/route/${place.place_name},${place.y},${place.x}/내 위치,${currentUserPosition.getLat()},${currentUserPosition.getLng()}`;
+        } else {
+            routeUrl = `https://map.kakao.com/link/to/${place.place_name},${place.y},${place.x}`;
+        }
+
         return `
             <div class="infowindow-content" style="padding:10px; min-width:150px;">
                 <div class="place-name" style="font-weight:bold; margin-bottom:5px;">${place.place_name}</div>
-                <a href="https://map.kakao.com/link/to/${place.place_name},${place.y},${place.x}" target="_blank" style="color:#007BFF; text-decoration:none;">길찾기</a>
+                <a href="${routeUrl}" target="_blank" style="color:#007BFF; text-decoration:none;">길찾기</a>
             </div>
         `;
     }
