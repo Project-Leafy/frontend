@@ -1,4 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // kakao.maps.load를 사용하여 SDK 로드 후 지도 관련 코드 실행
+    if (window.kakao && window.kakao.maps) {
+        kakao.maps.load(initMapFeature);
+    } else {
+        // SDK 스크립트 태그에 문제가 있을 경우를 대비한 폴백
+        const script = document.createElement('script');
+        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&libraries=services&autoload=false`;
+        document.head.appendChild(script);
+        script.onload = () => kakao.maps.load(initMapFeature);
+        script.onerror = () => {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.innerHTML = '<p style="color: red;">지도 SDK를 불러오는 데 실패했습니다.<br>API 키를 확인해주세요.</p>';
+        };
+    }
+});
+
+function initMapFeature() {
     lucide.createIcons();
 
     const mapContainer = document.getElementById('map');
@@ -57,13 +74,17 @@ document.addEventListener('DOMContentLoaded', () => {
         infowindow = new kakao.maps.InfoWindow({ zIndex: 1, removable: true });
 
         // 사용자 위치 마커 표시
+        // 이미지 경로를 /assets/images/user_location_pin.png로 수정해야 합니다.
+        // 해당 이미지가 없다면, 기본 마커가 사용됩니다.
+        const userMarkerImageSrc = '/assets/images/user_location_pin.png';
+        const imageSize = new kakao.maps.Size(28, 28);
+        const imageOption = { offset: new kakao.maps.Point(14, 14) };
+
+        const markerImage = new kakao.maps.MarkerImage(userMarkerImageSrc, imageSize, imageOption);
+        
         userMarker = new kakao.maps.Marker({
             position: position,
-            image: new kakao.maps.MarkerImage(
-                '/assets/images/user_location_pin.png', // 사용자 위치 마커 이미지
-                new kakao.maps.Size(28, 28),
-                { offset: new kakao.maps.Point(14, 14) }
-            )
+            image: markerImage
         });
         userMarker.setMap(map);
 
@@ -77,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const keywords = ['화원', '꽃집', '식물가게'];
         let searchPromises = keywords.map(keyword => 
-            new Promise((resolve, reject) => {
+            new Promise((resolve) => {
                 const options = {
                     location: map.getCenter(),
                     radius: 5000, // 5km 반경
@@ -112,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (places.length === 0) {
             placeCountEl.textContent = '0개';
-            placesList.innerHTML = '<li class="no-results">주변에 화원이 없습니다.</li>';
+            placesList.innerHTML = '<li class="no-results" style="padding: 20px; text-align: center; color: #666;">주변에 등록된 화원이 없습니다.</li>';
             loadingOverlay.style.display = 'none';
             resultsPanel.classList.add('visible');
             return;
@@ -134,19 +155,15 @@ document.addEventListener('DOMContentLoaded', () => {
             placesList.appendChild(listItem);
 
             // 마커와 목록 아이템에 이벤트 바인딩
-            kakao.maps.event.addListener(marker, 'click', () => {
+            const eventHandler = () => {
                 panTo(placePosition);
                 infowindow.setContent(generateInfoWindowContent(place));
                 infowindow.open(map, marker);
                 highlightListItem(index);
-            });
-
-            listItem.addEventListener('click', () => {
-                panTo(placePosition);
-                infowindow.setContent(generateInfoWindowContent(place));
-                infowindow.open(map, marker);
-                highlightListItem(index);
-            });
+            };
+            
+            kakao.maps.event.addListener(marker, 'click', eventHandler);
+            listItem.addEventListener('click', eventHandler);
         });
 
         loadingOverlay.style.display = 'none';
@@ -191,9 +208,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 인포윈도우 콘텐츠 생성
     function generateInfoWindowContent(place) {
         return `
-            <div class="infowindow-content">
-                <div class="place-name">${place.place_name}</div>
-                <a href="https://map.kakao.com/link/to/${place.place_name},${place.y},${place.x}" target="_blank">길찾기</a>
+            <div class="infowindow-content" style="padding:10px; min-width:150px;">
+                <div class="place-name" style="font-weight:bold; margin-bottom:5px;">${place.place_name}</div>
+                <a href="https://map.kakao.com/link/to/${place.place_name},${place.y},${place.x}" target="_blank" style="color:#007BFF; text-decoration:none;">길찾기</a>
             </div>
         `;
     }
@@ -232,4 +249,5 @@ document.addEventListener('DOMContentLoaded', () => {
             targetItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     }
-});
+}
+
