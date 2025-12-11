@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // 사용한 데이터는 삭제하여 다음번 추천에 영향이 없도록 함
-        localStorage.removeItem('recommendationResults');
+        // localStorage.removeItem('recommendationResults');
 
     } else {
         displayNoResults();
@@ -77,27 +77,30 @@ document.addEventListener('DOMContentLoaded', () => {
             .sort(([, countA], [, countB]) => countB - countA)
             .slice(0, 2);
             
-        // 3. 요약 문구 생성
-        let summaryParts = [];
-        
-        sortedCategories.forEach(([key, count], index) => {
+        // 3. 요약 문구 생성을 위한 핵심 이유 추출
+        const summaryParts = [];
+        const addedKeys = new Set(); // 중복 추가 방지
+
+        sortedCategories.forEach(([key, count]) => {
             const categoryInfo = preferenceCategories.find(c => c.key === key);
             
-            // 상위 5개 중 3개 이상(60%) 일치하면 핵심 이유로 간주
-            if (categoryInfo && count >= topPlants.length * 0.6) { 
-                if (key === 'sunlight') {
-                    summaryParts.push("햇빛 조건에 딱 맞는");
-                } else if (key === 'watering') {
-                    summaryParts.push("물주기 습관과 잘 맞는");
-                } else if (key === 'difficulty') {
-                    summaryParts.push("당신의 경험에 적합한");
-                } else if (key === 'growth') {
-                    summaryParts.push("성장 속도가 맞는");
-                } else if (key === 'pet') {
-                    summaryParts.push("반려동물에게 안전한");
-                }
+            // 상위 5개 중 3개 이상(60%) 일치하면 핵심 이유로 간주하고, 아직 추가되지 않은 키만 처리
+            if (categoryInfo && count >= topPlants.length * 0.6 && !addedKeys.has(key)) { 
+                summaryParts.push(categoryInfo.text);
+                addedKeys.add(key);
             }
         });
+
+        // #초보자용 태그를 별도로 확인하여, "키우기 쉬운" 문구를 추가 (중복 방지)
+        const isBeginnerFriendly = topPlants.some(p => p.tags.includes('#초보자용'));
+        const difficultyKeyExists = addedKeys.has('difficulty');
+        if (isBeginnerFriendly && !difficultyKeyExists) {
+            const beginnerCategory = preferenceCategories.find(c => c.startsWith === '#초보자용');
+            if (beginnerCategory) {
+                summaryParts.push(beginnerCategory.text);
+                addedKeys.add('difficulty'); // difficulty 키로 간주하여 중복 방지
+            }
+        }
         
         // 4. 최종 문장 조립
         if (summaryParts.length === 0) {
@@ -106,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return `${summaryParts[0]} 식물을 추천해드려요.`;
         } else {
             // 두 가지 이유를 자연스럽게 조합
-            return `${summaryParts[0]} 그리고 ${summaryParts[1]} 식물을 추천해드려요.`;
+            return `${summaryParts[0]} 그리고 ${summaryParts.slice(1).join(', ')} 식물을 추천해드려요.`;
         }
     }
 
@@ -128,11 +131,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // API 응답 스키마와 dictionary.html의 카드 구조를 기반으로 한 카드 생성 함수
     function createPlantCard(plant) {
-        const koreanName = plant.koreanName || '이름 정보 없음';
-        const scientificName = plant.scientificName || '학명 정보 없음';
+        const koreanName = plant.korean_name || '이름 정보 없음';
+        const scientificName = plant.scientific_name || '학명 정보 없음';
         const description = plant.description || '설명 정보 없음';
-        const imageUrl = plant.officialImageUrl || '/assets/images/placeholder.png'; // 공식 이미지 URL 사용
-        const speciesId = plant.speciesId;
+        const imageUrl = plant.official_image_url || '/assets/images/placeholder.png'; // 공식 이미지 URL 사용
+        const speciesId = plant.species_id;
         const rawTags = plant.tags || [];
 
         if (!speciesId) return null;
@@ -180,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('notifications-btn').addEventListener('click', () => {
         window.location.href = '/app/alarm/alarm.html';
     });
-    document.getElementById('profile-btn').addEventListener('click', () => {
+    document.getElementById('profileBtn').addEventListener('click', () => {
         window.location.href = '/app/profile/profile.html';
     });
 
