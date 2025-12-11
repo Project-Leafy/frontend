@@ -3,6 +3,7 @@
     --header-height: 60px;
     --panel-header-height: 56px;
     --bottom-sheet-height: 35vh;
+    --side-panel-width: 380px;
 }
 
 body, html {
@@ -29,6 +30,8 @@ body, html {
     background-color: white;
     border-bottom: 1px solid #e9ecef;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1002;
 }
 
 .header {
@@ -71,6 +74,13 @@ body, html {
     width: 40px; /* 아이콘 버튼과 너비 맞춤 */
 }
 
+
+/* 메인 콘텐츠 영역 */
+.main-content {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+}
 
 /* 지도 컨테이너 */
 .map-container {
@@ -146,6 +156,7 @@ body, html {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
 }
 
 #panel-title {
@@ -252,4 +263,40 @@ body, html {
     text-decoration: none;
     color: #007BFF;
     font-weight: 600;
+}
+
+/* ----------------- 반응형 ----------------- */
+
+/* 태블릿/데스크탑 (화면 너비 768px 이상) */
+@media (min-width: 768px) {
+    #app-container {
+        flex-direction: row;
+    }
+
+    .header-container {
+        display: none; /* 넓은 화면에서는 헤더 숨김 */
+    }
+
+    .results-panel {
+        position: static; /* fixed 해제 */
+        transform: translateY(0); /* 원래 위치로 */
+        height: 100vh;
+        width: var(--side-panel-width);
+        border-radius: 0;
+        border-right: 1px solid #e9ecef;
+        box-shadow: none;
+        flex-shrink: 0;
+    }
+
+    .panel-header {
+        padding: 20px;
+    }
+
+    #panel-title {
+        font-size: 20px;
+    }
+
+    .map-container {
+        height: 100vh;
+    }
 }
