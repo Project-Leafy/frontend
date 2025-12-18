@@ -203,6 +203,7 @@ body {
 #bottom-nav {
     position: fixed;
     bottom: 0;
+    
     width: 100%;
     max-width: 448px;
     height: 85px;
@@ -307,6 +308,7 @@ body {
 .tooltip-bubble::after {
     display: none;
 } 
+
 
 /* =========================================
    6. 다이얼로그
