@@ -203,7 +203,7 @@ body {
 #bottom-nav {
     position: fixed;
     bottom: 0;
-    
+
     width: 100%;
     max-width: 448px;
     height: 85px;
@@ -372,4 +372,37 @@ body {
   width: 24px;
   height: 24px;
   color: #6B7280;
+}
+/* =========================================
+   [추가/수정] 메인 카드 하단 정보 디자인
+========================================= */
+
+/* 카드 하단 컨테이너 (물주기 날짜 + 상태) */
+.hs-card .info {
+    display: flex;
+    justify-content: space-between; /* 양 끝으로 배치 */
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #F3F4F6; /* 구분선 추가 */
+    font-size: 13px;
+}
+
+/* 최근 물주기 날짜 스타일 */
+.hs-card .info .last-water {
+    color: #6B7280; /* 회색 텍스트 */
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+/* 상태 배지 스타일 (테두리 있는 알약 모양) */
+.hs-card .info .status-badge {
+    font-weight: 700;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    border: 1px solid; /* 색상은 JS에서 지정 */
+    background-color: #fff;
+    white-space: nowrap; /* 줄바꿈 방지 */
 }
