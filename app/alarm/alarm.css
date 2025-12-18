@@ -223,3 +223,27 @@ body {
 .tooltip-bubble::after {
     display: none;
 }
+/* --- 섹션 구분 스타일 추가 --- */
+.alarm-section {
+    margin-bottom: 32px; /* 섹션 사이 간격 */
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1F2937; /* 기본 진한 회색 */
+    margin: 0 0 12px 4px; /* 아래 간격 및 살짝 들여쓰기 */
+    display: flex;
+    align-items: center;
+}
+
+/* 오늘 알람 강조 색상 */
+.section-title.text-red {
+    color: #DC2626; 
+}
+
+/* 지난 알람 흐린 색상 */
+.section-title.text-gray {
+    color: #6B7280;
+    font-size: 16px; /* 지난 알람은 조금 작게 */
+}
