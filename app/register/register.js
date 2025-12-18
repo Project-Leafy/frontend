@@ -16,28 +16,76 @@ document.addEventListener('DOMContentLoaded', () => {
     if (identifyBtn) {
         const albumBtn = document.getElementById('album-btn');
         const plantImageInput = document.getElementById('plant-image');
+        const cameraInput = document.getElementById('camera-input');
+
         const buttonGroup = document.querySelector('.button-group');
         const takePhotoBtn = document.getElementById('take-photo-btn');
+        const iconImage = document.querySelector('.icon-circle img'); // 미리보기 이미지 태그
 
         if(albumBtn) {
-            albumBtn.addEventListener('click', () => { plantImageInput.click(); });
+            albumBtn.addEventListener('click', () => { 
+                if(plantImageInput) plantImageInput.click(); 
+            });
         }
 
-        if(plantImageInput) {
-            plantImageInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    if(buttonGroup) buttonGroup.style.display = 'none';
-                    if(takePhotoBtn) takePhotoBtn.style.display = 'none';
-                    identifyBtn.style.display = 'block';
+        // 2. [수정됨] 카메라 버튼 클릭 -> 카메라 input 열기 (기존 alert 제거)
+        if(takePhotoBtn) {
+            takePhotoBtn.addEventListener('click', () => {
+                if(cameraInput) {
+                    cameraInput.click();
+                } else {
+                    alert('카메라 기능을 사용할 수 없습니다. (input 태그 확인 필요)');
                 }
             });
         }
 
+        // 3. 공통: 파일 선택 시 미리보기 및 버튼 변경 처리 함수
+        const handleFileSelect = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                // UI 변경 (버튼 숨기고 식별 버튼 표시)
+                if(buttonGroup) buttonGroup.style.display = 'none';
+                if(takePhotoBtn) takePhotoBtn.style.display = 'none'; // 혹시 따로 있다면 숨김
+                identifyBtn.style.display = 'block';
+
+                // 미리보기 이미지 업데이트
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if(iconImage) {
+                        iconImage.src = e.target.result;
+                        iconImage.style.width = '100%';
+                        iconImage.style.height = '100%';
+                        iconImage.style.objectFit = 'cover';
+                        iconImage.style.borderRadius = '50%';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        // 4. 이벤트 리스너 연결
+        // 앨범으로 선택했을 때
+        if(plantImageInput) {
+            plantImageInput.addEventListener('change', handleFileSelect);
+        }
+        // [추가됨] 카메라로 찍었을 때
+        if(cameraInput) {
+            cameraInput.addEventListener('change', handleFileSelect);
+        }
+
         // '식별하기' 버튼 클릭 이벤트 리스너 (API 호출)
         identifyBtn.addEventListener('click', async () => {
-            const file = plantImageInput.files[0];
+            // 1. 앨범 파일 확인
+            let file = plantImageInput ? plantImageInput.files[0] : null;
+            
+            // 2. 앨범에 없으면 카메라 파일 확인
+            if (!file && cameraInput) {
+                file = cameraInput.files[0];
+            }
+
+            // 3. 둘 다 없으면 경고
             if (!file) { alert('이미지를 선택해주세요.'); return; }
+            
             identifyBtn.disabled = true;
             identifyBtn.textContent = '위치 정보 확인 중...';
 
@@ -257,6 +305,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // ★ 여기서 식물 ID를 저장합니다 (일정 등록에 필요)
                 registeredPlantId = newPlant.my_plant_id || newPlant.id;
                 
+                // [추가됨] 추천 로직을 위해 식물 정보 백업 (삭제하기 전에 변수에 담아둠)
+                const plantInfoForSchedule = { ...identificationResult };
                 sessionStorage.removeItem('identificationResult');
 
                 // ▼▼▼▼▼▼▼▼▼▼ [디버깅 코드 시작] ▼▼▼▼▼▼▼▼▼▼
@@ -266,6 +316,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log('2. 모달 띄우기 로직 진입함'); 
                     
                     if(modalDate) modalDate.value = new Date().toISOString().split('T')[0]; // 오늘 날짜 기본값
+                    // 2. 추천 알고리즘 함수 정의
+                    const recommendFreq = (info) => {
+                        const candidates = info.identificationData || [];
+                        let description = "";
+                        
+                        // 설명 데이터 가져오기 (첫 번째 후보 기준)
+                        if (candidates.length > 0) {
+                             description = candidates[0].description || candidates[0].wiki_description || "";
+                        }
+                        
+                        // 이름과 설명을 합쳐서 소문자로 변환 후 키워드 검색
+                        const textData = (String(info.commonName) + " " + String(info.scientificName) + " " + String(description)).toLowerCase();
+
+                        // A. 건조 그룹 (월 1회) -> 선인장, 다육이 등
+                        const dryKeywords = ['cactus', 'succulent', 'sansevieria', 'aloe', '선인장', '다육', '스투키', '산세베리아', '알로에'];
+                        if (dryKeywords.some(keyword => textData.includes(keyword))) return 'MONTHLY';
+
+                        // B. 습윤/허브 그룹 (매일) -> 고사리, 바질 등
+                        const wetKeywords = ['fern', 'basil', 'mint', '고사리', '아디안텀', '바질', '민트'];
+                        if (wetKeywords.some(keyword => textData.includes(keyword))) return 'DAILY';
+
+                        // C. 기본값 (주 1회) -> 일반 관엽식물
+                        return 'WEEKLY';
+                    };
+                    // 3. 추천 결과 적용
+                    const recommended = recommendFreq(plantInfoForSchedule);
+                    
+                    if(modalType) modalType.value = 'WATER';     // 타입: 물주기 고정
+                    if(modalFreq) modalFreq.value = recommended; // 빈도: 추천값 자동 선택
                     
                     // 클래스 추가
                     scheduleModal.classList.add('show');
