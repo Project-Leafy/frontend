@@ -225,6 +225,33 @@ body {
     position: relative;
     padding-bottom: 5px; /* 아이콘 위치 조정 */
 }
+.tooltip-bubble {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    background-color: white;
+    border: 1px solid #E5E5E0;
+    border-radius: 30px;
+    padding: 8px 16px;
+    width: max-content;
+    
+    color: #4B5563;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+    
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    
+    z-index: 10;
+    pointer-events: none;
+}
+
+.tooltip-bubble::after {
+    display: none;
+} 
 
 /* 현재 활성화된 탭 색상 (필요시 HTML에서 class="active" 이동) */
 .nav-item.active {
