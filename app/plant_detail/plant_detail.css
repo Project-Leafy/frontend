@@ -188,118 +188,228 @@ body {
 /* =========================================
    하단 내비게이션 (Main 스타일 적용)
 ========================================= */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Pretendard', sans-serif;
+    background-color: #FAFAF8;
+    color: #333;
+    /* [수정] 모바일 화면 꽉 채우기 및 중앙 정렬 */
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+#app-container {
+    width: 100%;
+    max-width: 448px; /* 모바일 폭 제한 */
+    margin: 0 auto;
+    background: #fff;
+    min-height: 100vh;
+    padding-bottom: 120px; /* [수정] 하단 네비게이션 가림 방지 여백 */
+    position: relative;
+    overflow-x: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05); /* 앱 같은 느낌 */
+}
+
+/* 상단 헤더 */
+.detail-header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    padding: 16px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 20;
+}
+.back-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none; border-radius: 50%;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.image-container {
+    width: 100%; height: 360px;
+    position: relative; background-color: #f0f0f0;
+}
+.image-container img {
+    width: 100%; height: 100%; object-fit: cover;
+}
+
+/* 본문 스타일 */
+.content-body {
+    background: white;
+    border-radius: 24px 24px 0 0;
+    margin-top: -24px;
+    position: relative;
+    padding: 30px 24px;
+    z-index: 10;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+}
+
+.plant-name {
+    font-size: 26px; font-weight: 800; color: #4A7C59;
+    margin: 0 0 6px 0; line-height: 1.2;
+}
+.scientific-name {
+    font-size: 15px; color: #6B7280; font-style: italic; margin: 0;
+}
+.divider { height: 1px; background: #F3F4F6; margin: 24px 0; }
+
+/* 섹션 카드 */
+.section-card { margin-bottom: 30px; }
+.card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.header-icon { width: 20px; height: 20px; color: #4A7C59; }
+.section-card h3, .section-title-row h3 {
+    font-size: 17px; font-weight: 700; color: #111827; margin: 0;
+}
+.card-text {
+    font-size: 15px; color: #4B5563; line-height: 1.6; margin: 0; word-break: keep-all;
+}
+
+/* 관리 방법 리스트 */
+.care-list {
+    display: flex; flex-direction: column; gap: 16px;
+    margin-bottom: 30px;
+}
+.care-card {
+    background: #fff;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex; flex-direction: column;
+}
+.warning-border { border-color: #FECACA; background-color: #FEF2F2; }
+
+.care-top {
+    display: flex; align-items: center; gap: 12px;
+}
+.care-info {
+    display: flex; flex-direction: column;
+}
+
+.care-label {
+    font-size: 13px; color: #374151; font-weight: 700; margin-bottom: 4px;
+}
+.toxic-label { color: #DC2626 !important; }
+.care-main-val {
+    font-size: 15px; color: #4B5563; font-weight: 400; line-height: 1.4;
+}
+.care-tip-box {
+    margin-top: 12px; padding: 12px; background-color: #F9FAFB;
+    border-radius: 8px; font-size: 13px; color: #4B5563; line-height: 1.5;
+}
+
+/* 계절별 그리드 */
+.season-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    margin-top: 12px; border-top: 1px solid #F3F4F6; padding-top: 12px;
+}
+.season-item {
+    display: flex; flex-direction: column; align-items: center;
+    background: #F9FAFB; padding: 8px 4px; border-radius: 8px;
+}
+.season-name { font-size: 11px; color: #6B7280; margin-bottom: 4px; }
+.season-item strong { font-size: 13px; color: #4A7C59; font-weight: 500; }
+
+/* 아이콘 박스 */
+.icon-box {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+/* 아이콘 색상들 */
+.level { background: #FEF3C7; color: #D97706; }
+.water { background: #E0F2FE; color: #0284C7; }
+.sun   { background: #FFEDD5; color: #EA580C; }
+.temp  { background: #FEE2E2; color: #DC2626; }
+.humid { background: #E0E7FF; color: #4F46E5; }
+.fert  { background: #DCFCE7; color: #16A34A; }
+.repot { background: #F3E8FF; color: #9333EA; }
+.soil  { background: #ECFDF5; color: #059669; }
+.air   { background: #F1F5F9; color: #64748B; }
+.toxic { background: #FEE2E2; color: #EF4444; }
+
+/* 체크 포인트 */
+.tip-section {
+    background: #F0FDF4; border: 1px solid #BBF7D0;
+    border-radius: 16px; padding: 20px;
+}
+.tip-header-row {
+    display: flex; align-items: center; gap: 8px;
+    color: #15803D; font-weight: 700; margin-bottom: 12px;
+}
+.check-list { margin: 0; padding-left: 0; list-style: none; }
+.check-list li {
+    position: relative; padding-left: 20px; margin-bottom: 8px;
+    font-size: 14px; color: #166534; line-height: 1.5;
+}
+.check-list li::before {
+    content: "•"; position: absolute; left: 6px; color: #15803D;
+}
+
+/* =========================================
+   [수정됨] 하단 네비게이션 (고정 및 스타일 개선)
+========================================= */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 50%;
-    transform: translateX(-50%); /* 중앙 정렬 유지 */
+    transform: translateX(-50%); /* 정확히 중앙 정렬 */
     width: 100%;
-    max-width: 448px;
-    height: 85px; /* 높이 증가 */
+    max-width: 448px; /* 앱 컨테이너 폭과 일치 */
+    height: 85px;
     
     background-color: white;
-    /* 둥근 모서리 적용 */
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
     
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
     border-top: 1px solid #f0f0f0;
 
-    z-index: 50;
+    z-index: 100; /* 콘텐츠 위로 확실히 띄움 */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 10px; /* 좌우 패딩 */
+    padding: 0 10px;
 }
 
 .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    color: #9CA3AF;
-    font-size: 10px;
-    flex: 1;
-    height: 100%;
-    position: relative;
-    padding-bottom: 5px; /* 아이콘 위치 조정 */
-}
-.tooltip-bubble {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    
-    background-color: white;
-    border: 1px solid #E5E5E0;
-    border-radius: 30px;
-    padding: 8px 16px;
-    width: max-content;
-    
-    color: #4B5563;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-    white-space: nowrap;
-    
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    
-    z-index: 10;
-    pointer-events: none;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-decoration: none; color: #9CA3AF; font-size: 10px; flex: 1; height: 100%;
+    position: relative; padding-bottom: 5px;
 }
 
-.tooltip-bubble::after {
-    display: none;
-} 
+.nav-item.active { color: #4A7C59; }
+.nav-item i, .nav-item svg { width: 24px; height: 24px; margin-bottom: 6px; }
 
-/* 현재 활성화된 탭 색상 (필요시 HTML에서 class="active" 이동) */
-.nav-item.active {
-    color: #4A7C59;
-}
-
-.nav-item i, .nav-item svg {
-    width: 24px;
-    height: 24px;
-    margin-bottom: 6px;
-}
-
-/* 중앙 아이템 영역 */
+/* 중앙 아이템 공간 확보 */
 .nav-item.center-item {
-    flex: 0 0 80px; /* 공간 확보 */
-    overflow: visible; /* 튀어나온 버튼 잘림 방지 */
+    flex: 0 0 80px; overflow: visible;
 }
 
-/* 튀어나온 원형 버튼 */
+/* 중앙 튀어나온 버튼 */
 .center-circle-btn {
-    width: 64px;
-    height: 64px;
-    background-color: #4A7C59;
-    border-radius: 50%;
-    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    color: white;
-    box-shadow: 0 8px 20px rgba(74, 124, 89, 0.4);
-    
-    position: absolute;
-    top: -35px; /* 위로 돌출 */
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
-    
-    transition: transform 0.1s;
+    width: 64px; height: 64px;
+    background-color: #4A7C59; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; box-shadow: 0 8px 20px rgba(74, 124, 89, 0.4);
+    position: absolute; top: -35px; /* 위로 돌출 */
+    left: 50%; transform: translateX(-50%);
+    z-index: 101; transition: transform 0.1s;
 }
+.center-circle-btn:active { transform: translateX(-50%) scale(0.95); }
+.center-circle-btn i { width: 32px; height: 32px; margin-bottom: 0; }
 
-.center-circle-btn:active {
-    transform: translateX(-50%) scale(0.95);
+/* 말풍선 툴팁 */
+.tooltip-bubble {
+    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+    background-color: white; border: 1px solid #E5E5E0; border-radius: 30px;
+    padding: 8px 16px; width: max-content; color: #4B5563;
+    font-size: 13px; font-weight: 600; letter-spacing: -0.3px;
+    white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    z-index: 10; pointer-events: none;
 }
-
-.center-circle-btn i, .center-circle-btn svg {
-    width: 32px;
-    height: 32px;
-    margin-bottom: 0;
-}
-
