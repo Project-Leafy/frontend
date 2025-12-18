@@ -196,6 +196,12 @@ body {
     padding-bottom: 5px;
 }
 
+/* [추가] 중앙 아이템 양옆 간격 벌리기 */
+.nav-item.center-item {
+    flex: 0 0 90px; /* 80px -> 90px로 중앙 공간을 조금 더 확보 */
+    overflow: visible;
+    margin: 0 8px; /* 양옆 마진 추가 */
+}
 .nav-item.active {
     color: #4A7C59;
 }
