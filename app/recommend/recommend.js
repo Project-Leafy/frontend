@@ -46,11 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 선택된 값 가져오기
         const requestData = {
-            preferredLight: document.querySelector('input[name="sunlight"]:checked').value,
-            preferredWater: document.querySelector('input[name="watering"]:checked').value,
-            userSkill: document.querySelector('input[name="experience"]:checked').value,
-            growthSpeed: document.querySelector('input[name="growth"]:checked').value,
-            hasPet: (document.querySelector('input[name="pet"]:checked').value === 'true')
+            preferred_light: document.querySelector('input[name="sunlight"]:checked').value,
+            preferred_water: document.querySelector('input[name="watering"]:checked').value,
+            user_skill: document.querySelector('input[name="experience"]:checked').value,
+            growthpeed: document.querySelector('input[name="growth"]:checked').value,
+            has_pet: (document.querySelector('input[name="pet"]:checked').value === 'true')
         };
 
         const originalBtnText = submitBtn.innerHTML;
@@ -60,6 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetchApi('/api/v1/recommendations', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // <--- 이 줄이 핵심입니다!
+            },
                 body: JSON.stringify(requestData)
             });
 
