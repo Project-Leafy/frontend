@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             preferred_light: document.querySelector('input[name="sunlight"]:checked').value,
             preferred_water: document.querySelector('input[name="watering"]:checked').value,
             user_skill: document.querySelector('input[name="experience"]:checked').value,
-            growthpeed: document.querySelector('input[name="growth"]:checked').value,
+            growth_speed: document.querySelector('input[name="growth"]:checked').value,
             has_pet: (document.querySelector('input[name="pet"]:checked').value === 'true')
         };
 
