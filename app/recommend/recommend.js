@@ -46,12 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 선택된 값 가져오기
         const requestData = {
-            preferred_light: document.querySelector('input[name="sunlight"]:checked').value,
-            preferred_water: document.querySelector('input[name="watering"]:checked').value,
-            user_skill: document.querySelector('input[name="experience"]:checked').value,
-            growth_speed: document.querySelector('input[name="growth"]:checked').value,
-            has_pet: (document.querySelector('input[name="pet"]:checked').value === 'true')
-        };
+            preferredLight: document.querySelector('input[name="sunlight"]:checked').value,
+            preferredWater: document.querySelector('input[name="watering"]:checked').value,
+            userSkill: document.querySelector('input[name="experience"]:checked').value,
+            growthSpeed: document.querySelector('input[name="growth"]:checked').value,
+            hasPet: (document.querySelector('input[name="pet"]:checked').value === 'true')
+          };
 
         const originalBtnText = submitBtn.innerHTML;
         submitBtn.innerHTML = '분석 중... <div class="loader"></div>';
