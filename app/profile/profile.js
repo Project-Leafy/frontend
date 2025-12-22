@@ -55,10 +55,16 @@ async function loadUserProfile() {
         if (dateString) {
             const joinDate = new Date(dateString);
             const today = new Date();
-            const diffTime = Math.abs(today - joinDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
             
-            togetherSince.textContent = `함께한 지 ${diffDays}일째`;
+            const msPerDay = 1000 * 60 * 60 * 24;
+            
+            // Get the date in UTC to avoid timezone issues during calculation.
+            const joinDateUTC = Date.UTC(joinDate.getFullYear(), joinDate.getMonth(), joinDate.getDate());
+            const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+
+            const diffDays = Math.floor((todayUTC - joinDateUTC) / msPerDay);
+
+            togetherSince.textContent = `함께한 지 ${diffDays + 1}일째`;
             togetherSince.style.color = '#4A7C59';
             togetherSince.style.fontWeight = 'bold';
         } else {
