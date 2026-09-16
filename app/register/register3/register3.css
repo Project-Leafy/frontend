@@ -204,3 +204,70 @@
     background: #4A7C59;
     color: white;
 }
+
+/* [추가] 새로운 스케줄 모달 스타일 */
+.schedule-setting-group {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #F3F4F6;
+}
+.schedule-setting-group:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.schedule-setting-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.schedule-setting-header i {
+    color: #4A7C59;
+    width: 20px;
+    height: 20px;
+}
+
+.schedule-setting-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.schedule-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-left: 28px; /* 아이콘 너비만큼 들여쓰기 */
+}
+
+.schedule-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.schedule-options input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #4A7C59;
+}
+
+.manual-option input[type="number"] {
+    width: 60px;
+    padding: 4px 8px;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.manual-option input[type="number"]:focus {
+    border-color: #4A7C59;
+    outline: none;
+}
