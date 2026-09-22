@@ -65,7 +65,6 @@
             const result = await findLoginId(email, nickname);
 
             if (result.ok) {
-                // 아이디는 서버에서 일부를 가려서 보내준다.
                 resultBox.textContent = '';
                 resultBox.append('가입하신 아이디는');
                 resultBox.append(document.createElement('br'));
