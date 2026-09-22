@@ -41,6 +41,10 @@
           <p class="label">입양일</p>
           <p id="adoption-date" class="value">-</p>
         </div>
+        <div>
+          <p class="label">최근 물주기</p>
+          <p id="last-watered-date" class="value">-</p>
+        </div>
       </div>
 
       <div class="journal-header">
@@ -110,7 +114,19 @@
                     <div class="empty-message">
                         아직 작성된 성장 일지가 없어요.<br>
                     </div>`;
+                // [추가] 일지 없으면 물주기 기록도 없음
+                document.getElementById('last-watered-date').textContent = '기록 없음';
                 return;
+            }
+
+            // [추가] 최근 물주기 날짜 찾기
+            const lastWateredJournal = journals.find(j => j.watered);
+            const lastWateredEl = document.getElementById('last-watered-date');
+            if (lastWateredJournal) {
+                const waterDate = new Date(lastWateredJournal.record_date || lastWateredJournal.recordDate);
+                lastWateredEl.textContent = `${waterDate.getFullYear()}.${waterDate.getMonth() + 1}.${waterDate.getDate()}`;
+            } else {
+                lastWateredEl.textContent = '기록 없음';
             }
 
             journalListContainer.innerHTML = '';

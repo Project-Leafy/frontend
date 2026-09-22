@@ -34,6 +34,11 @@ export function logout() {
  */
 export async function fetchApi(path, options = {}) {
     const token = localStorage.getItem('accessToken');
+
+    // skipAuthRedirect: 비밀번호 확인처럼 401 이 '입력이 틀렸다'는 뜻인 요청에서는
+    // 자동 로그아웃을 하지 않는다. fetch 에는 넘기지 않는다.
+    const { skipAuthRedirect = false, ...fetchOptions } = options;
+    options = fetchOptions;
     
     const headers = {
         'Content-Type': 'application/json',
@@ -51,8 +56,6 @@ export async function fetchApi(path, options = {}) {
         headers['Authorization'] = 'Bearer ' + token;
     }
 
-    console.log('Sending token:', token); // 토큰 확인을 위한 로그 추가
-
     try {
         const response = await fetch(BASE_URL + path, {
             ...options,
@@ -60,7 +63,7 @@ export async function fetchApi(path, options = {}) {
         });
 
         // ✨ [중요] 인증 실패 시 자동 로그아웃 처리
-        if (response.status === 401 || response.status === 403) {
+        if (!skipAuthRedirect && (response.status === 401 || response.status === 403)) {
             alert('인증이 만료되었거나 유효하지 않습니다. 다시 로그인해주세요.');
             logout(); // auth.js의 로그아웃 함수 호출
             // 에러를 발생시켜 .catch()로 넘김

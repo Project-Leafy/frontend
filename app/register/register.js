@@ -1,7 +1,7 @@
 // register.js
 
-import { identifyPlant, registerMyPlant } from "../plant/plant_api.js";
-import { addSchedule } from "../calendar/schedule_api.js";
+import { identifyPlant, registerMyPlant, getCareInfo } from "../plant/plant_api.js";
+import { createInitialSchedules } from "../calendar/schedule_api.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     // 0. 아이콘 초기화
@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const takePhotoBtn = document.getElementById('take-photo-btn');
         const iconImage = document.querySelector('.icon-circle img');
 
-        // [수정] 카메라 버튼 클릭 시 이벤트 전파 방지 및 명시적 클릭
         if (takePhotoBtn) {
             takePhotoBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -114,189 +113,152 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ========================================================
-    // 2단계 & 3단계: 등록 및 AI 스케줄 추천 (register2.html)
+    // 2단계: 등록 및 AI 스케줄 추천 (register2.html)
     // ========================================================
     const registerBtn = document.getElementById('register-btn');
 
     if (registerBtn) {
+        // --- 1. DOM 요소 및 상태 변수 선언 ---
         const plantImageEl = document.getElementById('plant-preview');
         const commonNameEl = document.getElementById('common-name');
         const scientificNameEl = document.getElementById('scientific-name');
         const nicknameInput = document.getElementById('nickname');
         const adoptionDateInput = document.getElementById('adoption-date');
 
-        const scheduleModal = document.getElementById('scheduleModal');
-        const saveScheduleBtn = document.getElementById('saveScheduleBtn');
-        const skipScheduleBtn = document.getElementById('skipScheduleBtn');
-        const modalDate = document.getElementById('modalDate');
-        const modalType = document.getElementById('modalType');
-        const modalFreq = document.getElementById('modalFreq');
+        const advancedModal = document.getElementById('advancedScheduleModal');
+        const skipBtn = document.getElementById('skipAdvancedScheduleBtn');
+        const saveBtnAdvanced = document.getElementById('saveAdvancedScheduleBtn');
 
-        let registeredPlantId = null;
-
-        const resultString = sessionStorage.getItem('identificationResult');
         let identificationResult = null;
+        let registeredPlant = null;
+        let careInfo = null;
 
-        if (resultString) {
-            try {
-                const parsedData = JSON.parse(resultString);
-                let imageUrl = parsedData.imageUrl || parsedData.image_url;
-                let commonName = parsedData.commonName || parsedData.common_name;
-                let scientificName = parsedData.scientificName || parsedData.scientific_name;
-                let speciesId = parsedData.speciesId || parsedData.species_id;
-                
-                let candidates = parsedData.identificationData || 
-                                 parsedData.identification_candidates || 
-                                 parsedData.suggestions || [];
-
-                if (plantImageEl) plantImageEl.src = imageUrl || 'https://placehold.co/300x300';
-                if (commonNameEl) commonNameEl.textContent = commonName || '이름 없음';
-                if (scientificNameEl) scientificNameEl.textContent = scientificName || '학명 정보 없음';
-
-                identificationResult = { imageUrl, commonName, scientificName, speciesId, identificationData: candidates };
-            } catch (e) {
-                console.error('데이터 파싱 오류', e);
+        // --- 2. 초기 데이터 로드 및 UI 설정 ---
+        function initializeStep2() {
+            const resultString = sessionStorage.getItem('identificationResult');
+            if (!resultString) {
+                alert('식물 식별 정보가 없습니다. 1단계부터 다시 시작해주세요.');
+                window.location.href = '../register1/register1.html';
+                return;
             }
-        } else if (window.location.pathname.includes('register2')) {
-            window.location.href = '../register1/register1.html';
-            return;
+            identificationResult = JSON.parse(resultString);
+            
+            if (plantImageEl) plantImageEl.src = identificationResult.imageUrl || 'https://placehold.co/300x300';
+            if (commonNameEl) commonNameEl.textContent = identificationResult.commonName || '이름 없음';
+            if (scientificNameEl) scientificNameEl.textContent = identificationResult.scientificName || '학명 정보 없음';
+            if (nicknameInput) nicknameInput.placeholder = identificationResult.commonName || '예: 초록이';
         }
 
-        registerBtn.addEventListener('click', async () => {
-            const nickname = nicknameInput.value.trim();
-            const adoptionDate = adoptionDateInput.value;
+        // --- 3. 이벤트 리스너 등록 ---
+        registerBtn.addEventListener('click', handlePlantRegistration);
+        if(skipBtn) skipBtn.addEventListener('click', () => { window.location.href = '/app/main/main.html'; });
+        if(saveBtnAdvanced) saveBtnAdvanced.addEventListener('click', handleSaveSchedules);
 
-            if (!adoptionDate) { alert('입양일을 선택해주세요.'); return; }
+        // --- 4. 핵심 기능 함수 ---
+        async function handlePlantRegistration() {
+            if (!adoptionDateInput.value) { alert('입양일을 선택해주세요.'); return; }
             if (!identificationResult?.speciesId) { alert('식물 종 정보가 없습니다.'); return; }
 
             registerBtn.textContent = '등록 중...';
             registerBtn.disabled = true;
 
             const plantData = {
-                species_id: identificationResult.speciesId,
-                nickname: nickname || identificationResult.commonName,
-                adoption_date: adoptionDate,
-                image_url: identificationResult.imageUrl,
-                identification_result: JSON.stringify(identificationResult.identificationData || [])
+                speciesId: identificationResult.speciesId,
+                nickname: nicknameInput.value.trim() || identificationResult.commonName,
+                adoptionDate: adoptionDateInput.value,
+                imageUrl: identificationResult.imageUrl,
+                identificationResult: JSON.stringify(identificationResult.identificationData || [])
             };
 
             try {
                 const newPlant = await registerMyPlant(plantData);
-                registeredPlantId = newPlant.my_plant_id || newPlant.id;
-
-                const savedPlantInfo = { ...identificationResult };
+                registeredPlant = newPlant;
                 sessionStorage.removeItem('identificationResult');
-
-                if (scheduleModal) {
-                    if (modalDate) modalDate.value = new Date().toISOString().split('T')[0];
-
-                    const getRec = (info) => {
-                        const candidates = info.identificationData || [];
-                        let desc = "";
-                        if (candidates.length > 0) {
-                            desc = candidates[0].description || candidates[0].wiki_description || "";
-                        }
-                        const text = (String(info.commonName) + " " + String(info.scientificName) + " " + String(desc)).toLowerCase();
-
-                        const dryKeys = ['cactus', 'succulent', 'sansevieria', 'aloe', '선인장', '다육', '스투키', '산세베리아'];
-                        if (dryKeys.some(k => text.includes(k))) return { freq: 'MONTHLY', label: '매달 (건조형 식물)' };
-
-                        const wetKeys = ['fern', 'basil', 'mint', '고사리', '아디안텀', '바질', '민트'];
-                        if (wetKeys.some(k => text.includes(k))) return { freq: 'DAILY', label: '매일 (습윤형 식물)' };
-
-                        return { freq: 'WEEKLY', label: '매주 (일반 식물)' };
-                    };
-
-                    const recommendation = getRec(savedPlantInfo);
-                    const freqSelect = document.getElementById('modalFreq');
-                    
-                    if (freqSelect) {
-                        const oldBadge = scheduleModal.querySelector('.recommendation-badge-container');
-                        if (oldBadge) oldBadge.remove();
-
-                        const badgeDiv = document.createElement('div');
-                        badgeDiv.className = 'recommendation-badge-container';
-                        badgeDiv.innerHTML = `
-                            <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
-                                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px; color: #15803d; font-weight: 600; font-size: 0.9rem;">
-                                    <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
-                                    <span>AI 추천 물주기</span>
-                                </div>
-                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: #374151; font-size: 0.95rem;">
-                                    <input type="checkbox" id="useRecCheck" checked style="width: 16px; height: 16px; accent-color: #16a34a;">
-                                    <span><strong>${recommendation.label}</strong>로 설정하기</span>
-                                </label>
-                            </div>
-                        `;
-
-                        freqSelect.parentNode.insertBefore(badgeDiv, freqSelect);
-                        if (typeof lucide !== 'undefined') lucide.createIcons();
-
-                        const useRecCheck = document.getElementById('useRecCheck');
-                        const toggleSelect = () => {
-                            if (useRecCheck && useRecCheck.checked) {
-                                freqSelect.value = recommendation.freq;
-                                freqSelect.style.backgroundColor = '#f3f4f6';
-                                freqSelect.style.pointerEvents = 'none';
-                                freqSelect.style.opacity = '0.7';
-                            } else {
-                                freqSelect.style.backgroundColor = '';
-                                freqSelect.style.pointerEvents = 'auto';
-                                freqSelect.style.opacity = '1';
-                            }
-                        };
-                        
-                        if (useRecCheck) {
-                            useRecCheck.addEventListener('change', toggleSelect);
-                            toggleSelect();
-                        }
-                    }
-
-                    scheduleModal.classList.add('show');
-                } else {
-                    alert(`${nickname} 등록 완료!`);
-                    window.location.href = '/app/main/main.html';
-                }
+                await showAdvancedScheduleModal();
             } catch (error) {
                 console.error('등록 에러:', error);
-                alert('등록 중 오류가 발생했습니다.');
+                alert(`등록 중 오류가 발생했습니다: ${error.message}`);
                 registerBtn.disabled = false;
                 registerBtn.textContent = '이 식물 등록하기';
             }
-        });
+        }
 
-        if (saveScheduleBtn) {
-            saveScheduleBtn.addEventListener('click', async () => {
-                if (!registeredPlantId) return;
-                const date = modalDate.value;
-                if (!date) { alert('날짜를 선택하세요'); return; }
+        async function showAdvancedScheduleModal() {
+            const speciesId = registeredPlant.plantSpeciesId || (registeredPlant.plantSpecies && registeredPlant.plantSpecies.speciesId);
+            if (!speciesId) {
+                alert('추천 정보를 불러올 수 없습니다. 스케줄 설정은 캘린더에서 직접 해주세요.');
+                window.location.href = '/app/main/main.html';
+                return;
+            }
 
-                const val = modalFreq.value;
-                let freqDays = (val === 'DAILY') ? 1 : (val === 'WEEKLY') ? 7 : (val === 'MONTHLY') ? 30 : null;
+            try {
+                careInfo = await getCareInfo(speciesId);
+                
+                document.getElementById('auto-water-label').textContent = `AI 추천 (${careInfo.waterCycle}일마다)`;
+                document.getElementById('auto-repot-label').textContent = `AI 추천 (${Math.round(careInfo.repotCycle / 365)}년마다)`;
+                document.getElementById('auto-fert-label').textContent = `AI 추천 (${careInfo.fertilizerCycle}일마다)`;
 
-                const scheduleData = {
-                    "next_due_date": date,
-                    "plant_id": Number(registeredPlantId),
-                    "schedule_type": modalType.value,
-                    "frequency_days": freqDays
-                };
+                document.getElementById('manual-water-days').value = careInfo.waterCycle;
+                document.getElementById('manual-repot-days').value = careInfo.repotCycle;
+                document.getElementById('manual-fert-days').value = careInfo.fertilizerCycle;
 
-                try {
-                    saveScheduleBtn.textContent = '저장 중...';
-                    await addSchedule(scheduleData);
-                    alert('일정이 등록되었습니다! 🌱');
-                    window.location.href = '/app/main/main.html';
-                } catch (error) {
-                    alert('일정 생성에 실패했습니다.');
-                    window.location.href = '/app/main/main.html';
+            } catch (error) {
+                console.error('케어 정보 로드 실패:', error);
+                alert('AI 추천 정보를 불러오지 못했습니다. 직접 입력하여 설정해주세요.');
+            } finally {
+                if (advancedModal) advancedModal.classList.add('show');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        }
+        
+        async function handleSaveSchedules() {
+            saveBtnAdvanced.textContent = '저장 중...';
+            saveBtnAdvanced.disabled = true;
+
+            const scheduleRequests = [];
+            const scheduleTypes = ['watering', 'repotting', 'fertilizing'];
+
+            scheduleTypes.forEach(type => {
+                const mode = document.querySelector(`input[name="${type}"]:checked`).value;
+                let frequency = null;
+
+                if (mode === 'AUTO' && careInfo) {
+                    if (type === 'watering') frequency = careInfo.waterCycle;
+                    if (type === 'repotting') frequency = careInfo.repotCycle;
+                    if (type === 'fertilizing') frequency = careInfo.fertilizerCycle;
+                } else { // MANUAL
+                    const inputVal = document.getElementById(`manual-${type.substring(0,4)}-days`).value;
+                    if (inputVal && parseInt(inputVal) > 0) {
+                        frequency = parseInt(inputVal);
+                    }
+                }
+                
+                if (frequency) {
+                    scheduleRequests.push({
+                        plantId: registeredPlant.my_plant_id,
+                        scheduleType: type.toUpperCase(),
+                        mode: mode,
+                        frequencyDays: frequency
+                    });
                 }
             });
+
+            try {
+                if (scheduleRequests.length > 0) {
+                    await createInitialSchedules(scheduleRequests);
+                    alert('새로운 식물과 관리 일정이 모두 등록되었습니다! 🎉');
+                } else {
+                    alert('식물 등록이 완료되었습니다!');
+                }
+                window.location.href = '/app/main/main.html';
+            } catch (error) {
+                console.error('스케줄 저장 에러:', error);
+                alert(`일정 저장에 실패했습니다: ${error.message}`);
+                saveBtnAdvanced.textContent = '일정 저장하고 완료';
+                saveBtnAdvanced.disabled = false;
+            }
         }
 
-        if (skipScheduleBtn) {
-            skipScheduleBtn.addEventListener('click', () => {
-                window.location.href = '/app/main/main.html';
-            });
-        }
+        initializeStep2();
     }
 });

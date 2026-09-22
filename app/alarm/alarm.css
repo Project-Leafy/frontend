@@ -247,3 +247,65 @@ body {
     color: #6B7280;
     font-size: 16px; /* 지난 알람은 조금 작게 */
 }
+
+/* --- 앱 안 알림함 --- */
+.inbox-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.inbox-count {
+    font-size: 14px;
+    color: #DC2626;
+    font-weight: 600;
+}
+
+.inbox-read-all {
+    border: none;
+    background: none;
+    color: #4A7C59;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.inbox-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    border-left: 4px solid transparent;
+    cursor: pointer;
+}
+
+.inbox-card.unread {
+    border-left-color: #4A7C59;
+}
+
+.inbox-card .inbox-message {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1F2937;
+    white-space: pre-line;
+    word-break: keep-all;
+}
+
+.inbox-card.read .inbox-message {
+    color: #6B7280;
+}
+
+.inbox-card .inbox-meta {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #9CA3AF;
+}
+
+.inbox-empty {
+    padding: 20px;
+    text-align: center;
+    color: #9CA3AF;
+    font-size: 14px;
+}

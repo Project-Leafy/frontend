@@ -9,6 +9,7 @@ COPY . /usr/share/nginx/html
 
 # 3. Nginx 설정 파일 복사 (아래에서 만들 파일입니다)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY proxy_headers.inc /etc/nginx/conf.d/proxy_headers.inc
 
 # 80번 포트 오픈
 EXPOSE 80

@@ -139,3 +139,19 @@ export async function deleteMyPlant(myPlantId) {
 
     return response;
 }
+
+/**
+ * [추가] AI 추천 관리 정보를 가져옵니다.
+ * @param {number} speciesId - 식물 종 ID
+ * @returns {Promise<any>} 관리 정보 데이터 Promise
+ */
+export async function getCareInfo(speciesId) {
+    const response = await fetchApi(`/api/v1/plant-species/${speciesId}/care-info`, {
+        method: 'GET',
+    });
+
+    if (!response.ok) {
+        throw new Error('추천 관리 정보를 가져오는데 실패했습니다.');
+    }
+    return response.json();
+}

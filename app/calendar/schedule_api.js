@@ -81,3 +81,31 @@ export async function deleteSchedule(scheduleId) {
         throw error;
     }
 }
+
+/**
+ * [추가] 초기 스케줄 일괄 생성
+ * @param {Array<object>} scheduleRequests - 스케줄 설정 요청 객체 배열
+ */
+export async function createInitialSchedules(scheduleRequests) {
+    const token = localStorage.getItem('accessToken');
+    
+    try {
+        const response = await fetch(`${BASE_URL}/initial-setup`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(scheduleRequests)
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.message || '초기 일정 설정에 실패했습니다.');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}

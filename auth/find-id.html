@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Leafy - 아이디 찾기</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/index/index.css">
+    <link rel="stylesheet" href="/auth/auth.css">
+    <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div id="app-container">
+        <div class="screen active">
+            <div class="login-content">
+                <div class="logo-circle">
+                    <i data-lucide="search"></i>
+                </div>
+                <h1 class="login-title">아이디 찾기</h1>
+                <p class="login-subtitle">가입할 때 입력한 이메일과 닉네임을 입력해요</p>
+                <form id="find-form" class="auth-form" novalidate>
+                    <div class="auth-field">
+                        <label for="email">이메일</label>
+                        <input id="email" name="email" type="email" autocomplete="email" required>
+                    </div>
+                    <div class="auth-field">
+                        <label for="nickname">닉네임</label>
+                        <input id="nickname" name="nickname" maxlength="20" required>
+                    </div>
+                    <p id="message" class="auth-message" role="alert"></p>
+                    <button type="submit" class="auth-btn">아이디 찾기</button>
+                </form>
+
+                <div id="result" class="auth-result" hidden></div>
+
+                <div class="auth-links">
+                    <a href="/index.html">로그인</a>
+                    <span class="divider">|</span>
+                    <a href="/auth/reset-password.html">비밀번호 찾기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>lucide.createIcons();</script>
+    <script type="module">
+        import { findLoginId, errorMessage } from '/assets/js/auth_api.js';
+
+        const form = document.getElementById('find-form');
+        const message = document.getElementById('message');
+        const resultBox = document.getElementById('result');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const email = form.email.value.trim();
+            const nickname = form.nickname.value.trim();
+            if (!email || !nickname) {
+                message.textContent = '이메일과 닉네임을 모두 입력해주세요.';
+                return;
+            }
+
+            message.textContent = '';
+            resultBox.hidden = true;
+            const result = await findLoginId(email, nickname);
+
+            if (result.ok) {
+                resultBox.textContent = '';
+                resultBox.append('가입하신 아이디는');
+                resultBox.append(document.createElement('br'));
+                const strong = document.createElement('strong');
+                strong.textContent = result.data.login_id;
+                resultBox.append(strong);
+                resultBox.append(document.createElement('br'));
+                resultBox.append('입니다.');
+                resultBox.hidden = false;
+                return;
+            }
+            message.textContent = errorMessage(result, '아이디를 찾지 못했습니다.');
+        });
+    </script>
+</body>
+</html>
