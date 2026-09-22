@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>계정 관리</title>
+    <link rel="icon" href="/assets/images/favicon.svg">
+    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="/auth/auth.css">
+    <script src="/assets/js/auth.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .account-card { background: #fff; margin-top: 12px; padding: 24px; border-bottom: 1px solid #E5E5E0; }
+        .account-card h3 { margin: 0 0 6px; font-size: 17px; color: #2C3E2F; }
+        .account-card p.desc { margin: 0 0 16px; font-size: 13px; color: #6B7280; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <header class="hs-header">
+            <div class="hs-header-top">
+                <button class="hs-icon" onclick="history.back()" aria-label="뒤로">
+                    <i data-lucide="arrow-left"></i>
+                </button>
+                <h2>계정 관리</h2>
+                <span style="width:42px"></span>
+            </div>
+        </header>
+
+        <section class="account-card">
+            <h3>비밀번호 변경</h3>
+            <p class="desc">현재 비밀번호를 확인한 뒤 새 비밀번호로 바꿔요.</p>
+            <form id="password-form" class="auth-form" novalidate>
+                <div class="auth-field">
+                    <label for="current-password">현재 비밀번호</label>
+                    <input id="current-password" name="currentPassword" type="password" autocomplete="current-password" required>
+                </div>
+                <div class="auth-field">
+                    <label for="new-password">새 비밀번호</label>
+                    <input id="new-password" name="newPassword" type="password" autocomplete="new-password" maxlength="64" required>
+                    <span class="hint">영문과 숫자를 포함한 8자 이상</span>
+                </div>
+                <div class="auth-field">
+                    <label for="new-password-confirm">새 비밀번호 확인</label>
+                    <input id="new-password-confirm" name="newPasswordConfirm" type="password" autocomplete="new-password" maxlength="64" required>
+                </div>
+                <p id="password-message" class="auth-message" role="alert"></p>
+                <button type="submit" class="auth-btn">비밀번호 변경</button>
+            </form>
+        </section>
+
+        <section class="account-card">
+            <h3>회원 탈퇴</h3>
+            <p class="desc">탈퇴하면 등록한 식물, 일정, 성장 기록, 진단 이력, 알림이 모두 삭제되고 되돌릴 수 없어요.</p>
+            <form id="withdraw-form" class="auth-form" novalidate>
+                <div class="auth-field">
+                    <label for="withdraw-password">비밀번호 확인</label>
+                    <input id="withdraw-password" name="password" type="password" autocomplete="current-password" required>
+                </div>
+                <p id="withdraw-message" class="auth-message" role="alert"></p>
+                <button type="submit" class="auth-btn danger">탈퇴하기</button>
+            </form>
+        </section>
+    </div>
+
+    <script>lucide.createIcons();</script>
+    <script type="module">
+        import { changePassword, withdraw, errorMessage, PASSWORD_RULE } from '/assets/js/auth_api.js';
+
+        const passwordForm = document.getElementById('password-form');
+        const passwordMessage = document.getElementById('password-message');
+
+        passwordForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const current = passwordForm.currentPassword.value;
+            const next = passwordForm.newPassword.value;
+
+            passwordMessage.className = 'auth-message';
+            if (!current) {
+                passwordMessage.textContent = '현재 비밀번호를 입력해주세요.';
+                return;
+            }
+            if (!PASSWORD_RULE.test(next)) {
+                passwordMessage.textContent = '비밀번호는 영문과 숫자를 포함한 8~64자여야 합니다.';
+                return;
+            }
+            if (next !== passwordForm.newPasswordConfirm.value) {
+                passwordMessage.textContent = '새 비밀번호 확인이 일치하지 않습니다.';
+                return;
+            }
+
+            const result = await changePassword(current, next);
+            if (result.ok) {
+                passwordForm.reset();
+                passwordMessage.className = 'auth-message ok';
+                passwordMessage.textContent = '비밀번호를 변경했습니다.';
+                return;
+            }
+            passwordMessage.textContent = errorMessage(result, '비밀번호를 변경하지 못했습니다.');
+        });
+
+        const withdrawForm = document.getElementById('withdraw-form');
+        const withdrawMessage = document.getElementById('withdraw-message');
+
+        withdrawForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const password = withdrawForm.password.value;
+            if (!password) {
+                withdrawMessage.textContent = '비밀번호를 입력해주세요.';
+                return;
+            }
+            if (!confirm('정말 탈퇴할까요? 모든 데이터가 삭제되고 되돌릴 수 없어요.')) {
+                return;
+            }
+
+            const result = await withdraw(password);
+            if (result.ok) {
+                localStorage.removeItem('accessToken');
+                alert('탈퇴가 완료되었습니다. 그동안 이용해주셔서 감사합니다.');
+                window.location.replace('/index.html');
+                return;
+            }
+            withdrawMessage.textContent = errorMessage(result, '탈퇴하지 못했습니다.');
+        });
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Leafy - 다가오는 일정 알람</title>
+    <title>Leafy - 알림</title>
     <link rel="stylesheet" href="alarm.css">
     <link rel="icon" href="/assets/images/favicon.svg">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -12,8 +12,17 @@
     <div id="app-container"> 
 
         <div class="hs-header"> 
-            <h1>⏰ 다가오는 일정 알람</h1>
-            <p>내가 추가한 순서대로 표시됩니다</p>
+            <h1>🔔 알림</h1>
+            <p>받은 알림과 다가오는 일정을 확인해요</p>
+        </div>
+
+        <!-- 앱 안 알림함: 물주기·진단·기념일 알림이 쌓인다 -->
+        <div id="inboxSection" class="alarm-list">
+            <div class="inbox-header">
+                <h3 class="section-title">🔔 알림함 <span id="inboxUnread" class="inbox-count"></span></h3>
+                <button id="readAllBtn" class="inbox-read-all" hidden>모두 읽음</button>
+            </div>
+            <div id="inboxList"></div>
         </div>
 
         <div id="alarmList" class="alarm-list">
@@ -50,5 +59,6 @@
         lucide.createIcons();
     </script>
     <script type="module" src="alarm.js" defer></script>
+    <script type="module" src="inbox.js" defer></script>
 </body>
 </html>

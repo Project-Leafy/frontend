@@ -1,0 +1,123 @@
+/* 로그인·회원가입·계정 찾기 화면 공통 스타일 (index.css 의 레이아웃·로고 위에 얹어 쓴다) */
+
+.auth-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.auth-field input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #D1D5DB;
+  border-radius: 12px;
+  font-size: 16px;
+  background: #fff;
+  color: #1F2937;
+  box-sizing: border-box;
+}
+
+.auth-field input:focus {
+  outline: none;
+  border-color: #4A7C59;
+  box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.15);
+}
+
+.auth-field .hint {
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+.auth-field .hint.ok { color: #15803D; }
+.auth-field .hint.bad { color: #DC2626; }
+
+.auth-row {
+  display: flex;
+  gap: 8px;
+}
+
+.auth-row input { flex: 1; }
+
+.auth-btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  background-color: #4A7C59;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 4px;
+}
+
+.auth-btn:hover { opacity: 0.92; }
+.auth-btn:disabled { opacity: 0.5; cursor: default; }
+
+.auth-btn.secondary {
+  width: auto;
+  padding: 0 14px;
+  margin-top: 0;
+  background: #fff;
+  color: #4A7C59;
+  border: 1px solid #4A7C59;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.auth-btn.danger { background-color: #DC2626; }
+
+.auth-message {
+  min-height: 20px;
+  font-size: 14px;
+  color: #DC2626;
+  white-space: pre-line;
+  text-align: center;
+}
+
+.auth-message.ok { color: #15803D; }
+
+.auth-links {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.auth-links a {
+  color: #4B5563;
+  text-decoration: none;
+}
+
+.auth-links a:hover { text-decoration: underline; }
+
+.auth-links .divider { color: #D1D5DB; }
+
+.auth-result {
+  width: 100%;
+  padding: 20px;
+  border-radius: 12px;
+  background: #F0FDF4;
+  color: #14532D;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.auth-result strong { font-size: 20px; }
